@@ -5,11 +5,11 @@ this.onload = function () {
         var wire = hyperHTML.wire(claim, parent);
         var li = wire`
       <li class="${"rr_li " + (parent && parent.open ? 'open' : 'closed')}">
-      <div class="claim">
+      <div class="claimBox">
         <span 
             onclick="${events.open.bind(claim)}" 
             class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                claim.children.length > 0?'>':''
+            claim.children.length > 0 ? '➤' : ''
             }</span>
         <input oninput="${events.updated.bind(claim)}" >
         ${claim.description}
@@ -28,7 +28,7 @@ this.onload = function () {
     }
 
     function update(render) {
-        render`${renderNode(dict[mainId], { open: true })}`;
+        render`<ul class="rr_ul">${renderNode(dict[mainId], { open: true })}</ul>`;
     }
 
     var

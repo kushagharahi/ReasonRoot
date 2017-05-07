@@ -4,11 +4,13 @@ body {
 
 .rr_li {
     list-style-type: none;
-    margin-left: 10px;
+    margin-left: 0px;
 }
 
 .rr_ul {
     overflow: hidden;
+    margin-left: 0px;
+    padding-left: 25px;
 }
 
 .closed {
@@ -16,7 +18,7 @@ body {
     transition: max-height 0.5s;
 }
 
-.claim {
+.claimBox {
     position: relative;
 }
 
@@ -30,7 +32,9 @@ body {
     cursor: pointer;
     transition: 0.5s;
     position: absolute;
-    left: -10px;
+    left: -25px;
+    font-size: x-large;
+    top: -5px;
 }
 
 .toggleButtonOpen {

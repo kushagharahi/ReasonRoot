@@ -1,69 +1,71 @@
 
-  this.onload = function () {
+this.onload = function () {
 
-    function renderNode(info, parent) {
-       var wire = hyperHTML.wire(info,parent);
-      var li = wire`
-      <li class="${parent && parent.open ? 'open' : 'closed'}"><span onclick="${events.open.bind(info)}" class="${"toggleButton " + (info.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${events.showToggle(info, parent)}</span>
-      <input oninput="${events.updated.bind(info)}" >
-      ${info.description}
-      <ul >${
-        info.children.map((nodeId, i) => renderNode(dict[nodeId], info))
-        }</ul>
+    function renderNode(claim, parent) {
+        var wire = hyperHTML.wire(claim, parent);
+        var li = wire`
+      <li class="${"rr_li " + (parent && parent.open ? 'open' : 'closed')}">
+      <div class="claim">
+        <span 
+            onclick="${events.open.bind(claim)}" 
+            class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
+                claim.children.length > 0?'>':''
+            }</span>
+        <input oninput="${events.updated.bind(claim)}" >
+        ${claim.description}
+      </div>
+
+      <ul class="rr_ul">${
+            claim.children.map((nodeId, i) => renderNode(dict[nodeId], claim))
+            }</ul>
      </li>`;
 
-     if (!wire.default) {
-       wire.default = info.description;
-       li.querySelector('input').value = info.description;
-     }
-     return li;
+        if (!wire.default) {
+            wire.default = claim.description;
+            li.querySelector('input').value = claim.description;
+        }
+        return li;
     }
 
     function update(render) {
-      render`${renderNode(dict[mainId], { open: true })}`;
+        render`${renderNode(dict[mainId], { open: true })}`;
     }
 
     var
-      render = hyperHTML.bind(document.body),
-      mainId = 0,
-      dict = {
-        0: {
-          description: "item 0",
-          children: [1, 2],
-          open: true
+        render = hyperHTML.bind(document.body),
+        mainId = 0,
+        dict = {
+            0: {
+                description: "item 0",
+                children: [1, 2],
+                open: true
+            },
+            1: {
+                description: "item 1",
+                children: [3]
+            },
+            2: {
+                description: "item 2",
+                children: []
+            },
+            3: {
+                description: "item 3",
+                children: []
+            },
         },
-        1: {
-          description: "item 1",
-          children: [3]
-        },
-        2: {
-          description: "item 2",
-          children: []
-        },
-        3: {
-          description: "item 3",
-          children: []
-        },
-      },
-      events = {
-        updated(e) {
-          this.description = e.target.value;
-          update(render, dict, mainId, events);
-        },
+        events = {
+            updated(e) {
+                this.description = e.target.value;
+                update(render, dict, mainId, events);
+            },
 
-        open(e) {
-          //debugger;
-          this.open = !this.open;
-          update(render, dict, mainId, events);
-        },
-        showToggle(info, parent) {
-          if (info.children.length > 0)
-               return '▷'
-          else
-            return ''
-        }
-      };
+            open(e) {
+                //debugger;
+                this.open = !this.open;
+                update(render, dict, mainId, events);
+            }
+        };
 
     update(render, dict, mainId, events);
 
-  };
+};

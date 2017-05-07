@@ -4,31 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: sans-serif;
-    }
-
-    .closed {
-      max-height: 0;
-      overflow: hidden;
-
-      /* Set our transitions up. */
-      -webkit-transition: max-height 0.8s;
-      -moz-transition: max-height 0.8s;
-      transition: max-height 0.8s;
-    }
-
-    .open {
-      max-height: 100px;
-      overflow: hidden;
-
-      /* Set our transitions up. */
-      -webkit-transition: max-height 0.8s;
-      -moz-transition: max-height 0.8s;
-      transition: max-height 0.8s;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="ReasonRoot.css" media="screen" />
   <script src="HyperHTML.js"></script>
 </head>
 
@@ -60,7 +36,7 @@
     function renderNode(info, parent) {
        var wire = hyperHTML.wire(info,parent);
       var li = wire`
-      <li class="${parent && parent.open ? 'open' : 'closed'}"}><span onclick="${events.open.bind(info)}">${events.showToggle(info, parent)}</span>
+      <li class="${parent && parent.open ? 'open' : 'closed'}"><span onclick="${events.open.bind(info)}" class="${"toggleButton " + (info.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${events.showToggle(info, parent)}</span>
       <input oninput="${events.updated.bind(info)}" >
       ${info.description}
       <ul >${
@@ -85,7 +61,8 @@
       dict = {
         0: {
           description: "item 0",
-          children: [1, 2]
+          children: [1, 2],
+          open: true
         },
         1: {
           description: "item 1",
@@ -113,10 +90,7 @@
         },
         showToggle(info, parent) {
           if (info.children.length > 0)
-            if (info.open)
-              return '▽'
-            else
-              return '▷'
+               return '▷'
           else
             return ''
         }

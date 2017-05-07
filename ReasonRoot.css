@@ -1,0 +1,33 @@
+body {
+    font-family: sans-serif;
+}
+
+.closed {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s;
+}
+
+.open {
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 0.5s;
+}
+
+.toggleButton{
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.toggleButtonOpen {
+    transform: rotate(90deg);
+}
+
+.toggleButtonClosed {
+    transform: rotate(0deg);
+}
+
+ul {
+    margin: 0;
+}

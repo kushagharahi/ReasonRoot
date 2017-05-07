@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .closed {
+      max-height: 0;
+      overflow: hidden;
+
+      /* Set our transitions up. */
+      -webkit-transition: max-height 0.8s;
+      -moz-transition: max-height 0.8s;
+      transition: max-height 0.8s;
+    }
+
+    .open {
+      max-height: 100px;
+      overflow: hidden;
+
+      /* Set our transitions up. */
+      -webkit-transition: max-height 0.8s;
+      -moz-transition: max-height 0.8s;
+      transition: max-height 0.8s;
+    }
+  </style>
+  <script src="HyperHTML.js"></script>
+</head>
+
+<body></body>
+<script>
+  this.onload = function () {
+    var counter = -1;
+
+    function renderNode(info) {
+      var wire = hyperHTML.wire(info);
+      var li = wire`
+      <li>
+        <span onclick="${events.open.bind(info)}">
+          ${info.open ? 'close' : 'open'}
+        </span>
+        <input oninput="${events.updated.bind(info)}">
+        ${info.description}
+        <ul class="${info.open ? 'open' : 'closed'}">${
+          info.children.map((nodeId, i) => renderNode(dict[nodeId]))
+        }</ul>
+     </li>`;
+     if (!wire.default) {
+       wire.default = info.description;
+       li.querySelector('input').value = info.description;
+     }
+     return li;
+    }
+
+    function renderNode(info, parent) {
+       var wire = hyperHTML.wire(info,parent);
+      var li = wire`
+      <li class="${parent && parent.open ? 'open' : 'closed'}"}><span onclick="${events.open.bind(info)}">${events.showToggle(info, parent)}</span>
+      <input oninput="${events.updated.bind(info)}" >
+      ${info.description}
+      <ul >${
+        info.children.map((nodeId, i) => renderNode(dict[nodeId], info))
+        }</ul>
+     </li>`;
+
+     if (!wire.default) {
+       wire.default = info.description;
+       li.querySelector('input').value = info.description;
+     }
+     return li;
+    }
+
+    function update(render) {
+      render`${renderNode(dict[mainId], { open: true })}`;
+    }
+
+    var
+      render = hyperHTML.bind(document.body),
+      mainId = 0,
+      dict = {
+        0: {
+          description: "item 0",
+          children: [1, 2]
+        },
+        1: {
+          description: "item 1",
+          children: [3]
+        },
+        2: {
+          description: "item 2",
+          children: []
+        },
+        3: {
+          description: "item 3",
+          children: []
+        },
+      },
+      events = {
+        updated(e) {
+          this.description = e.target.value;
+          update(render, dict, mainId, events);
+        },
+
+        open(e) {
+          //debugger;
+          this.open = !this.open;
+          update(render, dict, mainId, events);
+        },
+        showToggle(info, parent) {
+          if (info.children.length > 0)
+            if (info.open)
+              return '▽'
+            else
+              return '▷'
+          else
+            return ''
+        }
+      };
+
+    update(render, dict, mainId, events);
+
+  };
+
+</script>
+
+</html>

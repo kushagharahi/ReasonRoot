@@ -11,7 +11,7 @@ body {
 .open {
     max-height: 100px;
     overflow: hidden;
-    transition: max-height 0.5s;
+    transition: 0.5s;
 }
 
 .toggleButton{

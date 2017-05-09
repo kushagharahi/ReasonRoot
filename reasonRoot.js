@@ -1,6 +1,8 @@
 
 this.onload = function () {
 
+
+
     function renderNode(claim, parent) {
         var wire = hyperHTML.wire(claim, parent);
         var li = wire`
@@ -32,7 +34,7 @@ this.onload = function () {
     }
 
     var
-        render = hyperHTML.bind(document.body),
+        //render = hyperHTML.bind(document.body),
         mainId = 0,
         dict = {
             0: {
@@ -66,6 +68,14 @@ this.onload = function () {
             }
         };
 
-    update(render, dict, mainId, events);
+    //Find all the statements in the document
+    var statements = document.getElementsByTagName('statement');
+
+    //Render the statements
+    for (let s of statements) {
+        var render = hyperHTML.bind(s);
+        update(render, dict, mainId, events);
+    }
+    //update(render, dict, mainId, events);
 
 };

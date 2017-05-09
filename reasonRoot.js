@@ -2,9 +2,10 @@
 this.onload = function () {
 
 
-    function update(render, dict, mainId, events, hyperHTML) {
+    function update(render, dict, mainId, events) {
 
         function renderNode(claim, parent) {
+            var s = claim.statement;
             var wire = hyperHTML.wire(claim, parent);
             var li = wire`
                 <li class="${"rr_li " + (parent && parent.open ? 'open' : 'closed')}">
@@ -12,20 +13,20 @@ this.onload = function () {
                     <span 
                         onclick="${events.open.bind(claim)}" 
                         class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                claim.children.length > 0 ? '➤' : ''
+                s.childIds.length > 0 ? '➤' : ''
                 }</span>
                     <input oninput="${events.updated.bind(claim)}" >
-                    ${claim.description}
+                    ${s.content}
                 </div>
 
                 <ul class="rr_ul">${
-                claim.children.map((nodeId, i) => renderNode(dict[nodeId], claim))
+                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
                 }</ul>
                 </li>`;
 
             if (!wire.default) {
-                wire.default = claim.description;
-                li.querySelector('input').value = claim.description;
+                wire.default = s.content;
+                li.querySelector('input').value = s.content;
             }
             return li;
         }
@@ -36,50 +37,30 @@ this.onload = function () {
     //Render the statements
     function renderStatements(s) {
 
-        var mainId = 0;
-        var dict = {
-            0: {
-                description: "item 0",
-                children: [1, 2],
-                open: true
-            },
-            1: {
-                description: "item 1",
-                children: [3]
-            },
-            2: {
-                description: "item 2",
-                children: []
-            },
-            3: {
-                description: "item 3",
-                children: []
-            },
-        };
+        var mainId = s.getAttribute('stmtId');
+        var dict = JSON.parse( s.getAttribute('dict'));
         var events = {
             updated(e) {
-                this.description = e.target.value;
-                update(render, dict, mainId, events, hyperHTML);
+                this.statement.content = e.target.value;
+                update(render, dict, mainId, events);
             },
 
             open(e) {
                 //debugger;
                 this.open = !this.open;
-                update(render, dict, mainId, events, hyperHTML);
+                update(render, dict, mainId, events);
             }
         };
 
 
         var render = hyperHTML.bind(s);
-        update(render, dict, mainId, events, hyperHTML);
+        update(render, dict, mainId, events);
 
     }
 
     var statements = document.getElementsByTagName('statement');
     for (let s of statements) {
-
         renderStatements(s)
-
     }
 
 };

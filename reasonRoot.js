@@ -36,9 +36,17 @@ this.onload = function () {
 
     //Render the statements
     function renderStatements(s) {
-
+        var dict = {};
         var mainId = s.getAttribute('stmtId');
-        var dict = JSON.parse( s.getAttribute('dict'));
+        if (s.getAttribute('dict').charAt(0) == '{') {
+            dict = JSON.parse(s.getAttribute('dict'));
+        } else {
+            var claims = JSON.parse(s.getAttribute('dict'));
+            //add the claims to the dictionairy
+            var dict = createDict(claims);
+            var settleIt = new SettleIt();
+            var scores = settleIt.calculate(dict[mainId],dict)
+        }
         var events = {
             updated(e) {
                 this.statement.content = e.target.value;

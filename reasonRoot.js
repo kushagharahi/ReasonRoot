@@ -34,63 +34,52 @@ this.onload = function () {
     }
 
     //Render the statements
-    function renderStatements() {
+    function renderStatements(s) {
+
+        var mainId = 0;
+        var dict = {
+            0: {
+                description: "item 0",
+                children: [1, 2],
+                open: true
+            },
+            1: {
+                description: "item 1",
+                children: [3]
+            },
+            2: {
+                description: "item 2",
+                children: []
+            },
+            3: {
+                description: "item 3",
+                children: []
+            },
+        };
+        var events = {
+            updated(e) {
+                this.description = e.target.value;
+                update(render, dict, mainId, events, hyperHTML);
+            },
+
+            open(e) {
+                //debugger;
+                this.open = !this.open;
+                update(render, dict, mainId, events, hyperHTML);
+            }
+        };
 
 
-        //Find all the statements in the document
-        var statements = document.getElementsByTagName('statement');
-
-
-        for (let s of statements) {
-
-            isolateMore( s)
-
-        }
-    }
-
-    function isolateMore( s) {
-
-            var mainId = 0;
-            var dict = {
-                0: {
-                    description: "item 0",
-                    children: [1, 2],
-                    open: true
-                },
-                1: {
-                    description: "item 1",
-                    children: [3]
-                },
-                2: {
-                    description: "item 2",
-                    children: []
-                },
-                3: {
-                    description: "item 3",
-                    children: []
-                },
-            };
-            var events = {
-                updated(e) {
-                    this.description = e.target.value;
-                    update(render, dict, mainId, events, hyperHTML);
-                },
-
-                open(e) {
-                    //debugger;
-                    this.open = !this.open;
-                    update(render, dict, mainId, events, hyperHTML);
-                }
-            };
-
-
-        var hyperHTML = hyperHTMLFactory();
         var render = hyperHTML.bind(s);
         update(render, dict, mainId, events, hyperHTML);
 
     }
 
-    renderStatements()
-    //update(render, dict, mainId, events);
+    var statements = document.getElementsByTagName('statement');
+    for (let s of statements) {
+
+        renderStatements(s)
+
+    }
 
 };

@@ -1,4 +1,5 @@
-var hyperHTML = (function () {'use strict';
+var hyperHTMLFactory = function () {'use strict';
+//var hyperHTML = (function () {'use strict';
 
   /*! (C) 2017 Andrea Giammarchi @WebReflection (MIT) */
 
@@ -549,7 +550,8 @@ var hyperHTML = (function () {'use strict';
   // -------------------------
   return hyperHTML;
 
-}());
+};
+//}());
 
 // umd.KISS
 try { module.exports = hyperHTML; } catch(o_O) {}

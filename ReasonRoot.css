@@ -34,8 +34,11 @@ body{
     color: #4A4A4A;
     background: #ECECEC;
     padding: .25em;
-    min-height: 2em;
+    padding-bottom: 2px; 
+    min-height: 2.5em;
     font-size: 100%;
+    /*overflow: hidden;*/
+    /*border: 1px solid;*/
     }
     
     .statement a,
@@ -47,8 +50,9 @@ body{
     display: none;
     }
 
-    .closed > .statementPad > .statement{
-    max-height: 2em;
+    .closed > .statementPad > .statement > .innerStatement{
+    max-height: 2.8em;
+    overflow: hidden;
     }
 
     .closed > .childIndicator {
@@ -57,7 +61,11 @@ body{
     height: 7px;
     width: 90%;
     margin-left: 30px;
-    margin-top: 2px;
+    /*margin-top: 2px;*/
+   }
+
+   .shadow {
+       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
    }
     
     .citation {

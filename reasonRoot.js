@@ -11,20 +11,20 @@ this.onload = function () {
             var li = wire`
                 <li class="${claim.open ? 'open' : 'closed'}">
                     <div class="statementPad">
-                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con')}" >
-
-                            <span class="score" > ${
-                                (claim.generation == 0 ?
-                                    Math.round(claim.weightedPercentage * 100) + '%' :
-                                    Math.floor(Math.abs(claim.weightDif))) 
-                            }</span>
-                            
-                            ${s.content}
-                            
-                            <a target="_blank" href="${s.citationUrl}"> 
-                                <span class="citation">${s.citation}</span>
-                            </a>
-                            
+                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con')+ (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
+                            <div class="innerStatement">
+                                <span class="score" > ${
+                                    (claim.generation == 0 ?
+                                        Math.round(claim.weightedPercentage * 100) + '%' :
+                                        Math.floor(Math.abs(claim.weightDif))) 
+                                }</span>
+                                
+                                ${s.content}
+                                
+                                <a target="_blank" href="${s.citationUrl}"> 
+                                    <span class="citation">${s.citation}</span>
+                                </a>
+                            </div>
                         </div>
 
                         <span 

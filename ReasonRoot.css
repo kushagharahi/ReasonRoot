@@ -1,33 +1,46 @@
-body {
-    font-family: sans-serif;
-}
-
-.rr_li {
-    list-style-type: none;
-    margin-left: 0px;
-}
-
-.rr_ul {
+.rr {
+    line-height: 1.1;
+    margin: auto;
+    margin-bottom: 7px;
     overflow: hidden;
-    margin-left: 0px;
+    margin: 0px;
+    padding-left: 25px;
+    font-size: 100%;
+}
+
+.rr ul {
+    overflow: hidden;
+    margin: 0px;
     padding-left: 25px;
 }
 
-.closed {
-    max-height: 0;
-    transition: max-height 0.5s;
+.rr li {
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.claimBox {
-    position: relative;
-}
-
-.open {
+.rr .open {
     max-height: 100px;
     transition: 0.5s;
+    overflow: hidden;
 }
 
-.toggleButton{
+.rr .closed {
+    max-height: 0;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.rr .claimBox {
+    padding: 0;
+    position: relative;
+    margin: 5px;
+    margin-left: 30px;
+}
+
+.rr .toggleButton{
     display: inline-block;
     cursor: pointer;
     transition: 0.5s;
@@ -35,16 +48,45 @@ body {
     left: -25px;
     font-size: x-large;
     top: -5px;
+    color: black;
 }
 
-.toggleButtonOpen {
+.rr .toggleButtonOpen {
     transform: rotate(90deg);
 }
 
-.toggleButtonClosed {
+.rr .toggleButtonClosed {
     transform: rotate(0deg);
 }
 
-ul {
-    margin: 0;
+.rr .claim {
+    position: relative;
+    margin-top: .25em;
+    border-radius: .5em;
+    color: #4A4A4A;
+    background: #ECECEC;
+    padding: .25em;
+    min-height: 2.5em;
+    font-size: 100%;
+}
+
+.rr .pro {
+    background-color: #61B3D9;
+    color: white;
+    border-color: #61B3D9;
+}
+
+.rr .con {
+    background-color: #F5A623;
+    color: white;
+    border-color: #F5A623;
+}
+
+.rr .score {
+    display: block;
+    float: left;
+    font-size: 2em;
+    padding-right: .25em;
+    padding-right: .25em;
+    line-height: 1em;
 }

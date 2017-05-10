@@ -3,41 +3,48 @@ this.onload = function () {
 
 
     function update(render, dict, mainId, events) {
+            //<input oninput="${events.updated.bind(claim)}" >
 
         function renderNode(claim, parent) {
             var s = claim.statement;
             var wire = hyperHTML.wire(claim, parent);
             var li = wire`
-                <li class="${"rr_li " + (parent && parent.open ? 'open' : 'closed')}">
-                <div class="claimBox">
-                    <span 
-                        onclick="${events.open.bind(claim)}" 
-                        class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                s.childIds.length > 0 ? '➤' : ''
-                }</span>
-                    <input oninput="${events.updated.bind(claim)}" >
-                    ${s.content}
+                <li>
+                <div class="${parent && parent.open ? 'open' : 'closed'}">
+                    <div class="claimBox">
+                        <span 
+                            onclick="${events.open.bind(claim)}" 
+                            class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
+                            s.childIds.length > 0 ? '➤' : ''
+                        }</span>
+
+
+                        <span class="${'claim ' + (claim.statement.isProParent ? 'pro' : 'con')}">
+                        ${s.content}
+                        </span>
+                    </div>
                 </div>
 
-                <ul class="rr_ul">${
+                <ul>${
                 s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
                 }</ul>
                 </li>`;
 
-            if (!wire.default) {
-                wire.default = s.content;
-                li.querySelector('input').value = s.content;
-            }
+            // if (!wire.default) {
+            //     wire.default = s.content;
+            //     li.querySelector('input').value = s.content;
+            // }
             return li;
         }
 
-        render`<ul class="rr_ul">${renderNode(dict[mainId], { open: true })}</ul>`;
+        render`<ul class="rr">${renderNode(dict[mainId], { open: true })}</ul>`;
     }
 
     //Render the statements
     function renderStatements(s) {
         var dict = {};
         var mainId = s.getAttribute('stmtId');
+
         if (s.getAttribute('dict').charAt(0) == '{') {
             dict = JSON.parse(s.getAttribute('dict'));
         } else {
@@ -47,6 +54,7 @@ this.onload = function () {
             var settleIt = new SettleIt();
             var scores = settleIt.calculate(dict[mainId],dict)
         }
+
         var events = {
             updated(e) {
                 this.statement.content = e.target.value;
@@ -59,6 +67,7 @@ this.onload = function () {
                 update(render, dict, mainId, events);
             }
         };
+        var root={};
 
 
         var render = hyperHTML.bind(s);

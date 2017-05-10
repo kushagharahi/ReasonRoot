@@ -10,7 +10,7 @@ this.onload = function () {
             var wire = hyperHTML.wire(claim, parent);
             var li = wire`
                 <li class="${claim.open ? 'open' : 'closed'}">
-                    <div class="statementPad">
+                    <div class="statementPad" onclick="${events.open.bind(claim)}">
                         <div class="${"statement " + (s.isProMain ? 'pro' : 'con')+ (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
                             <div class="innerStatement">
                                 <span class="score" > ${
@@ -21,17 +21,11 @@ this.onload = function () {
                                 
                                 ${s.content}
                                 
-                                <a target="_blank" href="${s.citationUrl}"> 
+                                <a target="_blank" href="${s.citationUrl}" onclick="${events.noBubbleClick}"> 
                                     <span class="citation">${s.citation}</span>
                                 </a>
                             </div>
                         </div>
-
-                        <span 
-                            onclick="${events.open.bind(claim)}" 
-                            class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                            s.childIds.length > 0 ? '➤' : ''
-                        }</span>
 
                     </div>    
                     <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
@@ -70,6 +64,11 @@ this.onload = function () {
                 //debugger;
                 this.open = !this.open;
                 update(render, dict, mainId, events);
+            },
+
+            noBubbleClick(event) {
+                var event = arguments[0] || window.event;
+                event.stopPropagation();
             }
         };
         var root={};

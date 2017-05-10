@@ -52,6 +52,19 @@ body{
 
     .closed > .statementPad > .statement > .innerStatement{
     max-height: 2.8em;
+    }
+
+.closed > .statementPad {
+    cursor: pointer;
+    cursor: -webkit-zoom-in;
+}
+
+.open > .statementPad {
+    cursor: pointer;
+    cursor: -webkit-zoom-out;
+}
+
+    .innerStatement{
     overflow: hidden;
     }
 

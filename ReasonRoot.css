@@ -4,7 +4,7 @@
     margin-bottom: 7px;
     overflow: hidden;
     margin: 0px;
-    padding-left: 25px;
+    padding-left: 0;
     font-size: 100%;
 }
 
@@ -36,7 +36,6 @@
 .rr .claimBox {
     padding: 0;
     position: relative;
-    margin: 5px;
     margin-left: 30px;
 }
 

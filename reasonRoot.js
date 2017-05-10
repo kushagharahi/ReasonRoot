@@ -19,9 +19,9 @@ this.onload = function () {
                         }</span>
 
 
-                        <span class="${'claim ' + (claim.statement.isProParent ? 'pro' : 'con')}">
+                        <div class="${'claim ' + (claim.statement.isProParent ? 'pro' : 'con')}">
                         ${s.content}
-                        </span>
+                        </div>
                     </div>
                 </div>
 

@@ -9,63 +9,35 @@ this.onload = function () {
             var s = claim.statement;
             var wire = hyperHTML.wire(claim, parent);
             var li = wire`
-<li class="${claim.open ? 'open' : 'closed'}">
-            <div class="statementPad  notSelected">
-                <div class="${"statement " + (s.isProMain ? 'pro' : 'con')}" >
+                <li class="${claim.open ? 'open' : 'closed'}">
+                    <div class="statementPad">
+                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con')}" >
 
-                <span class="score" > ${
-                    (claim.generation == 0 ?
-                        Math.round(claim.weightedPercentage * 100) + '%' :
-                        Math.floor(Math.abs(claim.weightDif))) 
-                }</span>
-                  
-                ${s.content}
-                  
-                  <span onclick="noClickBubble()"><a targer="_blank" href="${s.citationUrl}"> 
-                    <span class="citation">${s.citation}</a></span>
-                  
-            </div>
-              
-            <span 
-                onclick="${events.open.bind(claim)}" 
-                class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                s.childIds.length > 0 ? '➤' : ''
-            }</span>
-            
-        </div>    
-                <ul>${
-                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
-                }</ul>
-      </li>`
-
-
-                /*<li>
-                <div class="${parent && parent.open ? 'open' : 'closed'}">
-                    <div class="claimBox">
-                        <span 
-                            onclick="${events.open.bind(claim)}" 
-                            class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                            s.childIds.length > 0 ? '➤' : ''
+                        <span class="score" > ${
+                            (claim.generation == 0 ?
+                                Math.round(claim.weightedPercentage * 100) + '%' :
+                                Math.floor(Math.abs(claim.weightDif))) 
                         }</span>
-
-
-                        <div class="${'claim ' + (claim.statement.isProParent ? 'pro' : 'con')}">
+                        
                         ${s.content}
-                        </div>
+                        
+                        <a targer="_blank" href="${s.citationUrl}"> 
+                            <span class="citation">${s.citation}</span>
+                        </a>
+                        
                     </div>
-                </div>
 
-                <ul>${
-                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
-                }</ul>
-                </li>`;*/
+                    <span 
+                        onclick="${events.open.bind(claim)}" 
+                        class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
+                        s.childIds.length > 0 ? '➤' : ''
+                    }</span>
 
-
-
-            // if (!wire.default) {
-            //     wire.default = s.content;
-            //     li.querySelector('input').value = s.content;
-            // }
+                    </div>    
+                    <ul>${
+                    s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
+                    }</ul>
+                </li>`
             return li;
         }
 

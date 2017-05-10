@@ -13,27 +13,28 @@ this.onload = function () {
                     <div class="statementPad">
                         <div class="${"statement " + (s.isProMain ? 'pro' : 'con')}" >
 
-                        <span class="score" > ${
-                            (claim.generation == 0 ?
-                                Math.round(claim.weightedPercentage * 100) + '%' :
-                                Math.floor(Math.abs(claim.weightDif))) 
-                        }</span>
-                        
-                        ${s.content}
-                        
-                        <a targer="_blank" href="${s.citationUrl}"> 
-                            <span class="citation">${s.citation}</span>
-                        </a>
-                        
-                    </div>
+                            <span class="score" > ${
+                                (claim.generation == 0 ?
+                                    Math.round(claim.weightedPercentage * 100) + '%' :
+                                    Math.floor(Math.abs(claim.weightDif))) 
+                            }</span>
+                            
+                            ${s.content}
+                            
+                            <a target="_blank" href="${s.citationUrl}"> 
+                                <span class="citation">${s.citation}</span>
+                            </a>
+                            
+                        </div>
 
-                    <span 
-                        onclick="${events.open.bind(claim)}" 
-                        class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
-                        s.childIds.length > 0 ? '➤' : ''
-                    }</span>
+                        <span 
+                            onclick="${events.open.bind(claim)}" 
+                            class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
+                            s.childIds.length > 0 ? '➤' : ''
+                        }</span>
 
                     </div>    
+                    <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
                     <ul>${
                     s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
                     }</ul>

@@ -29,7 +29,7 @@ body{
     
     .statement {
     position: relative;
-    margin-top: .25em;
+    margin-top: .5em;
     border-radius: .5em;
     color: #4A4A4A;
     background: #ECECEC;
@@ -43,9 +43,22 @@ body{
     color: white;
     }
     
-    .closed ul{
+    .closed > ul{
     display: none;
     }
+
+    .closed > .statementPad > .statement{
+    max-height: 2em;
+    }
+
+    .closed > .childIndicator {
+    border-bottom-left-radius: .5em;
+    border-bottom-right-radius: .5em;
+    height: 7px;
+    width: 90%;
+    margin-left: 30px;
+    margin-top: 2px;
+   }
     
     .citation {
     font-size: smaller;

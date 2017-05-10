@@ -1,52 +1,129 @@
-.rr {
+body{
+    margin: 0 20px 0 0;
+    }
+    
+    .rr{
     line-height: 1.1;
+    max-width: 600px;
     margin: auto;
-    margin-bottom: 7px;
-    overflow: hidden;
-    margin: 0px;
-    padding-left: 0;
-    font-size: 100%;
-}
-
-.rr ul {
-    overflow: hidden;
-    margin: 0px;
-    padding-left: 25px;
-}
-
-.rr li {
-    list-style-type: none;
+    }
+    
+    ul{
+    border-left: 1px solid #ECECEC;
+    padding: 0;
+    margin: 0 0 0 20px;
     width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-.rr .open {
-    max-height: 100px;
-    transition: 0.5s;
-    overflow: hidden;
-}
-
-.rr .closed {
-    max-height: 0;
-    transition: 0.5s;
-    overflow: hidden;
-}
-
-.rr .claimBox {
-    padding: 0;
+    }
+    
+    li{
+    width: 100%;
+    list-style-type: none;
+    margin: 0px 0 0 0;
+    /*padding: 5px 0 0 0;*/
+    }
+    
+    .statementPad {
+    padding:0 10px;
     position: relative;
-    margin-left: 30px;
-}
+    }
+    
+    .statement {
+    position: relative;
+    margin-top: .25em;
+    border-radius: .5em;
+    color: #4A4A4A;
+    background: #ECECEC;
+    padding: .25em;
+    min-height: 2em;
+    font-size: 100%;
+    }
+    
+    .statement a,
+    .statement a:hover{
+    color: white;
+    }
+    
+    .closed ul{
+    display: none;
+    }
+    
+    .citation {
+    font-size: smaller;
+    font-style: italic;
+    }
+    
+    .notSelected .citation {
+    display: none;
+    }
+    
+    .score {
+    display: block;
+    float: left;
+    font-size: 1.99em;
+    padding-right: .25em;
+    padding-right: .25em;
+    /*font-weight: 800;*/
+    }
+    
+    .pro {
+    background-color: #61B3D9;
+    color: white;
+    border-color: #61B3D9;
+    }
+    
+    .con {
+    background-color: #F5A623;
+    color: white;
+    border-color: #F5A623;
+    }
+    
+    .pro:after {
+    right: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-left-color: transparent;
+    border-right-color: #61B3D9;
+    border-width: 10px;
+    margin-top: -10px;
+    }
+    
+    .con:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-right-color: transparent;
+    border-left-color: #F5A623;
+    border-width: 10px;
+    margin-top: -10px;
+    }
+    
+    /*.opener {
+    position: absolute;
+    left: -2px;
+    bottom: -10px;
+    cursor: pointer;
+    color: #4A4A4A;
+    }*/
 
-.rr .toggleButton{
+    .rr .toggleButton{
     display: inline-block;
     cursor: pointer;
     transition: 0.5s;
     position: absolute;
-    left: -25px;
+    left: -2px;
+    bottom: -10px;
     font-size: x-large;
-    top: -5px;
+    /*top: -5px;*/
     color: black;
 }
 
@@ -56,36 +133,4 @@
 
 .rr .toggleButtonClosed {
     transform: rotate(0deg);
-}
-
-.rr .claim {
-    position: relative;
-    margin-top: .25em;
-    border-radius: .5em;
-    color: #4A4A4A;
-    background: #ECECEC;
-    padding: .25em;
-    min-height: 2.5em;
-    font-size: 100%;
-}
-
-.rr .pro {
-    background-color: #61B3D9;
-    color: white;
-    border-color: #61B3D9;
-}
-
-.rr .con {
-    background-color: #F5A623;
-    color: white;
-    border-color: #F5A623;
-}
-
-.rr .score {
-    display: block;
-    float: left;
-    font-size: 2em;
-    padding-right: .25em;
-    padding-right: .25em;
-    line-height: 1em;
 }

@@ -9,7 +9,37 @@ this.onload = function () {
             var s = claim.statement;
             var wire = hyperHTML.wire(claim, parent);
             var li = wire`
-                <li>
+<li class="${claim.open ? 'open' : 'closed'}">
+            <div class="statementPad  notSelected">
+                <div class="${"statement " + (s.isProMain ? 'pro' : 'con')}" >
+
+                <span class="score" > ${
+                    (claim.generation == 0 ?
+                        Math.round(claim.weightedPercentage * 100) + '%' :
+                        Math.floor(Math.abs(claim.weightDif))) 
+                }</span>
+                  
+                ${s.content}
+                  
+                  <span onclick="noClickBubble()"><a targer="_blank" href="${s.citationUrl}"> 
+                    <span class="citation">${s.citation}</a></span>
+                  
+            </div>
+              
+            <span 
+                onclick="${events.open.bind(claim)}" 
+                class="${"toggleButton " + (claim.open ? 'toggleButtonOpen' : 'toggleButtonClosed')}">${
+                s.childIds.length > 0 ? '➤' : ''
+            }</span>
+            
+        </div>    
+                <ul>${
+                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
+                }</ul>
+      </li>`
+
+
+                /*<li>
                 <div class="${parent && parent.open ? 'open' : 'closed'}">
                     <div class="claimBox">
                         <span 
@@ -28,7 +58,9 @@ this.onload = function () {
                 <ul>${
                 s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
                 }</ul>
-                </li>`;
+                </li>`;*/
+
+
 
             // if (!wire.default) {
             //     wire.default = s.content;
@@ -37,7 +69,7 @@ this.onload = function () {
             return li;
         }
 
-        render`<ul class="rr">${renderNode(dict[mainId], { open: true })}</ul>`;
+        render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;
     }
 
     //Render the statements

@@ -46,7 +46,7 @@ body{
     
 .open > ul > li > .statementPad {
     overflow: hidden;
-    max-height: 10em;
+    max-height: 15em;
     transition: 1s;
     }
 
@@ -62,7 +62,7 @@ body{
 }
 
 .open > .statementPad > .statement > .innerStatement{
-    max-height: 10em;
+    max-height: 15em;
      transition: 1s;
 }
 
@@ -86,16 +86,18 @@ body{
     height: 7px;
     width: 90%;
     margin-left: 30px;
-    /*transition: .5s;*/
+    opacity: 1;
+    transition: .5s;
 }
 
 .open > .statementPad > .childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
-    height: 0px;
+    height: 7px;
     width: 90%;
     margin-left: 30px;
-    /*transition: .5s;*/
+    opacity: 0;
+    transition: .5s;
 }
 
 .shadow {

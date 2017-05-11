@@ -27,8 +27,9 @@ this.onload = function () {
                             </div>
                         </div>
 
-                    </div>    
-                    <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
+                        <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
+                    </div>  
+                      
                     <ul>${
                     s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
                     }</ul>

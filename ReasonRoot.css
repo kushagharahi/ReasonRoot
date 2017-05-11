@@ -37,8 +37,6 @@ body{
     padding-bottom: 2px; 
     min-height: 2.5em;
     font-size: 100%;
-    /*overflow: hidden;*/
-    /*border: 1px solid;*/
     }
     
     .statement a,
@@ -46,13 +44,27 @@ body{
     color: white;
     }
     
-    .closed > ul{
-    display: none;
+.open > ul > li > .statementPad {
+    overflow: hidden;
+    max-height: 10em;
+    transition: 1s;
     }
 
-    .closed > .statementPad > .statement > .innerStatement{
-    max-height: 2.8em;
+.closed > ul > li .statementPad {
+    overflow: hidden;
+    max-height: 0;
+    transition: 1s;
     }
+
+.closed > .statementPad > .statement > .innerStatement{
+    max-height: 2.8em;
+    transition: 1s;
+}
+
+.open > .statementPad > .statement > .innerStatement{
+    max-height: 10em;
+     transition: 1s;
+}
 
 .closed > .statementPad {
     cursor: pointer;
@@ -64,31 +76,36 @@ body{
     cursor: -webkit-zoom-out;
 }
 
-    .innerStatement{
+.innerStatement{
     overflow: hidden;
-    }
+}
 
-    .closed > .childIndicator {
+.closed > .statementPad > .childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
     width: 90%;
     margin-left: 30px;
-    /*margin-top: 2px;*/
-   }
+    /*transition: .5s;*/
+}
 
-   .shadow {
+.open > .statementPad > .childIndicator {
+    border-bottom-left-radius: .5em;
+    border-bottom-right-radius: .5em;
+    height: 0px;
+    width: 90%;
+    margin-left: 30px;
+    /*transition: .5s;*/
+}
+
+.shadow {
        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
-   }
+}
     
-    .citation {
+.citation {
     font-size: smaller;
     font-style: italic;
-    }
-    
-    .notSelected .citation {
-    display: none;
-    }
+}
     
     .score {
     display: block;
@@ -96,7 +113,6 @@ body{
     font-size: 1.98em;
     padding-right: .25em;
     padding-right: .25em;
-    /*font-weight: 800;*/
     }
     
     .pro {
@@ -111,7 +127,7 @@ body{
     border-color: #F5A623;
     }
     
-    .pro:after {
+    .statement.pro:after {
     right: 100%;
     top: 50%;
     border: solid transparent;
@@ -119,14 +135,14 @@ body{
     height: 0;
     width: 0;
     position: absolute;
-    pointer-events: none;
+    /*pointer-events: none;*/
     border-left-color: transparent;
     border-right-color: #61B3D9;
     border-width: 10px;
     margin-top: -10px;
     }
     
-    .con:after {
+    .statement.con:after {
     left: 100%;
     top: 50%;
     border: solid transparent;
@@ -134,37 +150,9 @@ body{
     height: 0;
     width: 0;
     position: absolute;
-    pointer-events: none;
+    /*pointer-events: none;*/
     border-right-color: transparent;
     border-left-color: #F5A623;
     border-width: 10px;
     margin-top: -10px;
     }
-    
-    /*.opener {
-    position: absolute;
-    left: -2px;
-    bottom: -10px;
-    cursor: pointer;
-    color: #4A4A4A;
-    }*/
-
-    .rr .toggleButton{
-    display: inline-block;
-    cursor: pointer;
-    transition: 0.5s;
-    position: absolute;
-    left: -2px;
-    bottom: -10px;
-    font-size: x-large;
-    /*top: -5px;*/
-    color: black;
-}
-
-.rr .toggleButtonOpen {
-    transform: rotate(90deg);
-}
-
-.rr .toggleButtonClosed {
-    transform: rotate(0deg);
-}

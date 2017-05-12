@@ -18,7 +18,7 @@ this.onload = function () {
                     Math.round(claim.weightedPercentage * 100) + '%' :
                     Math.floor(Math.abs(claim.weightDif)))
                 }</span>
-                                (${claim.class})
+                                
                                 ${s.content}
                                 
                                 <a target="_blank" href="${s.citationUrl}" onclick="${events.noBubbleClick}"> 

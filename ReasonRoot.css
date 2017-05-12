@@ -69,8 +69,8 @@ body{
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
-    width: 90%;
-    margin-left: 30px;
+    margin-left: 25px;
+    margin-right: 10px;
     display: none;
 }
 
@@ -90,10 +90,8 @@ body{
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
-    width: 90%;
-    margin-left: 30px;
-    /*opacity: 1;*/
-    /*transition: .5s;*/
+    margin-left: 25px;
+    margin-right: 10px;
 }
 
 .ancestor > .statementPad > .addClaimSpacer {
@@ -116,10 +114,8 @@ body{
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
-    width: 90%;
-    margin-left: 30px;
-    /*opacity: 1;*/
-    /*transition: .5s;*/
+    margin-left: 25px;
+    margin-right: 10px;
 }
 
 .child > .statementPad > .addClaimSpacer {
@@ -216,12 +212,4 @@ body{
     max-height: 2.8em;
     transition: 1s;
     padding-bottom: .25em;
-}
-
-.hide > .statementPad > .childIndicator {
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
-    height: 7px;
-    width: 90%;
-    margin-left: 30px;
 }

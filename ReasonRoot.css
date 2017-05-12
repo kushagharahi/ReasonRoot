@@ -25,6 +25,8 @@ body{
     .statementPad {
     padding:0 10px;
     position: relative;
+    overflow: hidden;
+    transition: 1s;
     }
     
     .statement {
@@ -43,46 +45,48 @@ body{
     .statement a:hover{
     color: white;
     }
+
+     .addClaim{
+    border-radius: .25em;
+    background: #ECECEC;
+    padding: .25em;
+    font-size: 100%;
+    padding: 2px 5px;
+    margin-top: 2px;
+ }
     
-.open > ul > li > .statementPad {
-    overflow: hidden;
-    max-height: 15em;
-    transition: 1s;
-    }
-
-.closed > ul > li .statementPad {
-    overflow: hidden;
-    max-height: 0;
-    transition: 1s;
-    }
-
-.closed > .statementPad > .statement > .innerStatement{
-    max-height: 2.8em;
-    transition: 1s;
-    padding-bottom: .25em;
+.selected > .statementPad {
+    overflow: visible;
 }
 
-.open > .statementPad > .statement > .innerStatement{
+.selected > .statementPad > .statement > .innerStatement{
     max-height: 15em;
      transition: 1s;
      padding-bottom: .25em;
 }
 
-.closed > .statementPad {
-    cursor: pointer;
-    cursor: -webkit-zoom-in;
+.selected > .statementPad > .childIndicator {
+    border-bottom-left-radius: .5em;
+    border-bottom-right-radius: .5em;
+    height: 7px;
+    width: 90%;
+    margin-left: 30px;
+    display: none;
 }
 
-.open > .statementPad {
+.ancestor > .statementPad > .statement > .innerStatement{
+    max-height: 2.8em;
+    transition: 1s;
+    padding-bottom: .25em;
+}
+
+.ancestor > .statementPad {
     cursor: pointer;
     cursor: -webkit-zoom-out;
+    max-height: 5em;
 }
 
-.innerStatement{
-    overflow: hidden;
-}
-
-.closed > .statementPad > .childIndicator {
+.ancestor > .statementPad > .childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
@@ -92,19 +96,50 @@ body{
     /*transition: .5s;*/
 }
 
-.open > .statementPad > .childIndicator {
+.ancestor > .statementPad > .addClaimSpacer {
+    display: none;
+}
+
+.child > .statementPad {
+    cursor: pointer;
+    cursor: -webkit-zoom-in;
+    max-height: 5em;
+}
+
+.child > .statementPad > .statement > .innerStatement{
+    max-height: 2.8em;
+    transition: 1s;
+    padding-bottom: .25em;
+}
+
+.child > .statementPad > .childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
     width: 90%;
     margin-left: 30px;
-    visibility: hidden;
-    /*opacity: 0;*/
+    /*opacity: 1;*/
     /*transition: .5s;*/
+}
+
+.child > .statementPad > .addClaimSpacer {
+    display: none;
+}
+
+.innerStatement{
+    overflow: hidden;
+}
+
+.addClaimSpacer{
+    height: 1.5em;
 }
 
 .shadow {
        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.selected > .statementPad > .shadow {
+       box-shadow: initial;
 }
     
 .citation {
@@ -147,7 +182,7 @@ body{
     margin-top: -10px;
     }
     
-    .statement.con:after {
+    .statement.con:after, .addClaim.con:after {
     left: 100%;
     top: 50%;
     border: solid transparent;
@@ -161,3 +196,32 @@ body{
     border-width: 10px;
     margin-top: -10px;
     }
+.addClaimSpacer{
+    height: 1.5 em;
+    display: none;
+}
+  .addClaim.pro{
+   float: left;
+ }
+   .addClaim.con{
+   float: right;
+ }
+
+.hide > .statementPad {
+    max-height: 0px;
+    transition: 1s;
+}
+
+.hide > .statementPad > .statement > .innerStatement{
+    max-height: 2.8em;
+    transition: 1s;
+    padding-bottom: .25em;
+}
+
+.hide > .statementPad > .childIndicator {
+    border-bottom-left-radius: .5em;
+    border-bottom-right-radius: .5em;
+    height: 7px;
+    width: 90%;
+    margin-left: 30px;
+}

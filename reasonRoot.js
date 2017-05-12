@@ -3,22 +3,22 @@ this.onload = function () {
 
 
     function update(render, dict, mainId, events) {
-            //<input oninput="${events.updated.bind(claim)}" >
+        //<input oninput="${events.updated.bind(claim)}" >
 
         function renderNode(claim, parent) {
             var s = claim.statement;
-            var wire = hyperHTML.wire(claim, parent);
-            var li = wire`
-                <li class="${claim.open ? 'open' : 'closed'}">
-                    <div class="statementPad" onclick="${events.open.bind(claim)}">
-                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con')+ (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
+            var wire = hyperHTML.wire(claim);
+            return wire`
+                <li class="${claim.class}">
+                    <div class="statementPad" onclick="${events.selected.bind(claim)}">
+                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con') + (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
                             <div class="innerStatement">
                                 <span class="score" > ${
-                                    (claim.generation == 0 ?
-                                        Math.round(claim.weightedPercentage * 100) + '%' :
-                                        Math.floor(Math.abs(claim.weightDif))) 
-                                }</span>
-                                
+                (claim.generation == 0 ?
+                    Math.round(claim.weightedPercentage * 100) + '%' :
+                    Math.floor(Math.abs(claim.weightDif)))
+                }</span>
+                                (${claim.class})
                                 ${s.content}
                                 
                                 <a target="_blank" href="${s.citationUrl}" onclick="${events.noBubbleClick}"> 
@@ -26,15 +26,19 @@ this.onload = function () {
                                 </a>
                             </div>
                         </div>
-
+                        
                         <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
+
+                        <div class="addClaimSpacer">
+                            <div class="addClaim pro">add pro</div>
+                            <div class="addClaim con">add con</div>
+                        </div>
                     </div>  
                       
                     <ul>${
-                    s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
-                    }</ul>
+                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
+                }</ul>
                 </li>`
-            return li;
         }
 
         render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;
@@ -42,7 +46,6 @@ this.onload = function () {
 
     //Render the statements
     function renderStatements(s) {
-        var dict = {};
         var mainId = s.getAttribute('stmtId');
 
         if (s.getAttribute('dict').charAt(0) == '{') {
@@ -52,7 +55,17 @@ this.onload = function () {
             //add the claims to the dictionairy
             var dict = createDict(claims);
             var settleIt = new SettleIt();
-            var scores = settleIt.calculate(dict[mainId],dict)
+            var mainScore = dict[mainId];
+            var scores = settleIt.calculate(mainScore, dict)
+            clearClasses(dict);
+            mainScore.class = "selected";
+            ascendStatements(mainScore, dict)
+        }
+
+        clearClasses = function (dict) {
+            for (var scoreId in dict) {
+                dict[scoreId].class = "hide";
+            }
         }
 
         var events = {
@@ -61,9 +74,15 @@ this.onload = function () {
                 update(render, dict, mainId, events);
             },
 
-            open(e) {
+            selected(e) {
                 //debugger;
-                this.open = !this.open;
+                if (this.class != "selected") {
+                    clearClasses(dict);
+                    this.class = "selected";
+                    //find Ancestors
+                    ascendStatements(dict[mainId], dict);
+                }
+
                 update(render, dict, mainId, events);
             },
 
@@ -72,8 +91,20 @@ this.onload = function () {
                 event.stopPropagation();
             }
         };
-        var root={};
+        var root = {};
 
+        ascendStatements = function (score, dict, parent) {
+            for (let childId of score.statement.childIds) {
+                var childScore = dict[childId];
+                //process the children first
+                ascendStatements(childScore, dict, score);
+                //Make this claim an ancestor if the child is now a descendant or the selected item 
+                if (childScore.class == "selected" || childScore.class == "ancestor")
+                    score.class = "ancestor";
+                if (score.class == "selected")
+                    childScore.class = "child";
+            }
+        }
 
         var render = hyperHTML.bind(s);
         update(render, dict, mainId, events);

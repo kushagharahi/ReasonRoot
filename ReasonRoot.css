@@ -1,84 +1,81 @@
-body{
+body {
     margin: 0 20px 0 0;
-    }
-    
-    .rr{
+}
+
+.rr {
     line-height: 1.1;
     max-width: 600px;
     margin: auto;
-    }
-    
-    ul{
+}
+
+ul {
     border-left: 1px solid #ECECEC;
     padding: 0;
     margin: 0 0 0 20px;
     width: 100%;
-    }
-    
-    li{
+}
+
+li {
     width: 100%;
     list-style-type: none;
     margin: 0px 0 0 0;
     /*padding: 5px 0 0 0;*/
-    }
-    
-    .statementPad {
-    padding:0 10px;
+}
+
+.statementPad {
+    padding: 0 10px;
     position: relative;
     overflow: hidden;
     transition: 1s;
-    }
-    
-    .statement {
+}
+
+.statement {
     position: relative;
     margin-top: .5em;
     border-radius: .5em;
     color: #4A4A4A;
     background: #ECECEC;
     padding: .25em;
-    padding-bottom: 2px; 
+    padding-bottom: 2px;
     min-height: 2.5em;
     font-size: 100%;
-    }
-    
+}
+
     .statement a,
-    .statement a:hover{
-    color: white;
+    .statement a:hover {
+        color: white;
     }
 
-     .addClaim{
+.addClaim {
     border-radius: .25em;
     background: #ECECEC;
     padding: .25em;
     font-size: 100%;
     padding: 2px 5px;
     margin-top: 2px;
- }
-    
-.selected > .statementPad {
-    overflow: visible;
 }
 
-.selected > .statementPad > .statement > .innerStatement{
-    max-height: 15em;
-     transition: 1s;
-     padding-bottom: .25em;
-}
-
-.selected > .statementPad > .childIndicator {
+.childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
     height: 7px;
     margin-left: 25px;
     margin-right: 10px;
-    display: none;
 }
 
-.ancestor > .statementPad > .statement > .innerStatement{
-    max-height: 2.8em;
-    transition: 1s;
-    padding-bottom: .25em;
+.selected > .statementPad {
+    overflow: visible;
 }
+
+    .selected > .statementPad > .statement > .innerStatement {
+        max-height: 15em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }
+
+    .selected > .statementPad > .childIndicator {
+        display: none;
+    }
 
 .ancestor > .statementPad {
     cursor: pointer;
@@ -86,17 +83,15 @@ body{
     max-height: 5em;
 }
 
-.ancestor > .statementPad > .childIndicator {
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
-    height: 7px;
-    margin-left: 25px;
-    margin-right: 10px;
-}
+    .ancestor > .statementPad > .statement > .innerStatement {
+        max-height: 2.8em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }
 
-.ancestor > .statementPad > .addClaimSpacer {
-    display: none;
-}
+    .ancestor > .statementPad > .addClaimSpacer {
+        display: none;
+    }
 
 .child > .statementPad {
     cursor: pointer;
@@ -104,66 +99,58 @@ body{
     max-height: 5em;
 }
 
-.child > .statementPad > .statement > .innerStatement{
-    max-height: 2.8em;
-    transition: 1s;
-    padding-bottom: .25em;
-}
+    .child > .statementPad > .statement > .innerStatement {
+        max-height: 2.8em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }
 
-.child > .statementPad > .childIndicator {
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
-    height: 7px;
-    margin-left: 25px;
-    margin-right: 10px;
-}
+    .child > .statementPad > .addClaimSpacer {
+        display: none;
+    }
 
-.child > .statementPad > .addClaimSpacer {
-    display: none;
-}
-
-.innerStatement{
+.innerStatement {
     overflow: hidden;
 }
 
-.addClaimSpacer{
+.addClaimSpacer {
     height: 1.5em;
 }
 
 .shadow {
-       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .selected > .statementPad > .shadow {
-       box-shadow: initial;
+    box-shadow: initial;
 }
-    
+
 .citation {
     font-size: smaller;
     font-style: italic;
 }
-    
-    .score {
+
+.score {
     display: block;
     float: left;
     font-size: 1.98em;
     padding-right: .25em;
     padding-right: .25em;
-    }
-    
-    .pro {
+}
+
+.pro {
     background-color: #61B3D9;
     color: white;
     border-color: #61B3D9;
-    }
-    
-    .con {
+}
+
+.con {
     background-color: #F5A623;
     color: white;
     border-color: #F5A623;
-    }
-    
-    .statement.pro:after {
+}
+
+.statement.pro:after {
     right: 100%;
     top: 50%;
     border: solid transparent;
@@ -176,9 +163,9 @@ body{
     border-right-color: #61B3D9;
     border-width: 10px;
     margin-top: -10px;
-    }
-    
-    .statement.con:after, .addClaim.con:after {
+}
+
+.statement.con:after, .addClaim.con:after {
     left: 100%;
     top: 50%;
     border: solid transparent;
@@ -191,25 +178,28 @@ body{
     border-left-color: #F5A623;
     border-width: 10px;
     margin-top: -10px;
-    }
-.addClaimSpacer{
-    height: 1.5 em;
+}
+
+.addClaimSpacer {
+    height: 1.5em;
     display: none;
 }
-  .addClaim.pro{
-   float: left;
- }
-   .addClaim.con{
-   float: right;
- }
+
+.addClaim.pro {
+    float: left;
+}
+
+.addClaim.con {
+    float: right;
+}
 
 .hide > .statementPad {
     max-height: 0px;
     transition: 1s;
 }
 
-.hide > .statementPad > .statement > .innerStatement{
-    max-height: 2.8em;
-    transition: 1s;
-    padding-bottom: .25em;
-}
+    .hide > .statementPad > .statement > .innerStatement {
+        max-height: 2.8em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }

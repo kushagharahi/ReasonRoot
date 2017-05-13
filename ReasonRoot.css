@@ -58,12 +58,32 @@ li {
 .childIndicator {
     border-bottom-left-radius: .5em;
     border-bottom-right-radius: .5em;
-    height: 7px;
-    margin-left: 25px;
-    margin-right: 10px;
+    height: .7em;
+    position: absolute;
+    width: 100%;
 }
 
-.claimPad > 
+.childIndicatorInner {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    font-size: x-small;
+}
+
+.childIndicatorSpace.hasChildren {
+    height: .7em;
+}
+
+.childIndicatorSpace {
+    height: 0;
+    position: relative;
+    margin-left: 25px;
+    margin-right: 10px;
+    z-index: -1;
+    transition: .25s;
+    overflow: hidden;
+}
 
 .selected > .claimPad {
     overflow: visible;
@@ -75,8 +95,8 @@ li {
         padding-bottom: .25em;
     }
 
-    .selected > .claimPad > .childIndicator {
-        display: none;
+    .selected > .claimPad > .childIndicatorSpace {
+        height: 0;
     }
 
 .ancestor > .claimPad {

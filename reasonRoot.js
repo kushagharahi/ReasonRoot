@@ -27,7 +27,13 @@ this.onload = function () {
                             </div>
                         </div>
                         
-                        <div class="${s.childIds.length == 0 ? '' : "childIndicator " + (s.isProMain ? 'pro' : 'con')}"></div>
+                        <div class="${"childIndicatorSpace" + (s.childIds.length == 0 ? '' : ' hasChildren')}">
+                            <div class="${"childIndicator " + (s.isProMain ? 'pro' : 'con')}">
+                            <div class="childIndicatorInner">
+                            more
+                            </div>
+                            </div>
+                        </div>
 
                         <div class="addClaimSpacer">
                             <div class="addClaim pro">add pro</div>

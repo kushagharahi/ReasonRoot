@@ -63,6 +63,8 @@ li {
     margin-right: 10px;
 }
 
+.statementPad > 
+
 .selected > .statementPad {
     overflow: visible;
 }
@@ -81,15 +83,48 @@ li {
     cursor: pointer;
     cursor: -webkit-zoom-out;
     max-height: 5em;
+    max-height: 0px;
 }
 
     .ancestor > .statementPad > .statement > .innerStatement {
-        max-height: 2.5em;
+        /*max-height: 2.5em;*/
         transition: 1s;
         padding-bottom: .25em;
     }
 
     .ancestor > .statementPad > .addClaimSpacer {
+        display: none;
+    }
+
+.parent > .statementPad {
+    cursor: pointer;
+    cursor: -webkit-zoom-out;
+    max-height: 5em;
+}
+
+    .parent > .statementPad > .statement > .innerStatement {
+        max-height: 2.5em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }
+
+    .parent > .statementPad > .addClaimSpacer {
+        display: none;
+    }
+
+.mainClaim > .statementPad {
+    cursor: pointer;
+    cursor: -webkit-zoom-out;
+    max-height: 5em;
+}
+
+    .mainClaim > .statementPad > .statement > .innerStatement {
+        max-height: 2.5em;
+        transition: 1s;
+        padding-bottom: .25em;
+    }
+
+    .mainClaim > .statementPad > .addClaimSpacer {
         display: none;
     }
 

@@ -18,7 +18,7 @@ this.onload = function () {
                     Math.round(claim.weightedPercentage * 100) + '%' :
                     Math.floor(Math.abs(claim.weightDif)))
                 }</span>
-                                
+                                ${claim.class}
                                 ${s.content}
                                 
                                 <a target="_blank" href="${s.citationUrl}" onclick="${events.noBubbleClick}"> 
@@ -81,6 +81,8 @@ this.onload = function () {
                     this.class = "selected";
                     //find Ancestors
                     ascendStatements(dict[mainId], dict);
+                    dict[mainId].class = "mainClaim"
+
                 }
 
                 update(render, dict, mainId, events);
@@ -98,8 +100,10 @@ this.onload = function () {
                 var childScore = dict[childId];
                 //process the children first
                 ascendStatements(childScore, dict, score);
-                //Make this claim an ancestor if the child is now a descendant or the selected item 
-                if (childScore.class == "selected" || childScore.class == "ancestor")
+
+                if (childScore.class == "selected")
+                    score.class = "parent";
+                if (childScore.class == "ancestor" || childScore.class == "parent")
                     score.class = "ancestor";
                 if (score.class == "selected")
                     childScore.class = "child";

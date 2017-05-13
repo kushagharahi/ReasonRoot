@@ -1,5 +1,5 @@
 ﻿class Score {
-    statement: Statement;
+    statement: Claim;
 
     /**  */
     confidencePro: number;
@@ -32,7 +32,7 @@
 
     open: boolean;
 
-    constructor(statement?: Statement) {
+    constructor(statement?: Claim) {
         if (statement) this.statement = statement;
     }
 

@@ -282,3 +282,4 @@ var SettleIt = (function () {
     };
     return SettleIt;
 }());
+//# sourceMappingURL=SettleIt.js.map

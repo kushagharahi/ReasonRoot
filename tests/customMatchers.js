@@ -39,6 +39,7 @@ var customMatchers = {
                     else if (oValue instanceof Function) {
                         if (!(pValue instanceof Function))
                             addError();
+                        //ignore functions
                     }
                     else if (oValue instanceof Object) {
                         if (!(pValue instanceof Object))
@@ -48,6 +49,7 @@ var customMatchers = {
                                 addError();
                         }
                         compareObjectsInternal(oValue, pValue);
+                        //addError();//WARNING: does not deal with circular refs other than ^^
                     }
                     else if (oValue !== pValue)
                         addError();
@@ -62,3 +64,4 @@ var customMatchers = {
         }
     }
 };
+//# sourceMappingURL=customMatchers.js.map

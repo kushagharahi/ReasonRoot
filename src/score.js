@@ -5,3 +5,4 @@ var Score = (function () {
     }
     return Score;
 }());
+//# sourceMappingURL=score.js.map

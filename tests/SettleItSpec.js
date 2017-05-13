@@ -9,7 +9,7 @@ describe('', function () {
     });
     beforeEach(function () {
         controller = new SettleIt();
-        mainStatement = new Statement("s1");
+        mainStatement = new Claim("s1");
         mainScore = new Score(mainStatement);
         dict = new Dict();
         dict[mainStatement.id] = mainScore;
@@ -22,9 +22,9 @@ describe('', function () {
     describe("Base Simple Tests", function () {
         it("Pro, Con: should be +0", function () {
             mainStatement.childIds.push("1_1", "1_2");
-            var st1_1 = new Statement("1_1", true);
+            var st1_1 = new Claim("1_1", true);
             var sc1_1 = new Score(st1_1);
-            var st1_2 = new Statement("1_2", false);
+            var st1_2 = new Claim("1_2", false);
             var sc1_2 = new Score(st1_2);
             dict[st1_1.id] = sc1_1;
             dict[st1_2.id] = sc1_2;
@@ -495,3 +495,4 @@ describe('', function () {
         //    });
     });
 });
+//# sourceMappingURL=SettleItSpec.js.map

@@ -2,7 +2,7 @@ class Dict<T> {
     [K: string]: T;
 }
 
-function createDict(statements: Statement[], dict? : Dict<Score>): Dict<Score> {
+function createDict(statements: Claim[], dict? : Dict<Score>): Dict<Score> {
     if (dict === undefined) dict = new Dict<Score>();
     for (let statement of statements) {
         if (dict[statement.id] === undefined)

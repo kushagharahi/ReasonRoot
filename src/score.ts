@@ -30,8 +30,13 @@
     /** */
     generation: number;
 
+    /** */
     open: boolean;
 
+    /** */
+    DescendantCount: number;
+
+    /** */
     constructor(claim?: Claim) {
         if (claim) this.claim = claim;
     }

@@ -1,4 +1,5 @@
 var Score = (function () {
+    /** */
     function Score(claim) {
         if (claim)
             this.claim = claim;

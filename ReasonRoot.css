@@ -112,10 +112,6 @@ li {
         padding-bottom: .25em;
     }
 
-    .ancestor > .claimPad > .addClaimSpacer {
-        display: none;
-    }
-
 .parent > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-out;
@@ -126,10 +122,6 @@ li {
         max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
-    }
-
-    .parent > .claimPad > .addClaimSpacer {
-        display: none;
     }
 
 .mainClaim > .claimPad {
@@ -144,10 +136,6 @@ li {
         padding-bottom: .25em;
     }
 
-    .mainClaim > .claimPad > .addClaimSpacer {
-        display: none;
-    }
-
 .child > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-in;
@@ -160,16 +148,19 @@ li {
         padding-bottom: .25em;
     }
 
-    .child > .claimPad > .addClaimSpacer {
-        display: none;
-    }
-
 .innerClaim {
     overflow: hidden;
 }
 
-.addClaimSpacer {
+.editClaimSpacer {
+    position: relative;
     height: 1.5em;
+    margin: 0 30px;
+    display: none;
+}
+
+.selected > .claimPad > .editClaimSpacer {
+    display: block;
 }
 
 .shadow {
@@ -205,8 +196,7 @@ li {
     border-color: #F5A623;
 }
 
-.claim.pro:after {
-    right: 100%;
+.pro:after, .con:after {
     top: 50%;
     border: solid transparent;
     content: " ";
@@ -220,24 +210,25 @@ li {
     margin-top: -10px;
 }
 
-.claim.con:after, .addClaim.con:after {
+.pro:after {
+    right: 100%;
+    border-left-color: transparent;
+    border-right-color: #61B3D9;
+    border-width: 10px;
+    margin-top: -10px;
+}
+
+.con:after {
     left: 100%;
-    top: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    /*pointer-events: none;*/
     border-right-color: transparent;
     border-left-color: #F5A623;
     border-width: 10px;
     margin-top: -10px;
 }
 
-.addClaimSpacer {
-    height: 1.5em;
-    display: none;
+.addClaim:after {
+    border-width: 5px;
+    margin-top: -5px;
 }
 
 .addClaim.pro {

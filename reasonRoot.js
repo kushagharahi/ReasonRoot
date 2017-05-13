@@ -8,7 +8,7 @@ this.onload = function () {
         function renderNode(score, parent) {
             var claim = score.claim;
             var wire = hyperHTML.wire(score);
-            return wire`
+            var result = wire`
                 <li class="${score.class}">
                     <div class="claimPad" onclick="${events.selected.bind(score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
@@ -35,7 +35,7 @@ this.onload = function () {
                             </div>
                         </div>
 
-                        <div class="addClaimSpacer">
+                        <div class="editClaimSpacer">
                             <div class="addClaim pro">add pro</div>
                             <div class="addClaim con">add con</div>
                         </div>
@@ -45,6 +45,8 @@ this.onload = function () {
                 claim.childIds.map((nodeId, i) => renderNode(dict[nodeId], score))
                 }</ul>
                 </li>`
+
+                return result;
         }
 
         render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;

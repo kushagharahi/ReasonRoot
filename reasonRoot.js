@@ -64,8 +64,8 @@ this.onload = function () {
             var mainScore = dict[mainId];
             var scores = settleIt.calculate(mainScore, dict)
             clearClasses(dict);
-            mainScore.class = "selected";
             ascendClaims(mainScore, dict)
+            mainScore.class = "mainClaim"
         }
 
         clearClasses = function (dict) {
@@ -88,7 +88,6 @@ this.onload = function () {
                     //find Ancestors
                     ascendClaims(dict[mainId], dict);
                     dict[mainId].class = "mainClaim"
-
                 }
 
                 update(render, dict, mainId, events);

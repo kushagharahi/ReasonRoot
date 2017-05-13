@@ -1,7 +1,7 @@
 describe('', function () {
     var controller: SettleIt;
 
-    var mainStatement: Claim;
+    var mainClaim: Claim;
     var mainScore: Score;
     var expected: Claim;
     var dict: Dict<Score>;
@@ -12,23 +12,23 @@ describe('', function () {
 
     beforeEach(function () {
         controller = new SettleIt();
-        mainStatement = new Claim("s1");
-        mainScore = new Score(mainStatement);
+        mainClaim = new Claim("s1");
+        mainScore = new Score(mainClaim);
         dict = new Dict<Score>();
-        dict[mainStatement.id] = mainScore;
-        controller.mainStatment = mainStatement;
+        dict[mainClaim.id] = mainScore;
+        controller.mainStatment = mainClaim;
     });
 
     afterEach(function () {
-        mainStatement.json = JSON.stringify(mainStatement, null, 4);
-        mainStatement.testResults = environment.testResults;
+        mainClaim.json = JSON.stringify(mainClaim, null, 4);
+        mainClaim.testResults = environment.testResults;
     });
 
 
     describe("Base Simple Tests", function () {
 
         it("Pro, Con: should be +0", function () {
-            mainStatement.childIds.push("1_1", "1_2");
+            mainClaim.childIds.push("1_1", "1_2");
             let st1_1 = new Claim("1_1", true);
             let sc1_1 = new Score(st1_1);
             let st1_2 = new Claim("1_2", false);
@@ -45,41 +45,41 @@ describe('', function () {
 
     //    it("Pro, Pro: should be +2", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                { id: "1.1", isProMain: true },
     //                { id: "1.2", isProMain: true }
     //            ]
     //        };
 
-    //        expected = <Statement>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
+    //        expected = <Claim>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
-    //    //// No longer working/important now that statements can not be reversed
+    //    //// No longer working/important now that claims can not be reversed
     //    //it("Con, Con: should be -2", function () {
 
-    //    //    mainStatement = <Statement>{
+    //    //    mainClaim = <Claim>{
     //    //        id: "1", children: [
     //    //            { id: "1.1", isProMain: false },
     //    //            { id: "1.2", isProMain: false }
     //    //        ]
     //    //    };
 
-    //    //    expected = <Statement>{ id: "1", weightedPercentage: 0, weighted: { difference: -2 } };
+    //    //    expected = <Claim>{ id: "1", weightedPercentage: 0, weighted: { difference: -2 } };
 
-    //    //    controller.mainStatment = mainStatement;
+    //    //    controller.mainStatment = mainClaim;
     //    //    controller.calculate();
-    //    //    expect(mainStatement).toBeSameGraph(expected);
+    //    //    expect(mainClaim).toBeSameGraph(expected);
     //    //});
 
 
     //    it("Pro, Pro [ Pro, Con ]: should be +2", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                { id: "1.1" },
     //                {
@@ -91,16 +91,16 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
+    //        expected = <Claim>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("Pro [ Pro, Pro, Pro ], Pro: should be +6", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", children: [
@@ -115,7 +115,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 6 }, weightedPercentage: 1, children: [
     //                {
     //                    id: "1.1", children: [
@@ -127,14 +127,14 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("Pro, Pro [ Pro, Pro, Con ]: should be +4", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", children: [
@@ -149,7 +149,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 4 }, children: [
     //                {
     //                    id: "1.1", children: [
@@ -158,13 +158,13 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.calculate(mainStatement, false);
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        controller.calculate(mainClaim, false);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("Display points with differing weights: should be +4", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", children: [
@@ -180,7 +180,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 4 }, mainPercent: 1, children: [
     //                {
     //                    id: "1.1", weighted: { pro: 2 }, mainPercent: .5, children: [
@@ -196,9 +196,9 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
     //});
 
@@ -206,7 +206,7 @@ describe('', function () {
 
     //    it("Con, Pro [ Big, Pro ]: should be +1", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                { id: "1.1", isProMain: false },
     //                {
@@ -218,17 +218,17 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{ id: "1", weighted: { difference: 1 } };
+    //        expected = <Claim>{ id: "1", weighted: { difference: 1 } };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
-    //    //// No longer working/important now that statements can not be reversed
+    //    //// No longer working/important now that claims can not be reversed
     //    //it("Con, Pro [ Small ]: should be -0.5", function () {
 
-    //    //    mainStatement = <Statement>{
+    //    //    mainClaim = <Claim>{
     //    //        id: "1", children: [
     //    //            { id: "1.1", isProMain: false },
     //    //            {
@@ -240,18 +240,18 @@ describe('', function () {
     //    //        ]
     //    //    };
 
-    //    //    expected = <Statement>{ id: "1", weighted: { difference: -.5 } };
+    //    //    expected = <Claim>{ id: "1", weighted: { difference: -.5 } };
 
-    //    //    controller.mainStatment = mainStatement;
+    //    //    controller.mainStatment = mainClaim;
     //    //    controller.calculate();
-    //    //    expect(mainStatement).toBeSameGraph(expected);
+    //    //    expect(mainClaim).toBeSameGraph(expected);
     //    //});
     //});
 
     //describe("Confidence Maximum Math Type", function () {
     //    it("Simplest", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "main", children: [
     //                {
     //                    id: "1", affects: "MaximumOfConfidence", children: [
@@ -269,17 +269,17 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{ id: "main", weighted: { difference: 1 } };
+    //        expected = <Claim>{ id: "main", weighted: { difference: 1 } };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
     //});
 
     //it("Generations", function () {
 
-    //    mainStatement = <Statement>{
+    //    mainClaim = <Claim>{
     //        id: "main", children: [
     //            {
     //                id: "1", children: [
@@ -310,7 +310,7 @@ describe('', function () {
     //        ]
     //    };
 
-    //    expected = mainStatement = <Statement>{
+    //    expected = mainClaim = <Claim>{
     //        id: "main", generation: 0, children: [
     //            {
     //                id: "1", generation: 1, children: [
@@ -341,35 +341,35 @@ describe('', function () {
     //        ]
     //    };
 
-    //    controller.mainStatment = mainStatement;
+    //    controller.mainStatment = mainClaim;
     //    controller.calculate();
-    //    expect(mainStatement).toBeSameGraph(expected);
+    //    expect(mainClaim).toBeSameGraph(expected);
     //});
 
     //describe("Updates", function () {
     //    it("Pro then Pro: should be +1 then +2", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                { id: "1.1", isProMain: true },
     //            ]
     //        };
 
-    //        expected = <Statement>{ id: "1", weightedPercentage: 1, weighted: { difference: 1 } };
-    //        controller.mainStatment = mainStatement;
+    //        expected = <Claim>{ id: "1", weightedPercentage: 1, weighted: { difference: 1 } };
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
 
-    //        mainStatement.children.push(<Statement>{ id: "1.2" });
+    //        mainClaim.children.push(<Claim>{ id: "1.2" });
     //        controller.calculate();
-    //        expected = <Statement>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
+    //        expected = <Claim>{ id: "1", weightedPercentage: 1, weighted: { difference: 2 } };
     //    });
     //});
 
     //describe("Sorting", function () {
     //    it("Should Sort", function () {
 
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "main", children: [
     //                {
     //                    id: "1", children: [
@@ -409,7 +409,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "main", children: [
     //                { id: "3" },
     //                { id: "4" },
@@ -418,14 +418,14 @@ describe('', function () {
     //                { id: "1" },
     //            ]
     //        };
-    //        controller.calculate(mainStatement, true);
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        controller.calculate(mainClaim, true);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
     //});
 
     //describe("simple not reversible", function () {
     //    it("Pro [pro,con,con] should be 0 instead of -1", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                { id: "1.1", isProMain: true },
     //                { id: "1.2", isProMain: false },
@@ -433,22 +433,22 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 0 }, children: [
     //                { id: "1.1", weighted: { difference: 1 } },
-    //                //{ id: "1.2", weighted: { difference: -.5 } }, //Future may have the weights change if statements should have gone negative
+    //                //{ id: "1.2", weighted: { difference: -.5 } }, //Future may have the weights change if claims should have gone negative
     //                //{ id: "1.3", weighted: { difference: -.5 } },
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
 
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("1 level down pro", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProMain: true, children: [
@@ -459,22 +459,22 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 0 }, children: [
     //                { id: "1.1", weighted: { difference: 0 } },
-    //                //{ id: "1.2", weighted: { difference: -.5 } }, //Future may have the weights change if statements should have gone negative
+    //                //{ id: "1.2", weighted: { difference: -.5 } }, //Future may have the weights change if claims should have gone negative
     //                //{ id: "1.3", weighted: { difference: -.5 } },
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
 
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("Not Reverse Con ProMain", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProMain: false, children: [
@@ -484,18 +484,18 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 0 }, children: [
     //                { id: "1.1", weighted: { difference: 0 } },
     //            ]
     //        };
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("Not Reverse Con ProParent", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProParent: false, children: [
@@ -505,21 +505,21 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", weighted: { difference: 0 }, children: [
     //                { id: "1.1", weighted: { difference: 0 } },
     //            ]
     //        };
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //});
 
     //describe("isProMain and isProParent", function () {
     //    it("3 generation cons", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProParent: false, children: [
@@ -529,7 +529,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProParent: false, isProMain: false, children: [
@@ -539,13 +539,13 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
 
     //    it("3 generation cons with conflicting info", function () {
-    //        mainStatement = <Statement>{
+    //        mainClaim = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProParent: false, isProMain: false, children: [
@@ -555,7 +555,7 @@ describe('', function () {
     //            ]
     //        };
 
-    //        expected = <Statement>{
+    //        expected = <Claim>{
     //            id: "1", children: [
     //                {
     //                    id: "1.1", isProParent: false, isProMain: false, children: [
@@ -565,9 +565,9 @@ describe('', function () {
     //            ]
     //        };
 
-    //        controller.mainStatment = mainStatement;
+    //        controller.mainStatment = mainClaim;
     //        controller.calculate();
-    //        expect(mainStatement).toBeSameGraph(expected);
+    //        expect(mainClaim).toBeSameGraph(expected);
     //    });
     });
 

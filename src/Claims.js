@@ -1,16 +1,16 @@
-var Statement = (function () {
-    function Statement(id, isProMain) {
-        /** Does this statement support the main top statement in this graph (true) or disput it (false) */
+var Claim = (function () {
+    function Claim(id, isProMain) {
+        /** Does this claim support the main top claim in this graph (true) or disput it (false) */
         this.isProMain = true;
-        /** Does this statement affect the confidence or the importance of it's parent */
+        /** Does this claim affect the confidence or the importance of it's parent */
         this.affects = "AverageTheConfidence";
-        /** an array of statment id strings representing the ids of this statements children */
+        /** an array of statment id strings representing the ids of this claims children */
         this.childIds = [];
         this.id = id || newId();
         if (isProMain !== undefined)
             this.isProMain = isProMain;
     }
-    return Statement;
+    return Claim;
 }());
 // inspired by http://stackoverflow.com/a/27872144/96062
 function newId() {
@@ -23,4 +23,4 @@ function newId() {
     }
     return str;
 }
-//# sourceMappingURL=Statement.js.map
+//# sourceMappingURL=Claims.js.map

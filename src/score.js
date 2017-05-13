@@ -1,7 +1,7 @@
 var Score = (function () {
-    function Score(statement) {
-        if (statement)
-            this.statement = statement;
+    function Score(claim) {
+        if (claim)
+            this.claim = claim;
     }
     return Score;
 }());

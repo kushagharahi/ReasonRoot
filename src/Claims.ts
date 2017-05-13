@@ -1,23 +1,23 @@
-﻿class Statement {
-    /** a base62 GUID string to identify each statement */
+﻿class Claim {
+    /** a base62 GUID string to identify each claim */
     id: string;
 
-    /** The text of the statement with the claim. May include markdown in the future. */
+    /** The text of the claim with the claim. May include markdown in the future. */
     content: string;
 
     /** very short unique text for displaying of charts and other areas with limited space. */
     label: string;
 
-    /** Does this statement support the main top statement in this graph (true) or disput it (false) */
+    /** Does this claim support the main top claim in this graph (true) or disput it (false) */
     isProMain: boolean = true;
 
-    /** Does this statement support it's parent statement in this graph (true) or disput it (false) */
+    /** Does this claim support it's parent claim in this graph (true) or disput it (false) */
     isProParent: boolean;
 
-    /** Does this statement affect the confidence or the importance of it's parent */
+    /** Does this claim affect the confidence or the importance of it's parent */
     affects: Affects = "AverageTheConfidence";
 
-    /** an array of statment id strings representing the ids of this statements children */
+    /** an array of statment id strings representing the ids of this claims children */
     childIds: string[] = [];
 
     constructor(id?: string, isProMain?: boolean) {

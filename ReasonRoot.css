@@ -22,14 +22,14 @@ li {
     /*padding: 5px 0 0 0;*/
 }
 
-.statementPad {
+.claimPad {
     padding: 0 10px;
     position: relative;
     overflow: hidden;
     transition: 1s;
 }
 
-.statement {
+.claim {
     position: relative;
     margin-top: .5em;
     border-radius: .5em;
@@ -41,8 +41,8 @@ li {
     font-size: 100%;
 }
 
-    .statement a,
-    .statement a:hover {
+    .claim a,
+    .claim a:hover {
         color: white;
     }
 
@@ -63,88 +63,88 @@ li {
     margin-right: 10px;
 }
 
-.statementPad > 
+.claimPad > 
 
-.selected > .statementPad {
+.selected > .claimPad {
     overflow: visible;
 }
 
-    .selected > .statementPad > .statement > .innerStatement {
+    .selected > .claimPad > .claim > .innerClaim {
         max-height: 15em;
         transition: 1s;
         padding-bottom: .25em;
     }
 
-    .selected > .statementPad > .childIndicator {
+    .selected > .claimPad > .childIndicator {
         display: none;
     }
 
-.ancestor > .statementPad {
+.ancestor > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-out;
     max-height: 5em;
     max-height: 0px;
 }
 
-    .ancestor > .statementPad > .statement > .innerStatement {
+    .ancestor > .claimPad > .claim > .innerClaim {
         /*max-height: 2.5em;*/
         transition: 1s;
         padding-bottom: .25em;
     }
 
-    .ancestor > .statementPad > .addClaimSpacer {
+    .ancestor > .claimPad > .addClaimSpacer {
         display: none;
     }
 
-.parent > .statementPad {
+.parent > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-out;
     max-height: 5em;
 }
 
-    .parent > .statementPad > .statement > .innerStatement {
+    .parent > .claimPad > .claim > .innerClaim {
         max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
     }
 
-    .parent > .statementPad > .addClaimSpacer {
+    .parent > .claimPad > .addClaimSpacer {
         display: none;
     }
 
-.mainClaim > .statementPad {
+.mainClaim > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-out;
     max-height: 5em;
 }
 
-    .mainClaim > .statementPad > .statement > .innerStatement {
+    .mainClaim > .claimPad > .claim > .innerClaim {
         max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
     }
 
-    .mainClaim > .statementPad > .addClaimSpacer {
+    .mainClaim > .claimPad > .addClaimSpacer {
         display: none;
     }
 
-.child > .statementPad {
+.child > .claimPad {
     cursor: pointer;
     cursor: -webkit-zoom-in;
     max-height: 5em;
 }
 
-    .child > .statementPad > .statement > .innerStatement {
+    .child > .claimPad > .claim > .innerClaim {
         max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
     }
 
-    .child > .statementPad > .addClaimSpacer {
+    .child > .claimPad > .addClaimSpacer {
         display: none;
     }
 
-.innerStatement {
+.innerClaim {
     overflow: hidden;
 }
 
@@ -156,7 +156,7 @@ li {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.selected > .statementPad > .shadow {
+.selected > .claimPad > .shadow {
     box-shadow: initial;
 }
 
@@ -185,7 +185,7 @@ li {
     border-color: #F5A623;
 }
 
-.statement.pro:after {
+.claim.pro:after {
     right: 100%;
     top: 50%;
     border: solid transparent;
@@ -200,7 +200,7 @@ li {
     margin-top: -10px;
 }
 
-.statement.con:after, .addClaim.con:after {
+.claim.con:after, .addClaim.con:after {
     left: 100%;
     top: 50%;
     border: solid transparent;
@@ -228,12 +228,12 @@ li {
     float: right;
 }
 
-.hide > .statementPad {
+.hide > .claimPad {
     max-height: 0px;
     transition: 1s;
 }
 
-    .hide > .statementPad > .statement > .innerStatement {
+    .hide > .claimPad > .claim > .innerClaim {
         max-height: 2.8em;
         transition: 1s;
         padding-bottom: .25em;

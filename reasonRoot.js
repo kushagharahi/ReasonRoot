@@ -6,13 +6,13 @@ this.onload = function () {
         //<input oninput="${events.updated.bind(claim)}" >
 
         function renderNode(claim, parent) {
-            var s = claim.statement;
+            var s = claim.claim;
             var wire = hyperHTML.wire(claim);
             return wire`
                 <li class="${claim.class}">
-                    <div class="statementPad" onclick="${events.selected.bind(claim)}">
-                        <div class="${"statement " + (s.isProMain ? 'pro' : 'con') + (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
-                            <div class="innerStatement">
+                    <div class="claimPad" onclick="${events.selected.bind(claim)}">
+                        <div class="${"claim " + (s.isProMain ? 'pro' : 'con') + (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
+                            <div class="innerClaim">
                                 <span class="score" > ${
                 (claim.generation == 0 ?
                     Math.round(claim.weightedPercentage * 100) + '%' :
@@ -44,8 +44,8 @@ this.onload = function () {
         render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;
     }
 
-    //Render the statements
-    function renderStatements(s) {
+    //Render the claims
+    function renderClaims(s) {
         var mainId = s.getAttribute('stmtId');
 
         if (s.getAttribute('dict').charAt(0) == '{') {
@@ -59,7 +59,7 @@ this.onload = function () {
             var scores = settleIt.calculate(mainScore, dict)
             clearClasses(dict);
             mainScore.class = "selected";
-            ascendStatements(mainScore, dict)
+            ascendClaims(mainScore, dict)
         }
 
         clearClasses = function (dict) {
@@ -70,7 +70,7 @@ this.onload = function () {
 
         var events = {
             updated(e) {
-                this.statement.content = e.target.value;
+                this.claim.content = e.target.value;
                 update(render, dict, mainId, events);
             },
 
@@ -80,7 +80,7 @@ this.onload = function () {
                     clearClasses(dict);
                     this.class = "selected";
                     //find Ancestors
-                    ascendStatements(dict[mainId], dict);
+                    ascendClaims(dict[mainId], dict);
                     dict[mainId].class = "mainClaim"
 
                 }
@@ -95,11 +95,11 @@ this.onload = function () {
         };
         var root = {};
 
-        ascendStatements = function (score, dict, parent) {
-            for (let childId of score.statement.childIds) {
+        ascendClaims = function (score, dict, parent) {
+            for (let childId of score.claim.childIds) {
                 var childScore = dict[childId];
                 //process the children first
-                ascendStatements(childScore, dict, score);
+                ascendClaims(childScore, dict, score);
 
                 if (childScore.class == "selected")
                     score.class = "parent";
@@ -115,9 +115,9 @@ this.onload = function () {
 
     }
 
-    var statements = document.getElementsByTagName('statement');
-    for (let s of statements) {
-        renderStatements(s)
+    var claims = document.getElementsByTagName('claim');
+    for (let s of claims) {
+        renderClaims(s)
     }
 
 };

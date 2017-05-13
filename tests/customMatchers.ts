@@ -17,7 +17,7 @@
                 pass: results == '',
                 message: results
             }
-            function compareObjectsInternal(o: any, p: any): boolean { //Need to use any to allow for partial statements
+            function compareObjectsInternal(o: any, p: any): boolean { //Need to use any to allow for partial claims
                 if (p == undefined) p = {};
             var i,
                 oKeys = Object.keys(o).sort(),

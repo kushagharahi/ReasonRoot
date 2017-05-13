@@ -84,7 +84,7 @@ li {
 }
 
     .ancestor > .statementPad > .statement > .innerStatement {
-        max-height: 2.8em;
+        max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
     }
@@ -100,7 +100,7 @@ li {
 }
 
     .child > .statementPad > .statement > .innerStatement {
-        max-height: 2.8em;
+        max-height: 2.5em;
         transition: 1s;
         padding-bottom: .25em;
     }

@@ -2,11 +2,10 @@ class Dict<T> {
     [K: string]: T;
 }
 
-function createDict(claims: Claim[], dict? : Dict<Score>): Dict<Score> {
+function createDict(claims: Claim[], dict?: Dict<Score>): Dict<Score> {
     if (dict === undefined) dict = new Dict<Score>();
     for (let claim of claims) {
-        if (dict[claim.id] === undefined)
-        {
+        if (dict[claim.id] === undefined) {
             let newScore = new Score();
             newScore.claim = claim;
             dict[claim.id] = newScore;
@@ -99,6 +98,7 @@ class SettleIt {
         this.calculateSiblingWeight(s);
         this.calculateConfidence(s);
         this.calculateImportance(s);
+        this.countNumDesc(s);
     }
 
     /** Find the sibling with the most weight (so later you can make them all match)
@@ -191,7 +191,7 @@ class SettleIt {
             //Add up all the importance children points
             for (let childId of s.claim.childIds) {
                 let child = this.dict[childId];
-               if (child.claim.affects == "Importance") {
+                if (child.claim.affects == "Importance") {
                     proImportance += child.importancePro;
                     conImportance += child.importanceCon;
                 }
@@ -200,6 +200,17 @@ class SettleIt {
             s.importanceCon = conImportance;
         }
         s.importanceValue = this.safeDivide(s.importancePro + 1, s.importanceCon + 1);
+    }
+
+    /** Count the number of descendants */
+    private countNumDesc(s: Score) {
+        s.numDesc = 0;
+        for (let childId of s.claim.childIds) {
+            let child = this.dict[childId];
+            s.numDesc += 1
+            if (child.numDesc)
+                s.numDesc += child.numDesc + 1;
+        }
     }
 
     private step3DescendClaims(s: Score, parent?: Score) {

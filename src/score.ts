@@ -34,7 +34,7 @@
     open: boolean;
 
     /** */
-    DescendantCount: number;
+    numDesc: number;
 
     /** */
     constructor(claim?: Claim) {

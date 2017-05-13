@@ -5,32 +5,32 @@ this.onload = function () {
     function update(render, dict, mainId, events) {
         //<input oninput="${events.updated.bind(claim)}" >
 
-        function renderNode(claim, parent) {
-            var s = claim.claim;
-            var wire = hyperHTML.wire(claim);
+        function renderNode(score, parent) {
+            var claim = score.claim;
+            var wire = hyperHTML.wire(score);
             return wire`
-                <li class="${claim.class}">
-                    <div class="claimPad" onclick="${events.selected.bind(claim)}">
-                        <div class="${"claim " + (s.isProMain ? 'pro' : 'con') + (s.childIds.length > 0 & !claim.open ? ' shadow' : '')}" >
+                <li class="${score.class}">
+                    <div class="claimPad" onclick="${events.selected.bind(score)}">
+                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
                                 <span class="score" > ${
-                (claim.generation == 0 ?
-                    Math.round(claim.weightedPercentage * 100) + '%' :
-                    Math.floor(Math.abs(claim.weightDif)))
+                (score.generation == 0 ?
+                    Math.round(score.weightedPercentage * 100) + '%' :
+                    Math.floor(Math.abs(score.weightDif)))
                 }</span>
 
-                                ${s.content}
+                                ${claim.content}
                                 
-                                <a target="_blank" href="${s.citationUrl}" onclick="${events.noBubbleClick}"> 
-                                    <span class="citation">${s.citation}</span>
+                                <a target="_blank" href="${claim.citationUrl}" onclick="${events.noBubbleClick}"> 
+                                    <span class="citation">${claim.citation}</span>
                                 </a>
                             </div>
                         </div>
                         
-                        <div class="${"childIndicatorSpace" + (s.childIds.length == 0 ? '' : ' hasChildren')}">
-                            <div class="${"childIndicator " + (s.isProMain ? 'pro' : 'con')}">
+                        <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
+                            <div class="${"childIndicator " + (claim.isProMain ? 'pro' : 'con')}">
                             <div class="childIndicatorInner">
-                            more
+                            ${score.numDesc} more
                             </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@ this.onload = function () {
                     </div>  
                       
                     <ul>${
-                s.childIds.map((nodeId, i) => renderNode(dict[nodeId], claim))
+                claim.childIds.map((nodeId, i) => renderNode(dict[nodeId], score))
                 }</ul>
                 </li>`
         }

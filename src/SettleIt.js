@@ -84,6 +84,7 @@ var SettleIt = (function () {
         this.calculateSiblingWeight(s);
         this.calculateConfidence(s);
         this.calculateImportance(s);
+        this.countNumDesc(s);
     };
     /** Find the sibling with the most weight (so later you can make them all match)
      * max children ( pro + con ) */
@@ -184,6 +185,17 @@ var SettleIt = (function () {
             s.importanceCon = conImportance;
         }
         s.importanceValue = this.safeDivide(s.importancePro + 1, s.importanceCon + 1);
+    };
+    /** Count the number of descendants */
+    SettleIt.prototype.countNumDesc = function (s) {
+        s.numDesc = 0;
+        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+            var childId = _a[_i];
+            var child = this.dict[childId];
+            s.numDesc += 1;
+            if (child.numDesc)
+                s.numDesc += child.numDesc + 1;
+        }
     };
     SettleIt.prototype.step3DescendClaims = function (s, parent) {
         this.calculatemaxAncestorWeight(s, parent);

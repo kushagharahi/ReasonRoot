@@ -154,13 +154,16 @@ li {
 
 .editClaimSpacer {
     position: relative;
-    height: 1.5em;
     margin: 0 30px;
-    display: none;
+    display: block;
+    transition: .5s;
+    height: 0;
+    overflow: hidden;
 }
 
 .selected > .claimPad > .editClaimSpacer {
     display: block;
+    height: 1.5em;
 }
 
 .shadow {

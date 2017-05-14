@@ -36,8 +36,8 @@ this.onload = function () {
                         </div>
 
                         <div class="editClaimSpacer">
-                            <div class="addClaim pro">add pro</div>
-                            <div class="addClaim con">add con</div>
+                            <div class="addClaim pro" onclick="${events.add.bind(score, true)}">add pro</div>
+                            <div class="addClaim con" onclick="${events.add.bind(score, false)}">add con</div>
                         </div>
                     </div>  
                       
@@ -46,7 +46,7 @@ this.onload = function () {
                 }</ul>
                 </li>`
 
-                return result;
+            return result;
         }
 
         render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;
@@ -55,6 +55,7 @@ this.onload = function () {
     //Render the claims
     function renderClaims(s) {
         var mainId = s.getAttribute('stmtId');
+        var settleIt = new SettleIt();
 
         if (s.getAttribute('dict').charAt(0) == '{') {
             dict = JSON.parse(s.getAttribute('dict'));
@@ -62,12 +63,10 @@ this.onload = function () {
             var claims = JSON.parse(s.getAttribute('dict'));
             //add the claims to the dictionairy
             var dict = createDict(claims);
-            var settleIt = new SettleIt();
             var mainScore = dict[mainId];
-            var scores = settleIt.calculate(mainScore, dict)
+            settleIt.calculate(mainScore, dict)
             clearClasses(dict);
-            ascendClaims(mainScore, dict)
-            mainScore.class = "mainClaim"
+            setClasses(mainScore, dict)
         }
 
         clearClasses = function (dict) {
@@ -87,12 +86,29 @@ this.onload = function () {
                 if (this.class != "selected") {
                     clearClasses(dict);
                     this.class = "selected";
-                    //find Ancestors
-                    ascendClaims(dict[mainId], dict);
-                    dict[mainId].class = "mainClaim"
+                    setClasses(dict[mainId], dict);
                 }
 
                 update(render, dict, mainId, events);
+            },
+
+            add(isProMain, event) {
+                //debugger;
+                var newScore = {
+                    claim: {
+                        id: ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4),
+                        content: "new Claim",
+                        isProMain: isProMain,
+                        childIds: [],
+                        citation: "",
+                        citationUrl: ""
+                    }
+                };
+                dict[newScore.claim.id] = newScore;
+                this.claim.childIds.push(newScore.claim.id);
+                settleIt.calculate(dict[mainId], dict);
+                update(render, dict, mainId, events);
+                event.stopPropagation();
             },
 
             noBubbleClick(event) {
@@ -102,11 +118,17 @@ this.onload = function () {
         };
         var root = {};
 
-        ascendClaims = function (score, dict, parent) {
+        setClasses = function (mainScore, dict, parent) {
+            setClassesLoop(mainScore, dict, parent);
+            if (mainScore.class != "selected") mainScore.class = "mainClaim";
+
+        }
+
+        setClassesLoop = function (score, dict, parent) {
             for (let childId of score.claim.childIds) {
                 var childScore = dict[childId];
                 //process the children first
-                ascendClaims(childScore, dict, score);
+                setClassesLoop(childScore, dict, score);
 
                 if (childScore.class == "selected")
                     score.class = "parent";

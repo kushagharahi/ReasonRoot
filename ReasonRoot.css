@@ -49,10 +49,21 @@ li {
 .addClaim {
     border-radius: .25em;
     background: #ECECEC;
-    padding: .25em;
     font-size: 100%;
     padding: 2px 5px;
     margin-top: 2px;
+}
+
+.editClaimButton {
+    border-radius: .25em;
+    background: #cccccc;
+    font-size: 100%;
+    padding: 2px 5px;
+    margin: auto;
+    width: 50px;
+    text-align: center;
+    color: white;
+    margin-top: 3px;
 }
 
 .childIndicator {
@@ -152,7 +163,7 @@ li {
     overflow: hidden;
 }
 
-.editClaimSpacer {
+.claimMenuSection {
     position: relative;
     margin: 0 30px;
     display: block;
@@ -161,7 +172,7 @@ li {
     overflow: hidden;
 }
 
-.selected > .claimPad > .editClaimSpacer {
+.selected > .claimPad > .claimMenuSection {
     display: block;
     height: 1.5em;
 }
@@ -252,3 +263,10 @@ li {
         transition: 1s;
         padding-bottom: .25em;
     }
+
+
+/*Below is for hiding things until they are ready*/
+.claimEditSection {
+    display: none;
+}
+

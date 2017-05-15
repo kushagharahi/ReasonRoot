@@ -20,10 +20,17 @@ this.onload = function () {
                 }</span>
 
                                 ${claim.content}
-                                
+
                                 <a target="_blank" href="${claim.citationUrl}" onclick="${events.noBubbleClick}"> 
                                     <span class="citation">${claim.citation}</span>
                                 </a>
+
+                                <div class="claimEditSection">
+                                <input name="content" oninput="${events.updated.bind(claim)}" ><br>
+                                <input name="citation" oninput="${events.updated.bind(claim)}" ><br>
+                                <input name="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
+                                </div>
+
                             </div>
                         </div>
                         
@@ -35,16 +42,26 @@ this.onload = function () {
                             </div>
                         </div>
 
-                        <div class="editClaimSpacer">
-                            <div class="addClaim pro" onclick="${events.add.bind(score, true)}">add pro</div>
-                            <div class="addClaim con" onclick="${events.add.bind(score, false)}">add con</div>
+                        <div class="claimMenuSection">
+                            <div class="addClaim pro" onclick="${events.add.bind(score, true)}">add</div>
+                            <div class="addClaim con" onclick="${events.add.bind(score, false)}">add</div>
+                            <div class="editClaimButton" onclick="${events.edit.bind(score, true)}">edit</div>
                         </div>
+
                     </div>  
                       
                     <ul>${
-                claim.childIds.map((nodeId, i) => renderNode(dict[nodeId], score))
+                claim.childIds.map((childId, i) => renderNode(dict[childId], score))
                 }</ul>
                 </li>`
+
+            if (!wire.default) {
+                wire.default = claim.content;
+                var inputs = result.querySelector('.claimPad').querySelectorAll('input');
+                for (let input of inputs) {
+                    input.value = claim[input.getAttribute("name")];
+                }
+            }
 
             return result;
         }
@@ -77,7 +94,12 @@ this.onload = function () {
 
         var events = {
             updated(e) {
-                this.claim.content = e.target.value;
+                //this.content = e.target.value;
+                var inputs = e.srcElement.parentElement.querySelectorAll('input');
+                for (let input of inputs) {
+                    this[input.getAttribute("name")] =  input.value;
+                }
+
                 update(render, dict, mainId, events);
             },
 
@@ -109,6 +131,10 @@ this.onload = function () {
                 settleIt.calculate(dict[mainId], dict);
                 update(render, dict, mainId, events);
                 event.stopPropagation();
+            },
+
+            edit(isProMain, event) {
+
             },
 
             noBubbleClick(event) {

@@ -50,7 +50,7 @@ li {
     border-radius: .25em;
     background: #ECECEC;
     font-size: 100%;
-    padding: 2px 5px;
+    padding: 0px 5px;
     margin-top: 2px;
 }
 
@@ -58,7 +58,7 @@ li {
     border-radius: .25em;
     background: #cccccc;
     font-size: 100%;
-    padding: 2px 5px;
+    padding: 1px 5px;
     margin: auto;
     width: 50px;
     text-align: center;
@@ -165,15 +165,17 @@ li {
 
 .claimMenuSection {
     position: relative;
-    margin: 0 30px;
+}
+
+.claimMenuHider {
     display: block;
     transition: .5s;
     height: 0;
     overflow: hidden;
+    padding: 0 10px;
 }
 
-.selected > .claimPad > .claimMenuSection {
-    display: block;
+.selected > .claimPad > .claimMenuHider {
     height: 1.5em;
 }
 
@@ -265,8 +267,22 @@ li {
     }
 
 
-/*Below is for hiding things until they are ready*/
 .claimEditSection {
-    display: none;
+    padding: 10px;
 }
 
+.claimEditHider {
+    max-height: 0;
+    transition: 1s;
+    overflow: hidden;
+}
+
+.editing > .claimPad > .claimEditHider {
+    max-height: 20em;
+}
+
+.rr input {
+    width: 100%;
+    margin-top: 5px;
+    box-sizing: border-box;
+}

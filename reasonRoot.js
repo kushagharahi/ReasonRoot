@@ -25,13 +25,7 @@ this.onload = function () {
                                     <span class="citation">${claim.citation}</span>
                                 </a>
 
-                                <div class="claimEditSection">
-                                <input name="content" oninput="${events.updated.bind(claim)}" ><br>
-                                <input name="citation" oninput="${events.updated.bind(claim)}" ><br>
-                                <input name="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
-                                </div>
-
-                            </div>
+                             </div>
                         </div>
                         
                         <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
@@ -42,10 +36,20 @@ this.onload = function () {
                             </div>
                         </div>
 
-                        <div class="claimMenuSection">
-                            <div class="addClaim pro" onclick="${events.add.bind(score, true)}">add</div>
-                            <div class="addClaim con" onclick="${events.add.bind(score, false)}">add</div>
-                            <div class="editClaimButton" onclick="${events.edit.bind(score, true)}">edit</div>
+                        <div class="claimEditHider">
+                            <div class="claimEditSection">
+                                <input name="content" oninput="${events.updated.bind(claim)}" ><br>
+                                <input name="citation" oninput="${events.updated.bind(claim)}" ><br>
+                                <input name="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
+                            </div>
+                        </div>
+
+                        <div class="claimMenuHider">
+                            <div class="claimMenuSection">
+                                <div class="addClaim pro" onclick="${events.add.bind(score, true)}">add</div>
+                                <div class="addClaim con" onclick="${events.add.bind(score, false)}">add</div>
+                                <div class="editClaimButton" onclick="${events.edit.bind(score)}">edit</div>
+                            </div>
                         </div>
 
                     </div>  
@@ -70,9 +74,37 @@ this.onload = function () {
     }
 
     //Render the claims
-    function renderClaims(s) {
+    function start(s) {
         var mainId = s.getAttribute('stmtId');
         var settleIt = new SettleIt();
+
+        clearClasses = function (dict) {
+            for (var scoreId in dict) {
+                dict[scoreId].class = "hide";
+            }
+        }
+
+        setClassesLoop = function (score, dict, parent) {
+            for (let childId of score.claim.childIds) {
+                var childScore = dict[childId];
+                //process the children first
+                setClassesLoop(childScore, dict, score);
+
+                if (childScore.class.indexOf("selected") !== -1)
+                    score.class = "parent";
+                if (childScore.class == "ancestor" || childScore.class == "parent")
+                    score.class = "ancestor";
+                if (score.class.indexOf("selected") !== -1)
+                    childScore.class = "child";
+            }
+        }
+
+        setClasses = function (mainScore, dict, parent) {
+            setClassesLoop(mainScore, dict, parent);
+            if (mainScore.class.indexOf("selected") == -1) mainScore.class = "mainClaim";
+
+        }
+
 
         if (s.getAttribute('dict').charAt(0) == '{') {
             dict = JSON.parse(s.getAttribute('dict'));
@@ -86,32 +118,24 @@ this.onload = function () {
             setClasses(mainScore, dict)
         }
 
-        clearClasses = function (dict) {
-            for (var scoreId in dict) {
-                dict[scoreId].class = "hide";
-            }
-        }
-
         var events = {
             updated(e) {
                 //this.content = e.target.value;
                 var inputs = e.srcElement.parentElement.querySelectorAll('input');
                 for (let input of inputs) {
-                    this[input.getAttribute("name")] =  input.value;
+                    this[input.getAttribute("name")] = input.value;
                 }
 
                 update(render, dict, mainId, events);
             },
 
             selected(e) {
-                //debugger;
-                if (this.class != "selected") {
+                if (this.class.indexOf("selected") == -1) {
                     clearClasses(dict);
                     this.class = "selected";
                     setClasses(dict[mainId], dict);
+                    update(render, dict, mainId, events);
                 }
-
-                update(render, dict, mainId, events);
             },
 
             add(isProMain, event) {
@@ -127,14 +151,26 @@ this.onload = function () {
                     }
                 };
                 dict[newScore.claim.id] = newScore;
-                this.claim.childIds.push(newScore.claim.id);
+                this.claim.childIds.unshift(newScore.claim.id);
+                clearClasses(dict);
+                newScore.class = "selected editing";
+                setClasses(dict[mainId], dict);
                 settleIt.calculate(dict[mainId], dict);
                 update(render, dict, mainId, events);
                 event.stopPropagation();
             },
 
-            edit(isProMain, event) {
-
+            edit(event) {
+                if (this.class == "selected editing") {
+                    clearClasses(dict);
+                    this.class = "selected";
+                } else {
+                    clearClasses(dict);
+                    this.class = "selected editing";
+                }
+                setClasses(dict[mainId], dict);
+                update(render, dict, mainId, events);
+                event.stopPropagation();
             },
 
             noBubbleClick(event) {
@@ -142,29 +178,8 @@ this.onload = function () {
                 event.stopPropagation();
             }
         };
+
         var root = {};
-
-        setClasses = function (mainScore, dict, parent) {
-            setClassesLoop(mainScore, dict, parent);
-            if (mainScore.class != "selected") mainScore.class = "mainClaim";
-
-        }
-
-        setClassesLoop = function (score, dict, parent) {
-            for (let childId of score.claim.childIds) {
-                var childScore = dict[childId];
-                //process the children first
-                setClassesLoop(childScore, dict, score);
-
-                if (childScore.class == "selected")
-                    score.class = "parent";
-                if (childScore.class == "ancestor" || childScore.class == "parent")
-                    score.class = "ancestor";
-                if (score.class == "selected")
-                    childScore.class = "child";
-            }
-        }
-
         var render = hyperHTML.bind(s);
         update(render, dict, mainId, events);
 
@@ -172,7 +187,7 @@ this.onload = function () {
 
     var claims = document.getElementsByTagName('claim');
     for (let s of claims) {
-        renderClaims(s)
+        start(s)
     }
 
 };

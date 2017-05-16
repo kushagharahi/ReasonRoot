@@ -6,6 +6,7 @@ body {
     line-height: 1.1;
     max-width: 600px;
     margin: auto;
+    position: relative;
 }
 
 ul {
@@ -39,6 +40,7 @@ li {
     padding-bottom: 2px;
     min-height: 2.5em;
     font-size: 100%;
+    z-index: 1;
 }
 
     .claim a,
@@ -91,7 +93,6 @@ li {
     position: relative;
     margin-left: 25px;
     margin-right: 10px;
-    z-index: -1;
     transition: .25s;
     overflow: hidden;
 }
@@ -281,8 +282,26 @@ li {
     max-height: 20em;
 }
 
-.rr input {
+.rr input[type=text] {
     width: 100%;
     margin-top: 5px;
     box-sizing: border-box;
 }
+
+.settingsButton{
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: .1;
+}
+
+.settingsHider{
+    max-height: 0;
+    overflow: hidden;
+    transition: 1s;
+}
+
+.settingsHider.open{
+    max-height: 20em;
+}
+

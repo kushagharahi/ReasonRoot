@@ -1,9 +1,9 @@
 
 this.onload = function () {
 
+    var settings = {};
 
     function update(render, dict, mainId, events) {
-        //<input oninput="${events.updated.bind(claim)}" >
 
         function renderNode(score, parent) {
             var claim = score.claim;
@@ -70,7 +70,22 @@ this.onload = function () {
             return result;
         }
 
-        render`<div class="rr">${renderNode(dict[mainId], { open: true })}</div>`;
+        function toggleSettings(event) {
+            settings.visible = !settings.visible;
+            update(render, dict, mainId, events);
+        }
+
+        render`
+        <div class="rr">
+            <div class = "${'settingsHider ' + (settings.visible ? 'open' : '')}"> 
+                <input type="checkbox" id="setting1" name="setting1" value="setting1">
+                <label for="setting1">Setting 1</label>
+            </div>
+            <div>${renderNode(dict[mainId], { open: true })}</div>
+            <div class="settingsButton" onclick="${toggleSettings}"> 
+                ⚙
+            </div>
+        </div>`;
     }
 
     //Render the claims

@@ -282,7 +282,7 @@ li {
     max-height: 20em;
 }
 
-.rr input[type=text] {
+.rr input:not([type]) {
     width: 100%;
     margin-top: 5px;
     box-sizing: border-box;

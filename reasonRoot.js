@@ -4,6 +4,7 @@ this.onload = function () {
     var settings = {};
 
     function update(render, dict, mainId, events) {
+        save(dict[mainId], dict);
 
         function renderNode(score, parent) {
             var claim = score.claim;
@@ -128,15 +129,15 @@ this.onload = function () {
 
         //restore saved dictionairy
         var potentialDict = localStorage.getItem("rr_" + mainId);
-        if (potentialDict)
+        if (potentialDict) {
             dict = JSON.parse(potentialDict);
-        var mainScore = dict[mainId];
-
-
-        settleIt.calculate(mainScore, dict)
-        clearClasses(dict);
-        setClasses(mainScore, dict)
-
+            var mainScore = dict[mainId];
+        } else {
+            var mainScore = dict[mainId];
+            settleIt.calculate(mainScore, dict)
+            clearClasses(dict);
+            setClasses(mainScore, dict)
+        }
 
         save = function (mainScore, dict) {
             localStorage.setItem("rr_" + mainScore.claim.id, JSON.stringify(dict));
@@ -180,7 +181,6 @@ this.onload = function () {
                 newScore.class = "selected editing";
                 setClasses(dict[mainId], dict);
                 settleIt.calculate(dict[mainId], dict);
-                save (mainScore, dict);
                 update(render, dict, mainId, events);
                 event.stopPropagation();
             },

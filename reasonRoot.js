@@ -121,16 +121,25 @@ this.onload = function () {
         }
 
 
-        if (s.getAttribute('dict').charAt(0) == '{') {
-            dict = JSON.parse(s.getAttribute('dict'));
-        } else {
-            var claims = JSON.parse(s.getAttribute('dict'));
-            //add the claims to the dictionairy
-            var dict = createDict(claims);
-            var mainScore = dict[mainId];
-            settleIt.calculate(mainScore, dict)
-            clearClasses(dict);
-            setClasses(mainScore, dict)
+
+        var claims = JSON.parse(s.getAttribute('dict'));
+        //add the claims to the dictionairy
+        var dict = createDict(claims);
+
+        //restore saved dictionairy
+        var potentialDict = localStorage.getItem("rr_" + mainId);
+        if (potentialDict)
+            dict = JSON.parse(potentialDict);
+        var mainScore = dict[mainId];
+
+
+        settleIt.calculate(mainScore, dict)
+        clearClasses(dict);
+        setClasses(mainScore, dict)
+
+
+        save = function (mainScore, dict) {
+            localStorage.setItem("rr_" + mainScore.claim.id, JSON.stringify(dict));
         }
 
         var events = {
@@ -171,6 +180,7 @@ this.onload = function () {
                 newScore.class = "selected editing";
                 setClasses(dict[mainId], dict);
                 settleIt.calculate(dict[mainId], dict);
+                save (mainScore, dict);
                 update(render, dict, mainId, events);
                 event.stopPropagation();
             },

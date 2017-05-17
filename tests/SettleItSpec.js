@@ -13,11 +13,8 @@ describe('', function () {
         mainScore = new Score(mainClaim);
         dict = new Dict();
         dict[mainClaim.id] = mainScore;
-        controller.mainStatment = mainClaim;
     });
     afterEach(function () {
-        mainClaim.json = JSON.stringify(mainClaim, null, 4);
-        mainClaim.testResults = environment.testResults;
     });
     describe("Base Simple Tests", function () {
         it("Pro, Con: should be +0", function () {

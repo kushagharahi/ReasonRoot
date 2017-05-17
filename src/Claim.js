@@ -23,4 +23,4 @@ function newId() {
     }
     return str;
 }
-//# sourceMappingURL=Claims.js.map
+//# sourceMappingURL=Claim.js.map

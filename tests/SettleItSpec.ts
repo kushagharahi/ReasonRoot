@@ -16,12 +16,9 @@ describe('', function () {
         mainScore = new Score(mainClaim);
         dict = new Dict<Score>();
         dict[mainClaim.id] = mainScore;
-        controller.mainStatment = mainClaim;
     });
 
     afterEach(function () {
-        mainClaim.json = JSON.stringify(mainClaim, null, 4);
-        mainClaim.testResults = environment.testResults;
     });
 
 

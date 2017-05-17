@@ -1,311 +1,259 @@
 body {
-    margin: 0 20px 0 0;
-}
+  margin: 0 20px 0 0; }
 
 .rr {
-    line-height: 1.1;
-    max-width: 600px;
-    margin: auto;
-    position: relative;
-}
+  line-height: 1.1;
+  max-width: 600px;
+  margin: auto;
+  position: relative; }
 
 ul {
-    border-left: 1px solid #ECECEC;
-    padding: 0;
-    margin: 0 0 0 20px;
-    width: 100%;
-}
+  border-left: 1px solid #ECECEC;
+  padding: 0;
+  margin: 0 0 0 20px;
+  width: 100%; }
 
 li {
-    width: 100%;
-    list-style-type: none;
-    margin: 0px 0 0 0;
-    /*padding: 5px 0 0 0;*/
-}
+  width: 100%;
+  list-style-type: none;
+  margin: 0px 0 0 0;
+  /*padding: 5px 0 0 0;*/ }
 
 .claimPad {
-    padding: 0 10px;
-    position: relative;
-    overflow: hidden;
-    transition: 1s;
-}
+  padding: 0 10px;
+  position: relative;
+  overflow: hidden;
+  transition: 1s; }
 
 .claim {
-    position: relative;
-    margin-top: .5em;
-    border-radius: .5em;
-    color: #4A4A4A;
-    background: #ECECEC;
-    padding: .25em;
-    padding-bottom: 2px;
-    min-height: 2.5em;
-    font-size: 100%;
-    z-index: 1;
-}
+  position: relative;
+  margin-top: .5em;
+  border-radius: .5em;
+  color: #4A4A4A;
+  background: #ECECEC;
+  padding: .25em;
+  padding-bottom: 2px;
+  min-height: 2.5em;
+  font-size: 100%;
+  z-index: 1; }
 
-    .claim a,
-    .claim a:hover {
-        color: white;
-    }
+.claim a,
+.claim a:hover {
+  color: white; }
 
 .addClaim {
-    border-radius: .25em;
-    background: #ECECEC;
-    font-size: 100%;
-    padding: 0px 5px;
-    margin-top: 2px;
-    cursor: pointer;
-}
+  border-radius: .25em;
+  background: #ECECEC;
+  font-size: 100%;
+  padding: 0px 5px;
+  margin-top: 2px;
+  cursor: pointer; }
 
 .editClaimButton {
-    border-radius: .25em;
-    background: #cccccc;
-    font-size: 100%;
-    padding: 1px 5px;
-    margin: auto;
-    width: 50px;
-    text-align: center;
-    color: white;
-    margin-top: 3px;
-    cursor: pointer;
-
-}
+  border-radius: .25em;
+  background: #cccccc;
+  font-size: 100%;
+  padding: 1px 5px;
+  margin: auto;
+  width: 50px;
+  text-align: center;
+  color: white;
+  margin-top: 3px;
+  cursor: pointer; }
 
 .childIndicator {
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
-    height: .7em;
-    position: absolute;
-    width: 100%;
-}
+  border-bottom-left-radius: .5em;
+  border-bottom-right-radius: .5em;
+  height: .7em;
+  position: absolute;
+  width: 100%; }
 
 .childIndicatorInner {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    text-align: center;
-    font-size: x-small;
-}
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  font-size: x-small; }
 
 .childIndicatorSpace.hasChildren {
-    height: .7em;
-}
+  height: .7em; }
 
 .childIndicatorSpace {
-    height: 0;
-    position: relative;
-    margin-left: 25px;
-    margin-right: 10px;
-    transition: .25s;
-    overflow: hidden;
-}
+  height: 0;
+  position: relative;
+  margin-left: 25px;
+  margin-right: 10px;
+  transition: .25s;
+  overflow: hidden; }
 
 .selected > .claimPad {
-    overflow: visible;
-}
+  overflow: visible; }
 
-    .selected > .claimPad > .claim > .innerClaim {
-        max-height: 15em;
-        transition: 1s;
-        padding-bottom: .25em;
-    }
+.selected > .claimPad > .claim > .innerClaim {
+  max-height: 15em;
+  transition: 1s;
+  padding-bottom: .25em; }
 
-    .selected > .claimPad > .childIndicatorSpace {
-        height: 0;
-    }
+.selected > .claimPad > .childIndicatorSpace {
+  height: 0; }
 
 .ancestor > .claimPad {
-    cursor: pointer;
-    cursor: -webkit-zoom-out;
-    max-height: 5em;
-    max-height: 0px;
-}
+  cursor: pointer;
+  cursor: -webkit-zoom-out;
+  max-height: 5em;
+  max-height: 0px; }
 
-    .ancestor > .claimPad > .claim > .innerClaim {
-        /*max-height: 2.5em;*/
-        transition: 1s;
-        padding-bottom: .25em;
-    }
+.ancestor > .claimPad > .claim > .innerClaim {
+  /*max-height: 2.5em;*/
+  transition: 1s;
+  padding-bottom: .25em; }
 
 .parent > .claimPad {
-    cursor: pointer;
-    cursor: -webkit-zoom-out;
-    max-height: 5em;
-}
+  cursor: pointer;
+  cursor: -webkit-zoom-out;
+  max-height: 5em; }
 
-    .parent > .claimPad > .claim > .innerClaim {
-        max-height: 2.5em;
-        transition: 1s;
-        padding-bottom: .25em;
-    }
+.parent > .claimPad > .claim > .innerClaim {
+  max-height: 2.5em;
+  transition: 1s;
+  padding-bottom: .25em; }
 
 .mainClaim > .claimPad {
-    cursor: pointer;
-    cursor: -webkit-zoom-out;
-    max-height: 5em;
-}
+  cursor: pointer;
+  cursor: -webkit-zoom-out;
+  max-height: 5em; }
 
-    .mainClaim > .claimPad > .claim > .innerClaim {
-        max-height: 2.5em;
-        transition: 1s;
-        padding-bottom: .25em;
-    }
+.mainClaim > .claimPad > .claim > .innerClaim {
+  max-height: 2.5em;
+  transition: 1s;
+  padding-bottom: .25em; }
 
 .child > .claimPad {
-    cursor: pointer;
-    cursor: -webkit-zoom-in;
-    max-height: 5em;
-}
+  cursor: pointer;
+  cursor: -webkit-zoom-in;
+  max-height: 5em; }
 
-    .child > .claimPad > .claim > .innerClaim {
-        max-height: 2.5em;
-        transition: 1s;
-        padding-bottom: .25em;
-    }
+.child > .claimPad > .claim > .innerClaim {
+  max-height: 2.5em;
+  transition: 1s;
+  padding-bottom: .25em; }
 
 .innerClaim {
-    overflow: hidden;
-}
+  overflow: hidden; }
 
 .claimMenuSection {
-    position: relative;
-}
+  position: relative; }
 
 .claimMenuHider {
-    display: block;
-    transition: .5s;
-    height: 0;
-    overflow: hidden;
-    padding: 0 10px;
-}
+  display: block;
+  transition: .5s;
+  height: 0;
+  overflow: hidden;
+  padding: 0 10px; }
 
 .selected > .claimPad > .claimMenuHider {
-    height: 1.5em;
-}
+  height: 1.5em; }
 
 .shadow {
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
-}
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); }
 
 .selected > .claimPad > .shadow {
-    box-shadow: initial;
-}
+  box-shadow: initial; }
 
 .citation {
-    font-size: smaller;
-    font-style: italic;
-}
+  font-size: smaller;
+  font-style: italic; }
 
 .score {
-    display: block;
-    float: left;
-    font-size: 1.98em;
-    padding-right: .25em;
-    padding-right: .25em;
-}
+  display: block;
+  float: left;
+  font-size: 1.98em;
+  padding-right: .25em;
+  padding-right: .25em; }
 
 .pro {
-    background-color: #61B3D9;
-    color: white;
-    border-color: #61B3D9;
-}
+  background-color: #61B3D9;
+  color: white;
+  border-color: #61B3D9; }
 
 .con {
-    background-color: #F5A623;
-    color: white;
-    border-color: #F5A623;
-}
+  background-color: #F5A623;
+  color: white;
+  border-color: #F5A623; }
 
 .pro:after, .con:after {
-    top: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    /*pointer-events: none;*/
-    border-left-color: transparent;
-    border-right-color: #61B3D9;
-    border-width: 10px;
-    margin-top: -10px;
-}
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  /*pointer-events: none;*/
+  border-left-color: transparent;
+  border-right-color: #61B3D9;
+  border-width: 10px;
+  margin-top: -10px; }
 
 .pro:after {
-    right: 100%;
-    border-left-color: transparent;
-    border-right-color: #61B3D9;
-    border-width: 10px;
-    margin-top: -10px;
-}
+  right: 100%;
+  border-left-color: transparent;
+  border-right-color: #61B3D9;
+  border-width: 10px;
+  margin-top: -10px; }
 
 .con:after {
-    left: 100%;
-    border-right-color: transparent;
-    border-left-color: #F5A623;
-    border-width: 10px;
-    margin-top: -10px;
-}
+  left: 100%;
+  border-right-color: transparent;
+  border-left-color: #F5A623;
+  border-width: 10px;
+  margin-top: -10px; }
 
 .addClaim:after {
-    border-width: 5px;
-    margin-top: -5px;
-}
+  border-width: 5px;
+  margin-top: -5px; }
 
 .addClaim.pro {
-    float: left;
-}
+  float: left; }
 
 .addClaim.con {
-    float: right;
-}
+  float: right; }
 
 .hide > .claimPad {
-    max-height: 0px;
-    transition: 1s;
-}
+  max-height: 0px;
+  transition: 1s; }
 
-    .hide > .claimPad > .claim > .innerClaim {
-        max-height: 2.8em;
-        transition: 1s;
-        padding-bottom: .25em;
-    }
-
+.hide > .claimPad > .claim > .innerClaim {
+  max-height: 2.8em;
+  transition: 1s;
+  padding-bottom: .25em; }
 
 .claimEditSection {
-    padding: 10px;
-}
+  padding: 10px; }
 
 .claimEditHider {
-    max-height: 0;
-    transition: 1s;
-    overflow: hidden;
-}
+  max-height: 0;
+  transition: 1s;
+  overflow: hidden; }
 
 .editing > .claimPad > .claimEditHider {
-    max-height: 20em;
-}
+  max-height: 20em; }
 
 .rr input:not([type]) {
-    width: 100%;
-    margin-top: 5px;
-    box-sizing: border-box;
-}
+  width: 100%;
+  margin-top: 5px;
+  box-sizing: border-box; }
 
-.settingsButton{
-    position: absolute;
-    right: 0;
-    top: 0;
-    opacity: .1;
-    cursor: pointer;
-}
+.settingsButton {
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: .1;
+  cursor: pointer; }
 
-.settingsHider{
-    max-height: 0;
-    overflow: hidden;
-    transition: 1s;
-}
+.settingsHider {
+  max-height: 0;
+  overflow: hidden;
+  transition: 1s; }
 
-.settingsHider.open{
-    max-height: 20em;
-}
-
+.settingsHider.open {
+  max-height: 20em; }

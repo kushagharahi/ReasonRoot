@@ -14,16 +14,6 @@
             "isBackground": true,
             "isBuildCommand": true,
             "problemMatcher": "$tsc-watch"
-        },
-        {
-            "taskName": "node-sass",
-            "command": "node-sass",
-            "isShellCommand": true,
-            "isBuildCommand": true,
-            "args": [
-                "styles.scss",
-                "styles.css"
-            ]
         }
     ]
 }

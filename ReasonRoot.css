@@ -169,7 +169,11 @@ li {
   float: left;
   font-size: 1.98em;
   padding-right: .25em;
-  padding-right: .25em; }
+  padding-right: .25em; 
+  max-width: 10em;
+  transition: .5s;
+  overflow: hidden;
+  }
 
 .pro {
   background-color: #61B3D9;
@@ -257,3 +261,8 @@ li {
 
 .settingsHider.open {
   max-height: 20em; }
+
+/*Settings*/
+.hideScore .score{
+  max-width: 0;
+}

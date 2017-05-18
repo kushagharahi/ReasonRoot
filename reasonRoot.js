@@ -77,10 +77,12 @@ this.onload = function () {
         }
 
         render`
-        <div class="rr">
+        <div class="${'rr ' + 
+            (settings.hideScore ? 'hideScore ' : '') 
+        }">
             <div class = "${'settingsHider ' + (settings.visible ? 'open' : '')}"> 
-                <input type="checkbox" id="setting1" name="setting1" value="setting1">
-                <label for="setting1">Setting 1</label>
+                <input type="checkbox" id="Hide Score" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this,settings)}">
+                <label for="setting1">Hide Score</label>
             </div>
             <div>${renderNode(dict[mainId], { open: true })}</div>
             <div class="settingsButton" onclick="${toggleSettings}"> 
@@ -194,6 +196,12 @@ this.onload = function () {
                     this.class = "selected editing";
                 }
                 setClasses(dict[mainId], dict);
+                update(render, dict, mainId, events);
+                event.stopPropagation();
+            },
+
+            updateSettings(settings,event) {
+                settings[event.srcElement.name] = event.srcElement.checked
                 update(render, dict, mainId, events);
                 event.stopPropagation();
             },

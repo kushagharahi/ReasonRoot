@@ -265,4 +265,6 @@ li {
 /*Settings*/
 .hideScore .score{
   max-width: 0;
+  padding: 0;
+  margin: 0;
 }

@@ -42,6 +42,8 @@ this.onload = function () {
                                 <input name="content" oninput="${events.updated.bind(claim)}" ><br>
                                 <input name="citation" oninput="${events.updated.bind(claim)}" ><br>
                                 <input name="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
+                                <input type="checkbox" name="isProMain" onclick="${events.updated.bind(claim)}">
+                                <label for="isProMain">Does this claim supports the main claim?</label>
                             </div>
                         </div>
 
@@ -64,7 +66,10 @@ this.onload = function () {
                 wire.default = claim.content;
                 var inputs = result.querySelector('.claimPad').querySelectorAll('input');
                 for (let input of inputs) {
-                    input.value = claim[input.getAttribute("name")];
+                    if (input.type == "checkbox")
+                        input.checked = claim[input.getAttribute("name")];
+                    else
+                        input.value = claim[input.getAttribute("name")];
                 }
             }
 
@@ -81,8 +86,8 @@ this.onload = function () {
             (settings.hideScore ? 'hideScore ' : '')
             }">
             <div class = "${'settingsHider ' + (settings.visible ? 'open' : '')}"> 
-                <input type="checkbox" id="Hide Score" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this, settings)}">
-                <label for="setting1">Hide Score</label>
+                <input type="checkbox" id="hideScore" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this, settings)}">
+                <label for="hideScore">Hide Score</label>
                 <input value="${JSON.stringify(claims)}"></input>
            </div>
             <div>${renderNode(dict[mainId], { open: true })}</div>
@@ -121,7 +126,6 @@ this.onload = function () {
         setClasses = function (mainScore, dict, parent) {
             setClassesLoop(mainScore, dict, parent);
             if (mainScore.class.indexOf("selected") == -1) mainScore.class = "mainClaim";
-
         }
 
         newId = function () {
@@ -167,9 +171,12 @@ this.onload = function () {
                 //this.content = e.target.value;
                 var inputs = e.srcElement.parentElement.querySelectorAll('input');
                 for (let input of inputs) {
-                    this[input.getAttribute("name")] = input.value;
+                    if (input.type == "checkbox")
+                        this[input.getAttribute("name")] = input.checked;
+                    else
+                        this[input.getAttribute("name")] = input.value;
                 }
-
+                settleIt.calculate(dict[mainId], dict);
                 update(render, dict, mainId, events, claims);
             },
 

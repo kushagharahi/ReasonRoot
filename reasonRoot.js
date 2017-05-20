@@ -155,6 +155,11 @@ this.onload = function () {
         if (potentialDict) {
             dict = JSON.parse(potentialDict);
             var mainScore = dict[mainId];
+            //create claims from saves dict
+            claims = [];
+            for (var scoreId in dict) {
+                claims.push(dict[scoreId].claim);
+            }
         } else {
             var mainScore = dict[mainId];
             settleIt.calculate(mainScore, dict)

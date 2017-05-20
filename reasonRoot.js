@@ -3,14 +3,14 @@ this.onload = function () {
 
     var settings = {};
 
-    function update(render, dict, mainId, events) {
+    function update(render, dict, mainId, events, claims) {
         save(dict[mainId], dict);
 
         function renderNode(score, parent) {
             var claim = score.claim;
             var wire = hyperHTML.wire(score);
             var result = wire`
-                <li class="${score.class}">
+                <li id="${claim.id}" class="${score.class}">
                     <div class="claimPad" onclick="${events.selected.bind(score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
@@ -73,17 +73,18 @@ this.onload = function () {
 
         function toggleSettings(event) {
             settings.visible = !settings.visible;
-            update(render, dict, mainId, events);
+            update(render, dict, mainId, events, claims);
         }
 
         render`
-        <div class="${'rr ' + 
-            (settings.hideScore ? 'hideScore ' : '') 
-        }">
+        <div class="${'rr ' +
+            (settings.hideScore ? 'hideScore ' : '')
+            }">
             <div class = "${'settingsHider ' + (settings.visible ? 'open' : '')}"> 
-                <input type="checkbox" id="Hide Score" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this,settings)}">
+                <input type="checkbox" id="Hide Score" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this, settings)}">
                 <label for="setting1">Hide Score</label>
-            </div>
+                <input value="${JSON.stringify(claims)}"></input>
+           </div>
             <div>${renderNode(dict[mainId], { open: true })}</div>
             <div class="settingsButton" onclick="${toggleSettings}"> 
                 ⚙
@@ -123,7 +124,23 @@ this.onload = function () {
 
         }
 
+        newId = function () {
+            //take the current date and convert to bas 62
+            var decimal = new Date();
+            var s = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            var result = "";
+            while (decimal >= 1) {
+                result = s[(decimal - (62 * Math.floor(decimal / 62)))] + result;
+                decimal = Math.floor(decimal / 62);
+            }
 
+            //Add 5 extra random characters in case multiple ids are creates at the same time
+            result += Array(5).join().split(',').map(function () {
+                return s[(Math.floor(Math.random() * s.length))];
+            }).join('');
+
+            return result
+        }
 
         var claims = JSON.parse(s.getAttribute('dict'));
         //add the claims to the dictionairy
@@ -153,7 +170,7 @@ this.onload = function () {
                     this[input.getAttribute("name")] = input.value;
                 }
 
-                update(render, dict, mainId, events);
+                update(render, dict, mainId, events, claims);
             },
 
             selected(e) {
@@ -161,7 +178,7 @@ this.onload = function () {
                     clearClasses(dict);
                     this.class = "selected";
                     setClasses(dict[mainId], dict);
-                    update(render, dict, mainId, events);
+                    update(render, dict, mainId, events, claims);
                 }
             },
 
@@ -169,7 +186,7 @@ this.onload = function () {
                 //debugger;
                 var newScore = {
                     claim: {
-                        id: ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4),
+                        id: newId(),
                         content: "new Claim",
                         isProMain: isProMain,
                         childIds: [],
@@ -179,11 +196,12 @@ this.onload = function () {
                 };
                 dict[newScore.claim.id] = newScore;
                 this.claim.childIds.unshift(newScore.claim.id);
+                claims.push(newScore.claim);
                 clearClasses(dict);
                 newScore.class = "selected editing";
                 setClasses(dict[mainId], dict);
                 settleIt.calculate(dict[mainId], dict);
-                update(render, dict, mainId, events);
+                update(render, dict, mainId, events, claims);
                 event.stopPropagation();
             },
 
@@ -196,13 +214,13 @@ this.onload = function () {
                     this.class = "selected editing";
                 }
                 setClasses(dict[mainId], dict);
-                update(render, dict, mainId, events);
+                update(render, dict, mainId, events, claims);
                 event.stopPropagation();
             },
 
-            updateSettings(settings,event) {
+            updateSettings(settings, event) {
                 settings[event.srcElement.name] = event.srcElement.checked
-                update(render, dict, mainId, events);
+                update(render, dict, mainId, events, claims);
                 event.stopPropagation();
             },
 
@@ -214,7 +232,7 @@ this.onload = function () {
 
         var root = {};
         var render = hyperHTML.bind(s);
-        update(render, dict, mainId, events);
+        update(render, dict, mainId, events, claims);
 
     }
 

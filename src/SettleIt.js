@@ -41,7 +41,6 @@ var SettleIt = (function () {
             var childId = _a[_i];
             if (this.dict[childId].claim.disabled)
                 continue; //skip if diabled
-            console.log(score.claim.content);
             this.step1ValidateClaims(this.dict[childId], score);
         }
     };
@@ -291,6 +290,7 @@ var SettleIt = (function () {
             else
                 WeightedMinuses += child.weightDif;
         }
+        score.animatedWeightedPercentage = score.weightedPercentage;
         if (found) {
             if (WeightedPluses - WeightedMinuses === 0)
                 score.weightedPercentage = 0;

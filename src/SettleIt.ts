@@ -288,13 +288,14 @@ class SettleIt {
             else
                 WeightedMinuses += child.weightDif
         }
+
+        score.animatedWeightedPercentage = score.weightedPercentage;
         if (found) {
             if (WeightedPluses - WeightedMinuses === 0)
                 score.weightedPercentage = 0;
             else
                 score.weightedPercentage = WeightedPluses / (WeightedPluses - WeightedMinuses);
         } else score.weightedPercentage = 1;
-
     }
 
     private sort(score: Score, parent: Score) {

@@ -37,6 +37,9 @@
     numDesc: number;
 
     /** */
+    animatedWeightedPercentage
+
+    /** */
     constructor(claim?: Claim) {
         if (claim) this.claim = claim;
     }

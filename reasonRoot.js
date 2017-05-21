@@ -6,16 +6,36 @@ this.onload = function () {
     function update(render, dict, mainId, events, claims) {
         save(dict[mainId], dict);
 
+        //Check for animating numbers
+        function animatenumbers() {
+            var found = false;
+            for (var scoreId in dict) {
+                var s = dict[scoreId];
+                if (s.weightedPercentage != s.animatedWeightedPercentage) {
+                    found = true;
+                    var difference = s.weightedPercentage - s.animatedWeightedPercentage
+                    if (Math.abs(difference) < .01)
+                        s.animatedWeightedPercentage = s.weightedPercentage
+                    else
+                        s.animatedWeightedPercentage += difference / 10;
+                }
+            }
+            if (found) setTimeout(function(){update(render, dict, mainId, events, claims);},100);
+        }
+        animatenumbers()
+
+
         function renderNode(score, parent) {
             var claim = score.claim;
             var wire = hyperHTML.wire(score);
+
             var result = wire`
                 <li id="${claim.id}" class="${score.class}">
                     <div class="claimPad" onclick="${events.selected.bind(score)}">
-                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con')+ (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
+                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
                                 <span class="score" > ${(score.generation == 0 ?
-                    Math.round(score.weightedPercentage * 100) + '%' :
+                    Math.round(score.animatedWeightedPercentage * 100) + '%' :
                     Math.floor(Math.abs(score.weightDif)))
                 }</span>
 
@@ -78,9 +98,9 @@ this.onload = function () {
                     var bindName = input.getAttribute("bind")
                     if (bindName) {
                         if (input.type == "checkbox")
-                        input.checked = claim[bindName];
+                            input.checked = claim[bindName];
                         else
-                        input.value = claim[bindName];
+                            input.value = claim[bindName];
                     }
                 }
             }

@@ -19,79 +19,79 @@ function createDict(claims, dict) {
 var SettleIt = (function () {
     function SettleIt() {
     }
-    SettleIt.prototype.calculate = function (s, dict, shouldSort) {
-        if (s !== undefined)
-            this.s = s;
+    SettleIt.prototype.calculate = function (score, dict, shouldSort) {
+        if (score !== undefined)
+            this.score = score;
         if (dict !== undefined)
             this.dict = dict;
         if (shouldSort !== undefined)
             this.shouldSort = shouldSort;
-        this.step1ValidateClaims(s);
-        this.step2AscendClaims(s);
-        this.step3DescendClaims(s);
-        this.step4AscendClaims(s);
+        this.step1ValidateClaims(score);
+        this.step2AscendClaims(score);
+        this.step3DescendClaims(score);
+        this.step4AscendClaims(score);
     };
-    SettleIt.prototype.step1ValidateClaims = function (s, parent) {
+    SettleIt.prototype.step1ValidateClaims = function (score, parent) {
         //todo make this a 62bit GUID [a-z,A-Z,0-9]
-        if (s.claim.id == undefined)
-            s.claim.id = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
-        this.calculateProMainParent(s, parent);
-        this.calculateGeneration(s, parent);
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+        if (score.claim.id == undefined)
+            score.claim.id = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
+        this.calculateProMainParent(score, parent);
+        this.calculateGeneration(score, parent);
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
-            this.step1ValidateClaims(this.dict[childId], s);
+            this.step1ValidateClaims(this.dict[childId], score);
         }
     };
-    SettleIt.prototype.calculateGeneration = function (s, parent) {
-        if (s.generation == undefined)
-            s.generation = 0;
+    SettleIt.prototype.calculateGeneration = function (score, parent) {
+        if (score.generation == undefined)
+            score.generation = 0;
         if (parent)
-            s.generation = parent.generation + 1;
+            score.generation = parent.generation + 1;
     };
-    SettleIt.prototype.calculateProMainParent = function (s, parent) {
+    SettleIt.prototype.calculateProMainParent = function (score, parent) {
         var parentIsProMain = true;
         if (parent && parent.claim.isProMain !== undefined)
             parentIsProMain = parent.claim.isProMain;
         //If neither exist then default to proMain
-        if (s.claim.isProMain === undefined && s.claim.isProParent === undefined) {
-            s.claim.isProMain = true;
-            s.claim.isProParent = s.claim.isProMain == parentIsProMain;
+        if (score.claim.isProMain === undefined && score.claim.isProParent === undefined) {
+            score.claim.isProMain = true;
+            score.claim.isProParent = score.claim.isProMain == parentIsProMain;
         }
         //if both exist then assume isProMain is correct
-        if (s.claim.isProMain !== undefined && s.claim.isProParent !== undefined) {
-            s.claim.isProParent = s.claim.isProMain == parentIsProMain;
+        if (score.claim.isProMain !== undefined && score.claim.isProParent !== undefined) {
+            score.claim.isProParent = score.claim.isProMain == parentIsProMain;
         }
         //if only isProMain exists then set isProParent
-        if (s.claim.isProMain !== undefined && s.claim.isProParent === undefined) {
-            s.claim.isProParent = s.claim.isProMain == parentIsProMain;
+        if (score.claim.isProMain !== undefined && score.claim.isProParent === undefined) {
+            score.claim.isProParent = score.claim.isProMain == parentIsProMain;
         }
         //if only isProParent exists then set isProMain
-        if (s.claim.isProMain === undefined && s.claim.isProParent !== undefined) {
-            if (s.claim.isProParent)
-                s.claim.isProMain = parentIsProMain;
+        if (score.claim.isProMain === undefined && score.claim.isProParent !== undefined) {
+            if (score.claim.isProParent)
+                score.claim.isProMain = parentIsProMain;
             else
-                s.claim.isProMain = !parentIsProMain;
+                score.claim.isProMain = !parentIsProMain;
         }
     };
-    SettleIt.prototype.step2AscendClaims = function (s, parent) {
-        s.siblingWeight = 1; // This may be wrong. Was only set if it has not parent but now there isn't a parent id
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+    SettleIt.prototype.step2AscendClaims = function (score, parent) {
+        score.siblingWeight = 1; // This may be wrong. Was only set if it has not parent but now there isn't a parent id
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
-            this.step2AscendClaims(this.dict[childId], s);
+            this.step2AscendClaims(this.dict[childId], score);
         }
-        if (s.claim.affects == undefined)
-            s.claim.affects = "AverageTheConfidence";
-        this.calculateSiblingWeight(s);
-        this.calculateConfidence(s);
-        this.calculateImportance(s);
-        this.countNumDesc(s);
+        if (score.claim.affects == undefined)
+            score.claim.affects = "AverageTheConfidence";
+        this.calculateSiblingWeight(score);
+        this.calculateConfidence(score);
+        this.calculateImportance(score);
+        this.countNumDesc(score);
     };
     /** Find the sibling with the most weight (so later you can make them all match)
      * max children ( pro + con ) */
-    SettleIt.prototype.calculateSiblingWeight = function (s) {
+    SettleIt.prototype.calculateSiblingWeight = function (score) {
         var maxPoints = 0;
         //Figure out what is the highest number of points among all the children
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
             if (child.claim.affects != "Importance") {
@@ -100,7 +100,7 @@ var SettleIt = (function () {
             }
         }
         //Figure out the multiplier so that all the children have the same weight
-        for (var _b = 0, _c = s.claim.childIds; _b < _c.length; _b++) {
+        for (var _b = 0, _c = score.claim.childIds; _b < _c.length; _b++) {
             var childId = _c[_b];
             var child = this.dict[childId];
             if (child.claim.affects != "Importance") {
@@ -115,14 +115,14 @@ var SettleIt = (function () {
                 child.siblingWeight = 1;
         }
     };
-    SettleIt.prototype.calculateConfidence = function (s) {
+    SettleIt.prototype.calculateConfidence = function (score) {
         var avgConfPro = 0;
         var avgConfCon = 0;
         var maxConfPro = 0;
         var maxConfCon = 0;
         var found = false;
         //Add up all the children points
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
             if (child.claim.affects == "AverageTheConfidence") {
@@ -142,38 +142,38 @@ var SettleIt = (function () {
         }
         //Calculate the Pro and Con
         if (found) {
-            s.confidencePro = avgConfPro + maxConfPro;
-            s.confidenceCon = avgConfCon + maxConfCon;
+            score.confidencePro = avgConfPro + maxConfPro;
+            score.confidenceCon = avgConfCon + maxConfCon;
             //prevents stataments form reversing
-            if (s.claim.isProParent && s.confidenceCon > s.confidencePro)
-                s.confidenceCon = s.confidencePro;
-            if (!s.claim.isProParent && s.confidencePro > s.confidenceCon)
-                s.confidencePro = s.confidenceCon;
+            if (score.claim.isProParent && score.confidenceCon > score.confidencePro)
+                score.confidenceCon = score.confidencePro;
+            if (!score.claim.isProParent && score.confidencePro > score.confidenceCon)
+                score.confidencePro = score.confidenceCon;
         }
         else {
-            if (s.claim.isProMain) {
-                s.confidencePro = 1;
-                s.confidenceCon = 0;
+            if (score.claim.isProMain) {
+                score.confidencePro = 1;
+                score.confidenceCon = 0;
             }
             else {
-                s.confidencePro = 0;
-                s.confidenceCon = 1;
+                score.confidencePro = 0;
+                score.confidenceCon = 1;
             }
         }
     };
     /** This performs Importance calculations for both Claims that affect Confidence and Importance.
      * Confidence: sum children(importance)
-     * Importance: (s.importancePro + 1) / (s.importanceCon + 1) */
-    SettleIt.prototype.calculateImportance = function (s) {
-        if (s.claim.affects == "Importance") {
-            s.importancePro = s.confidencePro;
-            s.importanceCon = s.confidenceCon;
+     * Importance: (score.importancePro + 1) / (score.importanceCon + 1) */
+    SettleIt.prototype.calculateImportance = function (score) {
+        if (score.claim.affects == "Importance") {
+            score.importancePro = score.confidencePro;
+            score.importanceCon = score.confidenceCon;
         }
         else {
             var proImportance = 0;
             var conImportance = 0;
             //Add up all the importance children points
-            for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+            for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
                 var childId = _a[_i];
                 var child = this.dict[childId];
                 if (child.claim.affects == "Importance") {
@@ -181,87 +181,87 @@ var SettleIt = (function () {
                     conImportance += child.importanceCon;
                 }
             }
-            s.importancePro = proImportance;
-            s.importanceCon = conImportance;
+            score.importancePro = proImportance;
+            score.importanceCon = conImportance;
         }
-        s.importanceValue = this.safeDivide(s.importancePro + 1, s.importanceCon + 1);
+        score.importanceValue = this.safeDivide(score.importancePro + 1, score.importanceCon + 1);
     };
     /** Count the number of descendants */
-    SettleIt.prototype.countNumDesc = function (s) {
-        s.numDesc = 0;
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+    SettleIt.prototype.countNumDesc = function (score) {
+        score.numDesc = 0;
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
             if (child.numDesc)
-                s.numDesc += child.numDesc + 1;
+                score.numDesc += child.numDesc + 1;
             else
-                s.numDesc += 1;
+                score.numDesc += 1;
         }
     };
-    SettleIt.prototype.step3DescendClaims = function (s, parent) {
-        this.calculatemaxAncestorWeight(s, parent);
-        s.weightPro = s.confidencePro * s.importanceValue * s.maxAncestorWeight;
-        s.weightCon = s.confidenceCon * s.importanceValue * s.maxAncestorWeight;
-        s.weightDif = s.weightPro - s.weightCon;
-        this.calculateParentWeightedDiferenceText(s);
-        this.calculateMainPercent(s, parent);
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+    SettleIt.prototype.step3DescendClaims = function (score, parent) {
+        this.calculatemaxAncestorWeight(score, parent);
+        score.weightPro = score.confidencePro * score.importanceValue * score.maxAncestorWeight;
+        score.weightCon = score.confidenceCon * score.importanceValue * score.maxAncestorWeight;
+        score.weightDif = score.weightPro - score.weightCon;
+        this.calculateParentWeightedDiferenceText(score);
+        this.calculateMainPercent(score, parent);
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
-            this.step3DescendClaims(child, s);
+            this.step3DescendClaims(child, score);
         }
     };
-    SettleIt.prototype.step4AscendClaims = function (s, parent) {
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+    SettleIt.prototype.step4AscendClaims = function (score, parent) {
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
-            this.step4AscendClaims(child, s);
+            this.step4AscendClaims(child, score);
         }
-        this.calculateWeightedPercentage(s, parent);
-        this.sort(s, parent);
+        this.calculateWeightedPercentage(score, parent);
+        this.sort(score, parent);
     };
     /** Find the maximum sibling weight of all my ancestors
      * max(parent.maxAncestorWeight, s.siblingWeight) */
-    SettleIt.prototype.calculatemaxAncestorWeight = function (s, parent) {
+    SettleIt.prototype.calculatemaxAncestorWeight = function (score, parent) {
         if (parent) {
-            s.maxAncestorWeight = Math.max(parent.maxAncestorWeight, s.siblingWeight);
+            score.maxAncestorWeight = Math.max(parent.maxAncestorWeight, score.siblingWeight);
         }
         else {
-            s.maxAncestorWeight = 1;
+            score.maxAncestorWeight = 1;
         }
     };
     /** Adds the proper math sign and converts the disDisplay to a string
      * Affects confidence: + or - , importance ? or ? */
-    SettleIt.prototype.calculateParentWeightedDiferenceText = function (s) {
+    SettleIt.prototype.calculateParentWeightedDiferenceText = function (score) {
         var sign = '';
         var value;
-        if (s.claim.affects == "Importance") {
-            sign = !s.claim.isProParent ? '?' : '?';
-            value = this.safeDivide(s.importancePro + 1, s.importanceCon + 1);
+        if (score.claim.affects == "Importance") {
+            sign = !score.claim.isProParent ? '?' : '?';
+            value = this.safeDivide(score.importancePro + 1, score.importanceCon + 1);
         }
         else {
-            var value = s.weightDif;
+            var value = score.weightDif;
             sign = value < 0 ? '' : '+';
             if (value == 0)
-                sign = s.claim.isProMain ? '+' : '-';
+                sign = score.claim.isProMain ? '+' : '-';
         }
     };
-    SettleIt.prototype.calculateMainPercent = function (s, parent) {
+    SettleIt.prototype.calculateMainPercent = function (score, parent) {
         if (parent) {
-            if (s.claim.affects == "Importance")
-                s.mainPercent = parent.mainPercent * (this.safeDivide(s.confidencePro + s.confidenceCon, parent.confidencePro + parent.confidenceCon));
+            if (score.claim.affects == "Importance")
+                score.mainPercent = parent.mainPercent * (this.safeDivide(score.confidencePro + score.confidenceCon, parent.confidencePro + parent.confidenceCon));
             else
-                s.mainPercent = parent.mainPercent * (this.safeDivide(s.weightPro + s.weightCon, parent.weightPro + parent.weightCon));
+                score.mainPercent = parent.mainPercent * (this.safeDivide(score.weightPro + score.weightCon, parent.weightPro + parent.weightCon));
         }
         else {
-            s.mainPercent = 1;
+            score.mainPercent = 1;
         }
     };
-    SettleIt.prototype.calculateWeightedPercentage = function (s, parent) {
+    SettleIt.prototype.calculateWeightedPercentage = function (score, parent) {
         var WeightedPluses = 0;
         var WeightedMinuses = 0;
         var found = false;
-        for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
+        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             found = true;
             var child = this.dict[childId];
@@ -272,18 +272,18 @@ var SettleIt = (function () {
         }
         if (found) {
             if (WeightedPluses - WeightedMinuses === 0)
-                s.weightedPercentage = 0;
+                score.weightedPercentage = 0;
             else
-                s.weightedPercentage = WeightedPluses / (WeightedPluses - WeightedMinuses);
+                score.weightedPercentage = WeightedPluses / (WeightedPluses - WeightedMinuses);
         }
         else
-            s.weightedPercentage = 1;
+            score.weightedPercentage = 1;
     };
-    SettleIt.prototype.sort = function (s, parent) {
+    SettleIt.prototype.sort = function (score, parent) {
         var _this = this;
         if (!this.shouldSort)
             return;
-        s.claim.childIds.sort(function (a, b) {
+        score.claim.childIds.sort(function (a, b) {
             return Math.abs(_this.dict[b].weightDif) - Math.abs(_this.dict[a].weightDif);
         });
     };

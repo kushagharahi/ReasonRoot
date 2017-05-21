@@ -299,6 +299,9 @@ var SettleIt = (function () {
         }
         else
             score.weightedPercentage = 1;
+        //If it is the first time through then we need to mkae them equal
+        if (!score.animatedWeightedPercentage)
+            score.animatedWeightedPercentage = score.weightedPercentage;
     };
     SettleIt.prototype.sort = function (score, parent) {
         var _this = this;

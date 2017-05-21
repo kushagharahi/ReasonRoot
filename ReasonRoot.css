@@ -262,6 +262,10 @@ li {
 .settingsHider.open {
   max-height: 20em; }
 
+.disabled {
+  opacity: .5;
+}
+
 /*Settings*/
 .hideScore .score{
   max-width: 0;

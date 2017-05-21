@@ -20,6 +20,9 @@
     /** an array of statment id strings representing the ids of this claims children */
     childIds: string[] = [];
 
+    /** */
+    disabled: boolean;
+
     constructor(id?: string, isProMain?: boolean) {
         this.id = id || newId();
         if (isProMain !== undefined) this.isProMain = isProMain

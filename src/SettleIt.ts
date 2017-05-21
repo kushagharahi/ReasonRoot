@@ -41,7 +41,7 @@ class SettleIt {
         this.calculateProMainParent(score, parent);
 
         this.calculateGeneration(score, parent);
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             this.step1ValidateClaims(this.dict[childId], score);
         }
     }
@@ -90,7 +90,7 @@ class SettleIt {
 
     private step2AscendClaims(score: Score, parent?: Score) {
         score.siblingWeight = 1; // This may be wrong. Was only set if it has not parent but now there isn't a parent id
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             this.step2AscendClaims(this.dict[childId], score);
         }
         if (score.claim.affects == undefined) score.claim.affects = "AverageTheConfidence";
@@ -106,7 +106,7 @@ class SettleIt {
     private calculateSiblingWeight(score: Score) {
         var maxPoints = 0;
         //Figure out what is the highest number of points among all the children
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             if (child.claim.affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
@@ -115,7 +115,7 @@ class SettleIt {
         }
 
         //Figure out the multiplier so that all the children have the same weight
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             if (child.claim.affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
@@ -137,7 +137,7 @@ class SettleIt {
         var maxConfCon: number = 0;
         var found: boolean = false;
         //Add up all the children points
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             if (child.claim.affects == "AverageTheConfidence") {
                 found = true;
@@ -189,7 +189,7 @@ class SettleIt {
             var proImportance: number = 0;
             var conImportance: number = 0;
             //Add up all the importance children points
-            for (let childId of score.claim.childIds) {
+            for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
                 let child = this.dict[childId];
                 if (child.claim.affects == "Importance") {
                     proImportance += child.importancePro;
@@ -205,7 +205,7 @@ class SettleIt {
     /** Count the number of descendants */
     private countNumDesc(score: Score) {
         score.numDesc = 0;
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             if (child.numDesc)
                 score.numDesc += child.numDesc + 1;
@@ -222,14 +222,14 @@ class SettleIt {
         score.weightDif = score.weightPro - score.weightCon;
         this.calculateParentWeightedDiferenceText(score);
         this.calculateMainPercent(score, parent);
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             this.step3DescendClaims(child, score);
         }
     }
 
     private step4AscendClaims(score: Score, parent?: Score) {
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             let child = this.dict[childId];
             this.step4AscendClaims(child, score);
         }
@@ -280,7 +280,7 @@ class SettleIt {
         var WeightedPluses = 0;
         var WeightedMinuses = 0;
         var found = false;
-        for (let childId of score.claim.childIds) {
+        for (let childId of score.claim.childIds) { if(this.dict[childId].claim.disabled) continue; //skip if diabled
             found = true;
             let child = this.dict[childId];
             if (child.weightDif > 0)

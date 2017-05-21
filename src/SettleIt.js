@@ -39,6 +39,9 @@ var SettleIt = (function () {
         this.calculateGeneration(score, parent);
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
+            console.log(score.claim.content);
             this.step1ValidateClaims(this.dict[childId], score);
         }
     };
@@ -77,6 +80,8 @@ var SettleIt = (function () {
         score.siblingWeight = 1; // This may be wrong. Was only set if it has not parent but now there isn't a parent id
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             this.step2AscendClaims(this.dict[childId], score);
         }
         if (score.claim.affects == undefined)
@@ -93,6 +98,8 @@ var SettleIt = (function () {
         //Figure out what is the highest number of points among all the children
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             if (child.claim.affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
@@ -102,6 +109,8 @@ var SettleIt = (function () {
         //Figure out the multiplier so that all the children have the same weight
         for (var _b = 0, _c = score.claim.childIds; _b < _c.length; _b++) {
             var childId = _c[_b];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             if (child.claim.affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
@@ -124,6 +133,8 @@ var SettleIt = (function () {
         //Add up all the children points
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             if (child.claim.affects == "AverageTheConfidence") {
                 found = true;
@@ -175,6 +186,8 @@ var SettleIt = (function () {
             //Add up all the importance children points
             for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
                 var childId = _a[_i];
+                if (this.dict[childId].claim.disabled)
+                    continue; //skip if diabled
                 var child = this.dict[childId];
                 if (child.claim.affects == "Importance") {
                     proImportance += child.importancePro;
@@ -191,6 +204,8 @@ var SettleIt = (function () {
         score.numDesc = 0;
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             if (child.numDesc)
                 score.numDesc += child.numDesc + 1;
@@ -207,6 +222,8 @@ var SettleIt = (function () {
         this.calculateMainPercent(score, parent);
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             this.step3DescendClaims(child, score);
         }
@@ -214,6 +231,8 @@ var SettleIt = (function () {
     SettleIt.prototype.step4AscendClaims = function (score, parent) {
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             var child = this.dict[childId];
             this.step4AscendClaims(child, score);
         }
@@ -263,6 +282,8 @@ var SettleIt = (function () {
         var found = false;
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
+            if (this.dict[childId].claim.disabled)
+                continue; //skip if diabled
             found = true;
             var child = this.dict[childId];
             if (child.weightDif > 0)

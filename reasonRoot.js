@@ -12,7 +12,7 @@ this.onload = function () {
             var result = wire`
                 <li id="${claim.id}" class="${score.class}">
                     <div class="claimPad" onclick="${events.selected.bind(score)}">
-                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
+                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con')+ (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
                                 <span class="score" > ${(score.generation == 0 ?
                     Math.round(score.weightedPercentage * 100) + '%' :
@@ -43,6 +43,8 @@ this.onload = function () {
                                 <input bind="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
                                 <input type="checkbox" bind="isProMain" onclick="${events.updated.bind(claim)}">
                                 <label for="isProMain">Does this claim supports the main claim?</label><br/>
+                                <input type="checkbox" bind="disabled" onclick="${events.updated.bind(claim)}">
+                                <label for="disabled">Disabled?</label><br/>
                                 <button onclick="${events.remove.bind(claim, parent)}" name="button">
                                     Remove this claim from it's parent
                                 </button><br/>

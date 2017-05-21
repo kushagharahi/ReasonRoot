@@ -192,9 +192,10 @@ var SettleIt = (function () {
         for (var _i = 0, _a = s.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             var child = this.dict[childId];
-            s.numDesc += 1;
             if (child.numDesc)
                 s.numDesc += child.numDesc + 1;
+            else
+                s.numDesc += 1;
         }
     };
     SettleIt.prototype.step3DescendClaims = function (s, parent) {

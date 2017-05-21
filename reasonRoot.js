@@ -14,8 +14,7 @@ this.onload = function () {
                     <div class="claimPad" onclick="${events.selected.bind(score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.childIds.length > 0 & !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
-                                <span class="score" > ${
-                (score.generation == 0 ?
+                                <span class="score" > ${(score.generation == 0 ?
                     Math.round(score.weightedPercentage * 100) + '%' :
                     Math.floor(Math.abs(score.weightDif)))
                 }</span>
@@ -39,11 +38,19 @@ this.onload = function () {
 
                         <div class="claimEditHider">
                             <div class="claimEditSection">
-                                <input name="content" oninput="${events.updated.bind(claim)}" ><br>
-                                <input name="citation" oninput="${events.updated.bind(claim)}" ><br>
-                                <input name="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
-                                <input type="checkbox" name="isProMain" onclick="${events.updated.bind(claim)}">
-                                <label for="isProMain">Does this claim supports the main claim?</label>
+                                <input bind="content"  oninput="${events.updated.bind(claim)}" ><br>
+                                <input bind="citation" oninput="${events.updated.bind(claim)}" ><br>
+                                <input bind="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
+                                <input type="checkbox" bind="isProMain" onclick="${events.updated.bind(claim)}">
+                                <label for="isProMain">Does this claim supports the main claim?</label><br/>
+                                <button onclick="${events.remove.bind(claim, parent)}" name="button">
+                                    Remove this claim from it's parent
+                                </button><br/>
+                                <button onclick="${events.addExisting.bind(claim)}" name="addChildBtn">
+                                    Add an existing claim
+                                </button>
+                                <input name="addChild" style="width: initial;"><br>
+                                ID:${claim.id}
                             </div>
                         </div>
 
@@ -66,10 +73,13 @@ this.onload = function () {
                 wire.default = claim.content;
                 var inputs = result.querySelector('.claimPad').querySelectorAll('input');
                 for (let input of inputs) {
-                    if (input.type == "checkbox")
-                        input.checked = claim[input.getAttribute("name")];
-                    else
-                        input.value = claim[input.getAttribute("name")];
+                    var bindName = input.getAttribute("bind")
+                    if (bindName) {
+                        if (input.type == "checkbox")
+                        input.checked = claim[bindName];
+                        else
+                        input.value = claim[bindName];
+                    }
                 }
             }
 
@@ -81,14 +91,18 @@ this.onload = function () {
             update(render, dict, mainId, events, claims);
         }
 
+        replaceAll = function (target, search, replacement) {
+            return target.split(search).join(replacement);
+        };
+
         render`
         <div class="${'rr ' +
             (settings.hideScore ? 'hideScore ' : '')
             }">
             <div class = "${'settingsHider ' + (settings.visible ? 'open' : '')}"> 
-                <input type="checkbox" id="hideScore" name="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this, settings)}">
+                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${events.updateSettings.bind(this, settings)}">
                 <label for="hideScore">Hide Score</label>
-                <input value="${JSON.stringify(claims)}"></input>
+                <input value="${replaceAll(JSON.stringify(claims), '\'', '&#39;')}"></input>
            </div>
             <div>${renderNode(dict[mainId], { open: true })}</div>
             <div class="settingsButton" onclick="${toggleSettings}"> 
@@ -160,6 +174,7 @@ this.onload = function () {
             for (var scoreId in dict) {
                 claims.push(dict[scoreId].claim);
             }
+            settleIt.calculate(dict[mainId], dict);
         } else {
             var mainScore = dict[mainId];
             settleIt.calculate(mainScore, dict)
@@ -176,10 +191,13 @@ this.onload = function () {
                 //this.content = e.target.value;
                 var inputs = e.srcElement.parentElement.querySelectorAll('input');
                 for (let input of inputs) {
-                    if (input.type == "checkbox")
-                        this[input.getAttribute("name")] = input.checked;
-                    else
-                        this[input.getAttribute("name")] = input.value;
+                    var bindName = input.getAttribute("bind")
+                    if (bindName) {
+                        if (input.type == "checkbox")
+                            this[bindName] = input.checked;
+                        else
+                            this[bindName] = input.value;
+                    }
                 }
                 settleIt.calculate(dict[mainId], dict);
                 update(render, dict, mainId, events, claims);
@@ -192,6 +210,25 @@ this.onload = function () {
                     setClasses(dict[mainId], dict);
                     update(render, dict, mainId, events, claims);
                 }
+            },
+
+            remove(parent, event) {
+                var index = parent.claim.childIds.indexOf(this.id);
+                if (index > -1) {
+                    parent.claim.childIds.splice(index, 1);
+                }
+                clearClasses(dict);
+                parent.class = "selected";
+                setClasses(dict[mainId], dict);
+                update(render, dict, mainId, events, claims);
+            },
+
+            addExisting(event) {
+                var childId = event.srcElement.parentElement.querySelector('input[name="addChild"]').value;
+                this.childIds.push(childId);
+                settleIt.calculate(dict[mainId], dict);
+                update(render, dict, mainId, events, claims);
+                event.stopPropagation();
             },
 
             add(isProMain, event) {
@@ -231,7 +268,7 @@ this.onload = function () {
             },
 
             updateSettings(settings, event) {
-                settings[event.srcElement.name] = event.srcElement.checked
+                settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked
                 update(render, dict, mainId, events, claims);
                 event.stopPropagation();
             },

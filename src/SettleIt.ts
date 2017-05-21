@@ -207,9 +207,11 @@ class SettleIt {
         s.numDesc = 0;
         for (let childId of s.claim.childIds) {
             let child = this.dict[childId];
-            s.numDesc += 1
             if (child.numDesc)
                 s.numDesc += child.numDesc + 1;
+            else
+                s.numDesc += 1;
+
         }
     }
 

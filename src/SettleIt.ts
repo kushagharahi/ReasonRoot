@@ -308,7 +308,7 @@ class SettleIt {
         } else score.weightedPercentage = 1;
 
         //If it is the first time through then we need to mkae them equal
-        if (!score.animatedWeightedPercentage)
+        if (!score.animatedWeightedPercentage == undefined)
             score.animatedWeightedPercentage = score.weightedPercentage;
     }
 

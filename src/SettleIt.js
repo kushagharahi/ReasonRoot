@@ -282,7 +282,7 @@ var SettleIt = (function () {
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
             if (this.dict[childId].claim.disabled)
-                continue; //skip if diabled
+                continue; //skip if disabled
             found = true;
             var child = this.dict[childId];
             if (child.weightDif > 0)
@@ -299,7 +299,7 @@ var SettleIt = (function () {
         }
         else
             score.weightedPercentage = 1;
-        //If it is the first time through then we need to mkae them equal
+        //Prevent NAN first time through by setting animatedWeightedPercentage if it is the first time through
         if (score.animatedWeightedPercentage == undefined)
             score.animatedWeightedPercentage = score.weightedPercentage;
     };

@@ -290,7 +290,7 @@ class SettleIt {
         var WeightedMinuses = 0;
         var found = false;
         for (let childId of score.claim.childIds) {
-            if (this.dict[childId].claim.disabled) continue; //skip if diabled
+            if (this.dict[childId].claim.disabled) continue; //skip if disabled
             found = true;
             let child = this.dict[childId];
             if (child.weightDif > 0)
@@ -307,7 +307,7 @@ class SettleIt {
                 score.weightedPercentage = WeightedPluses / (WeightedPluses - WeightedMinuses);
         } else score.weightedPercentage = 1;
 
-        //If it is the first time through then we need to mkae them equal
+        //Prevent NAN first time through by setting animatedWeightedPercentage if it is the first time through
         if (score.animatedWeightedPercentage == undefined)
             score.animatedWeightedPercentage = score.weightedPercentage;
     }

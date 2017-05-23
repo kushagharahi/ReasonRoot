@@ -217,7 +217,6 @@ var SettleIt = (function () {
         score.weightPro = score.confidencePro * score.importanceValue * score.maxAncestorWeight;
         score.weightCon = score.confidenceCon * score.importanceValue * score.maxAncestorWeight;
         score.weightDif = score.weightPro - score.weightCon;
-        this.calculateParentWeightedDiferenceText(score);
         this.calculateMainPercent(score, parent);
         for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
             var childId = _a[_i];
@@ -246,22 +245,6 @@ var SettleIt = (function () {
         }
         else {
             score.maxAncestorWeight = 1;
-        }
-    };
-    /** Adds the proper math sign and converts the disDisplay to a string
-     * Affects confidence: + or - , importance ? or ? */
-    SettleIt.prototype.calculateParentWeightedDiferenceText = function (score) {
-        var sign = '';
-        var value;
-        if (score.claim.affects == "Importance") {
-            sign = !score.claim.isProParent ? '?' : '?';
-            value = this.safeDivide(score.importancePro + 1, score.importanceCon + 1);
-        }
-        else {
-            var value = score.weightDif;
-            sign = value < 0 ? '' : '+';
-            if (value == 0)
-                sign = score.claim.isProMain ? '+' : '-';
         }
     };
     SettleIt.prototype.calculateMainPercent = function (score, parent) {

@@ -227,7 +227,6 @@ class SettleIt {
         score.weightPro = score.confidencePro * score.importanceValue * score.maxAncestorWeight;
         score.weightCon = score.confidenceCon * score.importanceValue * score.maxAncestorWeight;
         score.weightDif = score.weightPro - score.weightCon;
-        this.calculateParentWeightedDiferenceText(score);
         this.calculateMainPercent(score, parent);
         for (let childId of score.claim.childIds) {
             if (this.dict[childId].claim.disabled) continue; //skip if diabled
@@ -255,22 +254,6 @@ class SettleIt {
         }
         else {
             score.maxAncestorWeight = 1;
-        }
-    }
-
-    /** Adds the proper math sign and converts the disDisplay to a string
-     * Affects confidence: + or - , importance ? or ? */
-    private calculateParentWeightedDiferenceText(score: Score) {
-        var sign = '';
-        var value: number;
-        if (score.claim.affects == "Importance") {
-            sign = !score.claim.isProParent ? '?' : '?';
-            value = this.safeDivide(score.importancePro + 1, score.importanceCon + 1);
-        } else {
-            var value = score.weightDif
-            sign = value < 0 ? '' : '+';
-            if (value == 0)
-                sign = score.claim.isProMain ? '+' : '-';
         }
     }
 

@@ -20,6 +20,9 @@
     /** an array of statment id strings representing the ids of this claims children */
     childIds: string[] = [];
 
+    /** the maximum confidence allowed on this statement*/
+    maxConf: number;
+
     /** */
     disabled: boolean;
 

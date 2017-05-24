@@ -165,13 +165,6 @@ class SettleIt {
         if (found) {
             score.confidencePro = avgConfPro + maxConfPro;
             score.confidenceCon = avgConfCon + maxConfCon;
-
-            //prevents stataments form reversing
-            if (score.claim.isProParent && score.confidenceCon > score.confidencePro)
-                score.confidenceCon = score.confidencePro
-            if (!score.claim.isProParent && score.confidencePro > score.confidenceCon)
-                score.confidencePro = score.confidenceCon
-
         } else { // Set the defaults if no confidence items were found
             if (score.claim.isProMain) {
                 score.confidencePro = 1;
@@ -181,6 +174,29 @@ class SettleIt {
                 score.confidenceCon = 1;
             }
         }
+
+        //Set the max Confidence
+        if (score.claim.isProMain && score.claim.maxConf) {
+            if (score.confidencePro / (score.confidencePro + score.confidenceCon) > (score.claim.maxConf / 100)) {
+                score.confidenceCon = 10 - (score.claim.maxConf / 10);
+                score.confidencePro = score.claim.maxConf / 10;
+            }
+        }
+        if (!score.claim.isProMain && score.claim.maxConf) {
+            if (score.confidenceCon / (score.confidenceCon + score.confidencePro) > (score.claim.maxConf / 100)) {
+                score.confidencePro = 10 - (score.claim.maxConf / 10)
+                score.confidenceCon = score.claim.maxConf / 10
+            }
+        }
+
+
+        //prevents stataments form reversing
+        if (score.claim.isProMain && score.confidenceCon > score.confidencePro)
+            score.confidenceCon = score.confidencePro
+        if (!score.claim.isProMain && score.confidencePro > score.confidenceCon)
+            score.confidencePro = score.confidenceCon
+
+
     }
 
     /** This performs Importance calculations for both Claims that affect Confidence and Importance.
@@ -218,7 +234,6 @@ class SettleIt {
                 score.numDesc += child.numDesc + 1;
             else
                 score.numDesc += 1;
-
         }
     }
 

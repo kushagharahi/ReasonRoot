@@ -20,7 +20,7 @@ this.onload = function () {
                         s.animatedWeightedPercentage += difference / 10;
                 }
             }
-            if (found) setTimeout(function(){update(render, dict, mainId, events, claims);},100);
+            if (found) setTimeout(function () { update(render, dict, mainId, events, claims); }, 100);
         }
         animatenumbers()
 
@@ -40,7 +40,7 @@ this.onload = function () {
                 }</span>
 
                                 ${claim.content}
-
+                                ${claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
                                 <a target="_blank" href="${claim.citationUrl}" onclick="${events.noBubbleClick}"> 
                                     <span class="citation">${claim.citation}</span>
                                 </a>
@@ -61,6 +61,8 @@ this.onload = function () {
                                 <input bind="content"  oninput="${events.updated.bind(claim)}" ><br>
                                 <input bind="citation" oninput="${events.updated.bind(claim)}" ><br>
                                 <input bind="citationUrl" oninput="${events.updated.bind(claim)}" ><br>
+                                <label for="maxConf" >Maximum Confidence </label><br/>
+                                <input bind="maxConf" name="maxConf" type="number" oninput="${events.updated.bind(claim)}" ><br>
                                 <input type="checkbox" bind="isProMain" onclick="${events.updated.bind(claim)}">
                                 <label for="isProMain">Does this claim supports the main claim?</label><br/>
                                 <input type="checkbox" bind="disabled" onclick="${events.updated.bind(claim)}">

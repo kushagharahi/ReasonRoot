@@ -7,7 +7,7 @@
             "taskName": "tsc",
             "command": "tsc",
             "args": [
-                "--target", "ES5",
+                "--target", "ES6",
                 "--outDir", "js",
                 "--sourceMap",
                 "--watch"

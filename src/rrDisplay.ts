@@ -1,9 +1,14 @@
+declare class hyperHTML {
+    static wire(optObj: any);
+}
+
 class RRDisplay {
     scoresDict: Dict<Score>;
     claimsList: Claim[];
     mainId: string;
     settleIt: SettleIt;
     mainScore: Score;
+    render: any;
 
     constructor(claimElement: Element) {
         this.mainId = claimElement.getAttribute('stmtId');
@@ -23,13 +28,14 @@ class RRDisplay {
         //     }
         //     this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
         // } else {
-            this.mainScore = this.scoresDict[this.mainId];
-            this.settleIt.calculate(this.mainScore, this.scoresDict)
-            this.clearDisplayState();
-            this.setClasses();
+        this.mainScore = this.scoresDict[this.mainId];
+        this.settleIt.calculate(this.mainScore, this.scoresDict)
+        this.clearDisplayState();
+        this.setClasses();
         //}
 
-        alert("ran");
+        this.render = hyperHTML.bind(claimElement);
+        this.update();
     }
 
     clearDisplayState(): void {
@@ -50,7 +56,7 @@ class RRDisplay {
             //process the children first
             this.setClassesLoop(childScore, score);
 
-            if (childScore.displayState == DisplayState.Selected) 
+            if (childScore.displayState == DisplayState.Selected)
                 score.displayState = DisplayState.Parent;
 
             if (childScore.displayState == DisplayState.Ancestor || childScore.displayState == DisplayState.Parent)
@@ -61,5 +67,52 @@ class RRDisplay {
         }
     }
 
+    update(): void {
+        //save(dict[mainId], dict);
+
+        this.render`
+        <div class="${'rr '}">
+            <div>${this.renderNode(this.scoresDict[this.mainId], { open: true })}</div>
+        </div>`;
+    }
+
+    renderNode(score, parent): void {
+        var claim = score.claim;
+        var wire = hyperHTML.wire(score);
+
+        var result = wire`
+                <li id="${claim.id}" >
+                    <div class="claimPad" >
+                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
+                            <div class="innerClaim">
+                                <span class="score" > ${(score.generation == 0 ?
+                Math.round(score.animatedWeightedPercentage * 100) + '%' :
+                Math.floor(Math.abs(score.weightDif)))
+            }</span>
+
+                                ${claim.content}
+                                ${claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
+                                <a target="_blank" href="${claim.citationUrl}" > 
+                                    <span class="citation">${claim.citation}</span>
+                                </a>
+
+                             </div>
+                        </div>
+                        
+                        <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
+                            <div class="${"childIndicator " + (claim.isProMain ? 'pro' : 'con')}">
+                            <div class="childIndicatorInner">
+                            ${score.numDesc} more
+                            </div>
+                            </div>
+                        </div>
+                    </div>  
+                      
+                    <ul>${
+            claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))
+            }</ul>
+                </li>`
+        return result;
+    }
 
 }

@@ -40,8 +40,13 @@
     animatedWeightedPercentage
 
     /** */
+    displayState: DisplayState;
+
+    /** */
     constructor(claim?: Claim) {
         if (claim) this.claim = claim;
     }
 
 }
+
+enum DisplayState { None, Parent, Ancestor, Selected, Child };

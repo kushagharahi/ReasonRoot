@@ -1,5 +1,5 @@
 
-var reasonRoot = function () {
+var reasonRootOld = function () {
 
     var settings = {};
 
@@ -139,7 +139,7 @@ var reasonRoot = function () {
     this.start = function(claimElement) {
         var mainId = claimElement.getAttribute('stmtId');
         var settleIt = new SettleIt();
-
+//----------------------------------------------------------
         clearClasses = function (dict) {
             for (var scoreId in dict) {
                 dict[scoreId].class = "hide";
@@ -315,7 +315,8 @@ var reasonRoot = function () {
 window.onload = function () {
     var claimElements = document.getElementsByTagName('claim');
     for (let claimElement of claimElements) {
-        var x = new reasonRoot(claimElement);
+        var x = new reasonRootOld();
         x.start(claimElement);
+        var y = new RRDisplay(claimElement);
     }
 }

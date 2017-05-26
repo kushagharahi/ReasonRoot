@@ -1,5 +1,5 @@
 
-this.onload = function () {
+var reasonRoot = function () {
 
     var settings = {};
 
@@ -136,8 +136,8 @@ this.onload = function () {
     }
 
     //Render the claims
-    function start(s) {
-        var mainId = s.getAttribute('stmtId');
+    this.start = function(claimElement) {
+        var mainId = claimElement.getAttribute('stmtId');
         var settleIt = new SettleIt();
 
         clearClasses = function (dict) {
@@ -184,7 +184,7 @@ this.onload = function () {
             return result
         }
 
-        var claims = JSON.parse(s.getAttribute('dict'));
+        var claims = JSON.parse(claimElement.getAttribute('dict'));
         //add the claims to the dictionairy
         var dict = createDict(claims);
 
@@ -304,14 +304,18 @@ this.onload = function () {
         };
 
         var root = {};
-        var render = hyperHTML.bind(s);
+        var render = hyperHTML.bind(claimElement);
         update(render, dict, mainId, events, claims);
 
     }
 
-    var claims = document.getElementsByTagName('claim');
-    for (let s of claims) {
-        start(s)
-    }
-
 };
+
+
+window.onload = function () {
+    var claimElements = document.getElementsByTagName('claim');
+    for (let claimElement of claimElements) {
+        var x = new reasonRoot(claimElement);
+        x.start(claimElement);
+    }
+}

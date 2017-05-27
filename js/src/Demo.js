@@ -43,6 +43,7 @@ class Demo {
             let r = this.rr;
             r.settings.noAutoSave = true;
             r.settings.hideScore = true;
+            r.settings.hidePoints = true;
             r.mainScore.claim.content = "How confdient are whe in the statement?";
             r.selectedScore = r.mainScore;
             r.update();

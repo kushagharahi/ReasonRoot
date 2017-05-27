@@ -78,12 +78,15 @@ class RRDisplay {
             localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));;
 
         this.render`
-        <div class="${'rr ' +
-            (this.settings.hideScore ? 'hideScore ' : '')
-            }">
+        <div class="${'rr' +
+            (this.settings.hideScore ? ' hideScore' : '') +
+            (this.settings.hidePoints ? ' hidePoints' : '')
+                    }">
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
+                <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="hidePoints">Hide Points</label>
                 <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="noAutoSave">No Auto Save</label>
                 <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
@@ -124,7 +127,7 @@ class RRDisplay {
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
-                                <span class="score" >${
+                                <span class="${score.generation == 0?'score':'points'}" >${
             (score.generation == 0 ?
                 Math.round(score.animatedWeightedPercentage * 100) + '%' :
                 (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))

@@ -164,7 +164,8 @@
   font-size: smaller;
   font-style: italic; }
 
-.rr .score {
+.rr .score,
+.rr .points {
   display: block;
   float: left;
   font-size: 1.98em;
@@ -281,6 +282,12 @@
 
 /*Settings*/
 .rr.hideScore .score{
+  max-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.rr.hidePoints .points{
   max-width: 0;
   padding: 0;
   margin: 0;

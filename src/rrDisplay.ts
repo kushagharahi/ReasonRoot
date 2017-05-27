@@ -10,6 +10,7 @@ class RRDisplay {
     mainScore: Score;
     render: any;
     settings: any = {};
+    selectedScore: Score;
 
     constructor(claimElement: Element) {
         this.mainId = claimElement.getAttribute('stmtId');
@@ -30,9 +31,9 @@ class RRDisplay {
         //     this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
         // } else {
         this.mainScore = this.scoresDict[this.mainId];
+        this.mainScore.isMain = true;
         this.settleIt.calculate(this.mainScore, this.scoresDict)
-        this.clearDisplayState();
-        this.setClasses();
+        this.setDisplayState();
         //}
 
         this.render = hyperHTML.bind(claimElement);
@@ -42,29 +43,33 @@ class RRDisplay {
     clearDisplayState(): void {
         for (let scoreId in this.scoresDict) {
             if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = DisplayState.None;
+                this.scoresDict[scoreId].displayState = "hideClaim";
             }
         }
     }
 
-    setClasses(): void {
+    setDisplayState(): void {
+        this.clearDisplayState();
         this.setClassesLoop(this.mainScore);
     }
 
-    setClassesLoop(score: Score, parent?: Score): void {
+    setClassesLoop(score: Score): void {
+        if (score == this.selectedScore)
+            score.displayState = "selected";
+
         for (let childId of score.claim.childIds) {
             let childScore = this.scoresDict[childId];
             //process the children first
-            this.setClassesLoop(childScore, score);
+            this.setClassesLoop(childScore);
 
-            if (childScore.displayState == DisplayState.Selected)
-                score.displayState = DisplayState.Parent;
+            if (childScore == this.selectedScore)
+                score.displayState = "parent";
 
-            if (childScore.displayState == DisplayState.Ancestor || childScore.displayState == DisplayState.Parent)
-                score.displayState = DisplayState.Ancestor;
+            if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
+                score.displayState = "ancestor";
 
-            if (score.displayState == DisplayState.Selected)
-                childScore.displayState = DisplayState.Child;
+            if (score == this.selectedScore)
+                childScore.displayState = "child";
         }
     }
 
@@ -76,18 +81,18 @@ class RRDisplay {
             (this.settings.hideScore ? 'hideScore ' : '')
             }">
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
-                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this,this.settings)}">
+                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
                 <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
            </div>
-            <div>${this.renderNode(this.scoresDict[this.mainId], { open: true })}</div>
+            <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
         </div>`;
     }
 
-    updateSettings(settings,event): void {
+    updateSettings(settings, event): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
         event.stopPropagation();
@@ -102,13 +107,13 @@ class RRDisplay {
         return target.split(search).join(replacement);
     };
 
-    renderNode(score, parent): void {
+    renderNode(score: Score, parent?: Score): void {
         var claim = score.claim;
         var wire = hyperHTML.wire(score);
 
         var result = wire`
-                <li id="${claim.id}" >
-                    <div class="claimPad" >
+                <li id="${claim.id}" class="${score.displayState + ' ' + (score.isMain ? 'mainClaim' : '')}">
+                    <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
                                 <span class="score" > ${(score.generation == 0 ?
@@ -139,6 +144,15 @@ class RRDisplay {
             }</ul>
                 </li>`
         return result;
+    }
+
+    selectScore(score: Score, e): void {
+        if (score != this.selectedScore) {
+            this.selectedScore = score;
+            this.setDisplayState();
+            this.update();
+        }
+
     }
 
 }

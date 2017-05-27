@@ -26,6 +26,9 @@
     /** */
     disabled: boolean;
 
+    citationUrl: string;
+    citation: string;
+
     constructor(id?: string, isProMain?: boolean) {
         this.id = id || newId();
         if (isProMain !== undefined) this.isProMain = isProMain

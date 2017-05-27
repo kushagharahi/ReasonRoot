@@ -220,11 +220,20 @@
 .rr .addClaim.con {
   float: right; }
 
-.rr .hide > .claimPad {
+.rr .hideClaim > .claimPad {
   max-height: 0px;
   transition: 1s; }
 
-.rr .hide > .claimPad > .claim > .innerClaim {
+.rr .hideClaim > .claimPad > .claim > .innerClaim {
+  max-height: 2.8em;
+  transition: 1s;
+  padding-bottom: .25em; }
+
+.rr .hideClaim.mainClaim > .claimPad {
+  max-height: 5em;
+  transition: 1s; }
+
+.rr .hideClaim.mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
   padding-bottom: .25em; }

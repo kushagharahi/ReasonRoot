@@ -46,7 +46,10 @@
     constructor(claim?: Claim) {
         if (claim) this.claim = claim;
     }
-
+    
+    isMain: boolean;
 }
 
-enum DisplayState { None, Parent, Ancestor, Selected, Child };
+type DisplayState = "hideClaim" | "parent" | "ancestor" | "selected" | "child";
+
+//enum DisplayState { None, Parent, Ancestor, Selected, Child };

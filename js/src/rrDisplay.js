@@ -132,6 +132,8 @@ class RRDisplay {
 
                         <div class="claimMenuHider">
                             <div class="claimMenuSection">
+                                <div class="addClaim pro" onclick="${this.addClaim.bind(this, score, true)}">add</div>
+                                <div class="addClaim con" onclick="${this.addClaim.bind(this, score, false)}">add</div>
                                 <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
                             </div>
                         </div>
@@ -178,6 +180,19 @@ class RRDisplay {
     }
     editClaim(score, event) {
         this.settings.isEditing = !this.settings.isEditing;
+        this.update();
+        event.stopPropagation();
+    }
+    addClaim(parentScore, isProMain, event) {
+        let newClaim = new Claim();
+        newClaim.isProMain = isProMain;
+        let newScore = new Score(newClaim);
+        this.scoresDict[newClaim.id] = newScore;
+        parentScore.claim.childIds.unshift(newClaim.id);
+        this.claimsList.push(newScore.claim);
+        this.selectedScore = newScore;
+        this.setDisplayState();
+        this.settleIt.calculate(this.mainScore, this.scoresDict);
         this.update();
         event.stopPropagation();
     }

@@ -6,6 +6,8 @@ class Claim {
         this.affects = "AverageTheConfidence";
         /** an array of statment id strings representing the ids of this claims children */
         this.childIds = [];
+        this.citationUrl = "";
+        this.citation = "";
         this.id = id || newId();
         if (isProMain !== undefined)
             this.isProMain = isProMain;

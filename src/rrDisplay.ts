@@ -113,9 +113,9 @@ class RRDisplay {
 
         var result = wire`
                 <li id="${claim.id}" class="${
-                    score.displayState + ' ' +
-                    (score.isMain ? 'mainClaim' : '') + ' ' +
-                    (this.settings.isEditing && this.selectedScore == score ? 'editing' : '')}">
+            score.displayState + ' ' +
+            (score.isMain ? 'mainClaim' : '') + ' ' +
+            (this.settings.isEditing && this.selectedScore == score ? 'editing' : '')}">
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
@@ -163,6 +163,8 @@ class RRDisplay {
 
                         <div class="claimMenuHider">
                             <div class="claimMenuSection">
+                                <div class="addClaim pro" onclick="${this.addClaim.bind(this,score, true)}">add</div>
+                                <div class="addClaim con" onclick="${this.addClaim.bind(this,score, false)}">add</div>
                                 <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
                             </div>
                         </div>
@@ -213,11 +215,24 @@ class RRDisplay {
         this.update();
     }
 
-    editClaim(score: Score, event: Event ): void {
-        this.settings.isEditing = !this.settings.isEditing;   
+    editClaim(score: Score, event: Event): void {
+        this.settings.isEditing = !this.settings.isEditing;
         this.update();
         event.stopPropagation();
     }
 
+    addClaim(parentScore:Score, isProMain: boolean, event: Event) {
+        let newClaim: Claim = new Claim();
+        newClaim.isProMain = isProMain;
+        let newScore: Score = new Score(newClaim)
+        this.scoresDict[newClaim.id] = newScore;
+        parentScore.claim.childIds.unshift(newClaim.id);
+        this.claimsList.push(newScore.claim);
+        this.selectedScore = newScore;
+        this.setDisplayState();
+        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.update();
+        event.stopPropagation();
+    }
 
 }

@@ -11,6 +11,7 @@ class RRDisplay {
     render: any;
     settings: any = {};
     selectedScore: Score;
+    savePrefix: string = "rr_";
 
     constructor(claimElement: Element) {
         this.mainId = claimElement.getAttribute('stmtId');
@@ -18,23 +19,22 @@ class RRDisplay {
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
         this.scoresDict = createDict(this.claimsList);
 
-        ////restore saved dictionairy
-        //let potentialDict = localStorage.getItem("rr_" + this.mainId);
-        // //remove saving
-        // if (potentialDict) {
-        //     this.scoresDict = JSON.parse(potentialDict);
-        //     this.mainScore = this.scoresDict[this.mainId];
-        //     this.claimsList = [];
-        //     for (let scoreId in this.scoresDict) {
-        //         this.claimsList.push(this.scoresDict[scoreId].claim);
-        //     }
-        //     this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
-        // } else {
-        this.mainScore = this.scoresDict[this.mainId];
-        this.mainScore.isMain = true;
-        this.settleIt.calculate(this.mainScore, this.scoresDict)
-        this.setDisplayState();
-        //}
+        //restore saved dictionairy
+        let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
+        if (potentialDict) {
+            this.scoresDict = JSON.parse(potentialDict);
+            this.mainScore = this.scoresDict[this.mainId];
+            this.claimsList = [];
+            for (let scoreId in this.scoresDict) {
+                this.claimsList.push(this.scoresDict[scoreId].claim);
+            }
+            this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
+        } else {
+            this.mainScore = this.scoresDict[this.mainId];
+            this.mainScore.isMain = true;
+            this.settleIt.calculate(this.mainScore, this.scoresDict)
+            this.setDisplayState();
+        }
 
         this.render = hyperHTML.bind(claimElement);
         this.update();
@@ -59,7 +59,7 @@ class RRDisplay {
 
         for (let childId of score.claim.childIds) {
             let childScore = this.scoresDict[childId];
-            //process the children first
+            //process the children first/
             this.setClassesLoop(childScore);
 
             if (childScore == this.selectedScore)
@@ -74,7 +74,8 @@ class RRDisplay {
     }
 
     update(): void {
-        //save(dict[mainId], dict);
+        if (this.settings.autoSave)
+            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));;
 
         this.render`
         <div class="${'rr ' +
@@ -124,7 +125,7 @@ class RRDisplay {
                                 <span class="score" >${
             (score.generation == 0 ?
                 Math.round(score.animatedWeightedPercentage * 100) + '%' :
-                (score.weightDif!=undefined?Math.floor(Math.abs(score.weightDif)):''))
+                (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))
             }</span>
 
                                 ${claim.content}
@@ -208,7 +209,7 @@ class RRDisplay {
                     s.animatedWeightedPercentage += difference / 100;
             }
         }
-        if (found) setTimeout(()=> this.update(), 100);
+        if (found) setTimeout(() => this.update(), 100);
     }
 
     selectScore(score: Score, e): void {

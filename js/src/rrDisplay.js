@@ -1,27 +1,28 @@
 class RRDisplay {
     constructor(claimElement) {
         this.settings = {};
+        this.savePrefix = "rr_";
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
         this.scoresDict = createDict(this.claimsList);
-        ////restore saved dictionairy
-        //let potentialDict = localStorage.getItem("rr_" + this.mainId);
-        // //remove saving
-        // if (potentialDict) {
-        //     this.scoresDict = JSON.parse(potentialDict);
-        //     this.mainScore = this.scoresDict[this.mainId];
-        //     this.claimsList = [];
-        //     for (let scoreId in this.scoresDict) {
-        //         this.claimsList.push(this.scoresDict[scoreId].claim);
-        //     }
-        //     this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
-        // } else {
-        this.mainScore = this.scoresDict[this.mainId];
-        this.mainScore.isMain = true;
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
-        this.setDisplayState();
-        //}
+        //restore saved dictionairy
+        let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
+        if (potentialDict) {
+            this.scoresDict = JSON.parse(potentialDict);
+            this.mainScore = this.scoresDict[this.mainId];
+            this.claimsList = [];
+            for (let scoreId in this.scoresDict) {
+                this.claimsList.push(this.scoresDict[scoreId].claim);
+            }
+            this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
+        }
+        else {
+            this.mainScore = this.scoresDict[this.mainId];
+            this.mainScore.isMain = true;
+            this.settleIt.calculate(this.mainScore, this.scoresDict);
+            this.setDisplayState();
+        }
         this.render = hyperHTML.bind(claimElement);
         this.update();
     }
@@ -41,7 +42,7 @@ class RRDisplay {
             score.displayState = "selected";
         for (let childId of score.claim.childIds) {
             let childScore = this.scoresDict[childId];
-            //process the children first
+            //process the children first/
             this.setClassesLoop(childScore);
             if (childScore == this.selectedScore)
                 score.displayState = "parent";
@@ -52,7 +53,9 @@ class RRDisplay {
         }
     }
     update() {
-        //save(dict[mainId], dict);
+        if (this.settings.autoSave)
+            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));
+        ;
         this.render `
         <div class="${'rr ' +
             (this.settings.hideScore ? 'hideScore ' : '')}">

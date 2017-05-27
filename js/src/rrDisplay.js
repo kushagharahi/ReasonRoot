@@ -36,7 +36,7 @@ class RRDisplay {
     clearDisplayState() {
         for (let scoreId in this.scoresDict) {
             if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = "hideClaim";
+                this.scoresDict[scoreId].displayState = "notSelected";
             }
         }
     }
@@ -92,6 +92,7 @@ class RRDisplay {
     renderNode(score, parent) {
         var claim = score.claim;
         var wire = hyperHTML.wire(score);
+        this.animatenumbers();
         var result = wire `
                 <li id="${claim.id}" class="${score.displayState + ' ' +
             (score.isMain ? 'mainClaim' : '') + ' ' +
@@ -101,7 +102,7 @@ class RRDisplay {
                             <div class="innerClaim">
                                 <span class="score" >${(score.generation == 0 ?
             Math.round(score.animatedWeightedPercentage * 100) + '%' :
-            Math.floor(Math.abs(score.weightDif)))}</span>
+            (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))}</span>
 
                                 ${claim.content}
                                 ${claim.maxConf && claim.maxConf < 100 ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
@@ -165,6 +166,23 @@ class RRDisplay {
         }
         return result;
     }
+    //Check for animating numbers
+    animatenumbers() {
+        var found = false;
+        for (var scoreId in this.scoresDict) {
+            var s = this.scoresDict[scoreId];
+            if (s.weightedPercentage != s.animatedWeightedPercentage) {
+                found = true;
+                var difference = s.weightedPercentage - s.animatedWeightedPercentage;
+                if (Math.abs(difference) < .01)
+                    s.animatedWeightedPercentage = s.weightedPercentage;
+                else
+                    s.animatedWeightedPercentage += difference / 100;
+            }
+        }
+        if (found)
+            setTimeout(() => this.update(), 100);
+    }
     selectScore(score, e) {
         if (score != this.selectedScore) {
             this.selectedScore = score;
@@ -189,8 +207,11 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.calculate();
         this.update();
+    }
+    calculate() {
+        this.settleIt.calculate(this.mainScore, this.scoresDict);
     }
     removeClaim(claim, parentScore, event) {
         var index = parentScore.claim.childIds.indexOf(claim.id);
@@ -213,12 +234,12 @@ class RRDisplay {
         this.scoresDict[newClaim.id] = newScore;
         parentScore.claim.childIds.unshift(newClaim.id);
         this.claimsList.push(newScore.claim);
-        newScore.displayState = "hideClaim";
+        newScore.displayState = "notSelected";
         this.update();
         setTimeout(() => {
             this.selectedScore = newScore;
             this.settings.isEditing = true;
-            this.settleIt.calculate(this.mainScore, this.scoresDict);
+            this.calculate();
             this.setDisplayState();
             this.update();
         }, 10);
@@ -235,21 +256,7 @@ window.onload = function () {
             mainClaimsDict[rr.mainId] = rr;
         }
         //Run the Demo ________________________________________________________________
-        demo();
+        new Demo(mainClaimsDict[0]).run();
     });
 };
-function demo() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let rr = mainClaimsDict[0];
-        yield wait(3000);
-        rr.addClaim(rr.mainScore, false);
-    });
-}
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
-    });
-}
 //# sourceMappingURL=RRDisplay.js.map

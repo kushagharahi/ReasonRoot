@@ -43,7 +43,7 @@ class RRDisplay {
     clearDisplayState(): void {
         for (let scoreId in this.scoresDict) {
             if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = "hideClaim";
+                this.scoresDict[scoreId].displayState = "notSelected";
             }
         }
     }
@@ -111,6 +111,8 @@ class RRDisplay {
         var claim = score.claim;
         var wire = hyperHTML.wire(score);
 
+        this.animatenumbers()
+
         var result = wire`
                 <li id="${claim.id}" class="${
             score.displayState + ' ' +
@@ -122,7 +124,7 @@ class RRDisplay {
                                 <span class="score" >${
             (score.generation == 0 ?
                 Math.round(score.animatedWeightedPercentage * 100) + '%' :
-                Math.floor(Math.abs(score.weightDif)))
+                (score.weightDif!=undefined?Math.floor(Math.abs(score.weightDif)):''))
             }</span>
 
                                 ${claim.content}
@@ -192,6 +194,23 @@ class RRDisplay {
         return result;
     }
 
+    //Check for animating numbers
+    animatenumbers() {
+        var found = false;
+        for (var scoreId in this.scoresDict) {
+            var s = this.scoresDict[scoreId];
+            if (s.weightedPercentage != s.animatedWeightedPercentage) {
+                found = true;
+                var difference = s.weightedPercentage - s.animatedWeightedPercentage
+                if (Math.abs(difference) < .01)
+                    s.animatedWeightedPercentage = s.weightedPercentage
+                else
+                    s.animatedWeightedPercentage += difference / 100;
+            }
+        }
+        if (found) setTimeout(()=> this.update(), 100);
+    }
+
     selectScore(score: Score, e): void {
         if (score != this.selectedScore) {
             this.selectedScore = score;
@@ -217,8 +236,12 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.calculate();
         this.update();
+    }
+
+    calculate(): void {
+        this.settleIt.calculate(this.mainScore, this.scoresDict)
     }
 
     removeClaim(claim: Claim, parentScore: Score, event): void {
@@ -242,13 +265,13 @@ class RRDisplay {
         this.scoresDict[newClaim.id] = newScore;
         parentScore.claim.childIds.unshift(newClaim.id);
         this.claimsList.push(newScore.claim);
-        newScore.displayState = "hideClaim";
+        newScore.displayState = "notSelected";
         this.update();
 
         setTimeout(() => {
             this.selectedScore = newScore;
             this.settings.isEditing = true;
-            this.settleIt.calculate(this.mainScore, this.scoresDict);
+            this.calculate();
             this.setDisplayState();
             this.update();
         }, 10)
@@ -270,17 +293,6 @@ window.onload = async function () {
     }
 
     //Run the Demo ________________________________________________________________
-    demo();
+    new Demo(mainClaimsDict[0]).run();
 }
 
-async function demo() {
-    let rr = mainClaimsDict[0]
-    await wait(3000);
-    rr.addClaim(rr.mainScore, false)
-}
-
-async function wait(milliseconds: number) {
-    return new Promise<void>(resolve => {
-        setTimeout(resolve, milliseconds);
-    });
-}

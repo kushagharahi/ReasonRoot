@@ -222,20 +222,24 @@
 .rr .addClaim.con {
   float: right; }
 
-.rr .hideClaim > .claimPad {
+.rr .newClaim > .claimPad,
+.rr .notSelected > .claimPad {
   max-height: 0px;
   transition: 1s; }
 
-.rr .hideClaim > .claimPad > .claim > .innerClaim {
+.rr .newClaim > .claimPad > .claim > .innerClaim,
+.rr .notSelected > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
   padding-bottom: .25em; }
 
-.rr .hideClaim.mainClaim > .claimPad {
+.rr .newClaim.mainClaim > .claimPad,
+.rr .notSelected.mainClaim > .claimPad {
   max-height: 5em;
   transition: 1s; }
 
-.rr .hideClaim.mainClaim > .claimPad > .claim > .innerClaim {
+.rr .newClaim.mainClaim > .claimPad > .claim > .innerClaim,
+.rr .notSelected.mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
   padding-bottom: .25em; }

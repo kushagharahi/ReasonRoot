@@ -84,17 +84,19 @@ class RRDisplay {
         var claim = score.claim;
         var wire = hyperHTML.wire(score);
         var result = wire `
-                <li id="${claim.id}" class="${score.displayState + ' ' + (score.isMain ? 'mainClaim' : '')}">
+                <li id="${claim.id}" class="${score.displayState + ' ' +
+            (score.isMain ? 'mainClaim' : '') + ' ' +
+            (this.settings.isEditing && this.selectedScore == score ? 'editing' : '')}">
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
-                                <span class="score" > ${(score.generation == 0 ?
+                                <span class="score" >${(score.generation == 0 ?
             Math.round(score.animatedWeightedPercentage * 100) + '%' :
             Math.floor(Math.abs(score.weightDif)))}</span>
 
                                 ${claim.content}
                                 ${claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
-                                <a target="_blank" href="${claim.citationUrl}" > 
+                                <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}"> 
                                     <span class="citation">${claim.citation}</span>
                                 </a>
 
@@ -108,10 +110,36 @@ class RRDisplay {
                             </div>
                             </div>
                         </div>
+
+                        <div class="claimEditHider">
+                            <div class="claimEditSection">
+                                <input bind="content"  oninput="${this.updateClaim.bind(this, claim)}" ><br>
+                                <input bind="citation" oninput="${this.updateClaim.bind(this, claim)}" ><br>
+                                <input bind="citationUrl" oninput="${this.updateClaim.bind(this, claim)}" ><br>
+                                <label for="maxConf" >Maximum Confidence </label><br/>
+                                <input bind="maxConf" name="maxConf" type="number" oninput="${this.updateClaim.bind(this, claim)}" ><br>
+                                <input type="checkbox" bind="isProMain" onclick="${this.updateClaim.bind(this, claim)}">
+                                <label for="isProMain">Does this claim supports the main claim?</label><br/>
+                                <input type="checkbox" bind="disabled" onclick="${this.updateClaim.bind(this, claim)}">
+                                <label for="disabled">Disabled?</label><br/>
+                                <button onclick="${this.removeClaim.bind(this, claim, parent)}" name="button">
+                                    Remove this claim from it's parent
+                                </button><br/>
+                                <input name="addChild" style="width: initial;"><br>
+                                ID:${claim.id}
+                            </div>
+                        </div>
+
+                        <div class="claimMenuHider">
+                            <div class="claimMenuSection">
+                                <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
+                            </div>
+                        </div>
+
                     </div>  
                       
                     <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))}</ul>
-                </li>`;
+                        </li>`;
         return result;
     }
     selectScore(score, e) {
@@ -120,6 +148,38 @@ class RRDisplay {
             this.setDisplayState();
             this.update();
         }
+    }
+    noBubbleClick(event) {
+        var event = arguments[0] || window.event;
+        event.stopPropagation();
+    }
+    updateClaim(claim, event) {
+        //this.content = e.target.value;
+        var inputs = event.srcElement.parentElement.querySelectorAll('input');
+        for (let input of inputs) {
+            var bindName = input.getAttribute("bind");
+            if (bindName) {
+                if (input.type == "checkbox")
+                    claim[bindName] = input.checked;
+                else
+                    claim[bindName] = input.value;
+            }
+        }
+        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.update();
+    }
+    removeClaim(claim, parentScore, event) {
+        var index = parentScore.claim.childIds.indexOf(claim.id);
+        if (index > -1)
+            parentScore.claim.childIds.splice(index, 1);
+        this.selectedScore = parentScore;
+        this.setDisplayState();
+        this.update();
+    }
+    editClaim(score, event) {
+        this.settings.isEditing = !this.settings.isEditing;
+        this.update();
+        event.stopPropagation();
     }
 }
 //# sourceMappingURL=RRDisplay.js.map

@@ -84,8 +84,20 @@
   transition: .25s;
   overflow: hidden; }
 
+.rr .mainClaim > .claimPad {
+  cursor: pointer;
+  cursor: -webkit-zoom-in;
+  max-height: inherit; }
+
+.rr .mainClaim > .claimPad > .claim > .innerClaim {
+  max-height: 2.5em;
+  transition: 1s;
+  padding-bottom: .25em; }
+
 .rr .selected > .claimPad {
-  overflow: visible; }
+  overflow: visible;
+  cursor: initial;
+ }
 
 .rr .selected > .claimPad > .claim > .innerClaim {
   max-height: 15em;
@@ -109,19 +121,9 @@
 .rr .parent > .claimPad {
   cursor: pointer;
   cursor: -webkit-zoom-out;
-  max-height: 5em; }
+  max-height: inherit; }
 
 .rr .parent > .claimPad > .claim > .innerClaim {
-  max-height: 2.5em;
-  transition: 1s;
-  padding-bottom: .25em; }
-
-.rr .mainClaim > .claimPad {
-  cursor: pointer;
-  cursor: -webkit-zoom-out;
-  max-height: 5em; }
-
-.rr .mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.5em;
   transition: 1s;
   padding-bottom: .25em; }

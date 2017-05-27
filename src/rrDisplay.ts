@@ -281,18 +281,5 @@ class RRDisplay {
 
 }
 
-let mainClaimsDict = {}
 
-window.onload = async function () {
-
-    var claimElements = <any>document.getElementsByTagName('claim');
-
-    for (let claimElement of claimElements) {
-        let rr = new RRDisplay(claimElement);
-        mainClaimsDict[rr.mainId] = rr;
-    }
-
-    //Run the Demo ________________________________________________________________
-    new Demo(mainClaimsDict[0]).run();
-}
 

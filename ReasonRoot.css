@@ -224,22 +224,26 @@
   float: right; }
 
 .rr .newClaim > .claimPad,
-.rr .notSelected > .claimPad {
+.rr .notSelected > .claimPad,
+.rr .sibling > .claimPad {
   max-height: 0px;
   transition: 1s; }
 
 .rr .newClaim > .claimPad > .claim > .innerClaim,
+.rr .sibling > .claimPad > .claim > .innerClaim,
 .rr .notSelected > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
   padding-bottom: .25em; }
 
 .rr .newClaim.mainClaim > .claimPad,
+.rr .sibling.mainClaim > .claimPad,
 .rr .notSelected.mainClaim > .claimPad {
   max-height: 5em;
   transition: 1s; }
 
 .rr .newClaim.mainClaim > .claimPad > .claim > .innerClaim,
+.rr .sibling.mainClaim > .claimPad > .claim > .innerClaim,
 .rr .notSelected.mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
@@ -292,3 +296,15 @@
   padding: 0;
   margin: 0;
 }
+
+.rr.showSiblings .sibling > .claimPad {
+  max-height: 5em;
+  transition: 1s; 
+}
+
+.rr.hideClaimMenu .selected > .claimPad > .claimMenuHider {
+    height: 0;
+}
+
+.rr.hideChildIndicator .childIndicatorSpace {
+  height: 0; }

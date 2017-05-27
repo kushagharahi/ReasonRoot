@@ -35,17 +35,24 @@ class RRDisplay {
     }
     setDisplayState() {
         this.clearDisplayState();
-        this.setClassesLoop(this.mainScore);
+        this.setDisplayStateLoop(this.mainScore);
     }
-    setClassesLoop(score) {
+    setDisplayStateLoop(score) {
         if (score == this.selectedScore)
             score.displayState = "selected";
         for (let childId of score.claim.childIds) {
             let childScore = this.scoresDict[childId];
             //process the children first/
-            this.setClassesLoop(childScore);
-            if (childScore == this.selectedScore)
+            this.setDisplayStateLoop(childScore);
+            if (childScore == this.selectedScore) {
                 score.displayState = "parent";
+                //Set Siblings
+                for (let siblingId of score.claim.childIds) {
+                    let siblingScore = this.scoresDict[siblingId];
+                    if (siblingScore.displayState != "selected")
+                        siblingScore.displayState = "sibling";
+                }
+            }
             if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
                 score.displayState = "ancestor";
             if (score == this.selectedScore)
@@ -59,7 +66,10 @@ class RRDisplay {
         this.render `
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
-            (this.settings.hidePoints ? ' hidePoints' : '')}">
+            (this.settings.hidePoints ? ' hidePoints' : '') +
+            (this.settings.hideClaimMenu ? ' hideClaimMenu' : '') +
+            (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
+            (this.settings.showSiblings ? ' showSiblings' : '')}">
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
@@ -67,6 +77,12 @@ class RRDisplay {
                 <label for="hidePoints">Hide Points</label>
                 <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="noAutoSave">No Auto Save</label>
+                <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="showSiblings">Show Sibllings</label>
+                <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="hideClaimMenu">Hide Claim Menu</label>
+                <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="hideChildIndicator">Hide Child Indicator</label>
                 <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
            </div>
             <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
@@ -94,9 +110,9 @@ class RRDisplay {
         var wire = hyperHTML.wire(score);
         this.animatenumbers();
         var result = wire `
-                <li id="${claim.id}" class="${score.displayState + ' ' +
-            (score.isMain ? 'mainClaim' : '') + ' ' +
-            (this.settings.isEditing && this.selectedScore == score ? 'editing' : '')}">
+                <li id="${claim.id}" class="${score.displayState +
+            (score.isMain ? ' mainClaim' : '') +
+            (this.settings.isEditing && this.selectedScore == score ? ' editing' : '')}">
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">

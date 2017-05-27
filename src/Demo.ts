@@ -1,34 +1,38 @@
 class Demo {
     rr: RRDisplay;
+    speed: number = 1;
 
     constructor(rrDisplay?: RRDisplay) {
         this.rr = rrDisplay
     }
 
-    async addClaim(content: string, isProMain: boolean = true): Promise<Score> {
+    addClaim(content: string, isProMain: boolean = true, parent?: Score): Score {
         ///rr.addClaim(rr.mainScore, false)
+        if (!parent) parent = this.rr.mainScore;
         let newClaim: Claim = new Claim();
         newClaim.content = content;
         newClaim.isProMain = isProMain;
         let newScore: Score = new Score(newClaim)
         this.rr.scoresDict[newClaim.id] = newScore;
-        this.rr.mainScore.claim.childIds.unshift(newClaim.id);
+        parent.claim.childIds.unshift(newClaim.id);
         this.rr.claimsList.push(newScore.claim);
         newScore.displayState = "newClaim";
         this.rr.update();
 
-        await this.wait(20);
-        //this.rr.selectedScore = newScore;
-        //this.rr.calculate();
-        this.rr.setDisplayState();
-        // newScore.displayState = "newClaim";
-        this.rr.update();
+        //await this.wait(20);
+        setTimeout(() => {
+            //this.rr.selectedScore = newScore;
+            //this.rr.calculate();
+            this.rr.setDisplayState();
+            // newScore.displayState = "newClaim";
+            this.rr.update();
+        }, 20)
         return newScore;
     }
 
     async wait(milliseconds: number) {
         return new Promise<void>(resolve => {
-            setTimeout(resolve, milliseconds);
+            setTimeout(resolve, milliseconds / this.speed);
         });
     }
 
@@ -37,7 +41,11 @@ class Demo {
         r.settings.noAutoSave = true;
         r.settings.hideScore = true;
         r.settings.hidePoints = true;
-        r.mainScore.claim.content = "How confdient are whe in the statement?"
+        r.settings.showSiblings = true;
+        r.settings.hideClaimMenu = true;
+        r.settings.hideChildIndicator = true;
+
+        r.mainScore.claim.content = "How confdient are we?"
         r.selectedScore = r.mainScore;
         r.update();
 
@@ -60,13 +68,39 @@ class Demo {
         await this.wait(1000);
 
         //Add a third Claim
-        this.addClaim("Here is another reason it could be false...", true)
-        //await this.wait(1000);
+        let c3 = this.addClaim("Here is another reason it could be false...", true)
         await this.wait(1000);
         r.calculate();
-
         r.settings.hideScore = false;
         r.update();
+
+        //Make the last claim 50% confident
+        await this.wait(1000);
+        r.selectedScore = c3;
+        this.addClaim("The blue side says this claim is false because..", true, c3)
+        this.addClaim("The orange side says this claim is false because..", false, c3)
+        r.setDisplayState();
+        r.update();
+
+        //Show what happens
+        await this.wait(1000);
+        r.calculate();
+        r.update();
+
+        //show points
+        await this.wait(1000);
+        r.settings.hidePoints = false;
+        r.update();
+
+        //set it so they can edit
+        await this.wait(1000);
+        r.settings.hideClaimMenu = false;
+        r.settings.hideChildIndicator = false;
+        r.settings.showSiblings = false;
+        r.selectedScore = r.mainScore;
+        r.setDisplayState();
+        r.update();
+
     }
 
 }

@@ -51,6 +51,6 @@
     isEditing: boolean;
 }
 
-type DisplayState = "newClaim" | "notSelected" | "parent" | "ancestor" | "selected"| "selected editing" | "child";
+type DisplayState = "newClaim" | "notSelected" | "parent" | "ancestor" | "selected"| "selected editing" | "child" | "sibling";
 
 //enum DisplayState { None, Parent, Ancestor, Selected, Child };

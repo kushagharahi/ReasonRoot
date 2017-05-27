@@ -34,7 +34,7 @@ class Demo {
 
     async run(rrDisplay?: RRDisplay) {
         let r = this.rr
-        r.settings.autoSave = false;
+        r.settings.noAutoSave = true;
         r.settings.hideScore = true;
         r.mainScore.claim.content = "How confdient are whe in the statement?"
         r.selectedScore = r.mainScore;

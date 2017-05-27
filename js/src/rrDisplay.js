@@ -53,7 +53,7 @@ class RRDisplay {
         }
     }
     update() {
-        if (this.settings.autoSave)
+        if (!this.settings.noAutoSave)
             localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));
         ;
         this.render `
@@ -62,6 +62,8 @@ class RRDisplay {
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
+                <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="noAutoSave">No Auto Save</label>
                 <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
            </div>
             <div>${this.renderNode(this.scoresDict[this.mainId])}</div>

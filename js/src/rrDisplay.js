@@ -95,7 +95,7 @@ class RRDisplay {
             Math.floor(Math.abs(score.weightDif)))}</span>
 
                                 ${claim.content}
-                                ${claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
+                                ${claim.maxConf && claim.maxConf < 100 ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
                                 <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}"> 
                                     <span class="citation">${claim.citation}</span>
                                 </a>
@@ -125,7 +125,6 @@ class RRDisplay {
                                 <button onclick="${this.removeClaim.bind(this, claim, parent)}" name="button">
                                     Remove this claim from it's parent
                                 </button><br/>
-                                <input name="addChild" style="width: initial;"><br>
                                 ID:${claim.id}
                             </div>
                         </div>
@@ -142,6 +141,19 @@ class RRDisplay {
                       
                     <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))}</ul>
                         </li>`;
+        if (!wire.default) {
+            wire.default = claim.content;
+            var inputs = result.querySelector('.claimPad').querySelectorAll('input');
+            for (let input of inputs) {
+                var bindName = input.getAttribute("bind");
+                if (bindName) {
+                    if (input.type == "checkbox")
+                        input.checked = claim[bindName];
+                    else
+                        input.value = claim[bindName];
+                }
+            }
+        }
         return result;
     }
     selectScore(score, e) {

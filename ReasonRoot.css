@@ -84,19 +84,6 @@
   transition: .25s;
   overflow: hidden; }
 
-.rr .selected > .claimPad {
-  overflow: visible;
-  cursor: initial;
- }
-
-.rr .selected > .claimPad > .claim > .innerClaim {
-  max-height: 15em;
-  transition: 1s;
-  padding-bottom: .25em; }
-
-.rr .selected > .claimPad > .childIndicatorSpace {
-  height: 0; }
-
 .rr .ancestor > .claimPad {
   cursor: pointer;
   cursor: -webkit-zoom-out;
@@ -117,6 +104,19 @@
   max-height: 2.5em;
   transition: 1s;
   padding-bottom: .25em; }
+
+.rr .selected > .claimPad > .claim > .innerClaim {
+  max-height: 15em;
+  transition: 1s;
+  padding-bottom: .25em; }
+
+.rr .selected > .claimPad > .childIndicatorSpace {
+  height: 0; }
+
+.rr .selected > .claimPad {
+  overflow: visible;
+  cursor: initial;
+ }
 
 .rr .parent > .claimPad {
   cursor: pointer;
@@ -276,7 +276,7 @@
 }
 
 /*Settings*/
-.rr .hideScore .score{
+.rr.hideScore .score{
   max-width: 0;
   padding: 0;
   margin: 0;

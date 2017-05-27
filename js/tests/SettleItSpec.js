@@ -19,10 +19,10 @@ describe('', function () {
     describe("Base Simple Tests", function () {
         it("Pro, Con: should be +0", function () {
             mainClaim.childIds.push("1_1", "1_2");
-            var st1_1 = new Claim("1_1", true);
-            var sc1_1 = new Score(st1_1);
-            var st1_2 = new Claim("1_2", false);
-            var sc1_2 = new Score(st1_2);
+            let st1_1 = new Claim("1_1", true);
+            let sc1_1 = new Score(st1_1);
+            let st1_2 = new Claim("1_2", false);
+            let sc1_2 = new Score(st1_2);
             dict[st1_1.id] = sc1_1;
             dict[st1_2.id] = sc1_2;
             //expected.weightedPercentage = 0.5;

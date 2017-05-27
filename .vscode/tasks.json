@@ -7,13 +7,15 @@
             "taskName": "tsc",
             "command": "tsc",
             "args": [
-                "-p",
-                "."
+                "--target", "ES6",
+                "--outDir", "js",
+                "--sourceMap",
+                "--watch"
             ],
             "isShellCommand": true,
             "isBackground": true,
             "isBuildCommand": true,
-            "problemMatcher": "$tsc-watch"
+            "problemMatcher": "$tsc"
         }
     ]
 }

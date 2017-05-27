@@ -84,17 +84,6 @@
   transition: .25s;
   overflow: hidden; }
 
-.rr .selected > .claimPad {
-  overflow: visible; }
-
-.rr .selected > .claimPad > .claim > .innerClaim {
-  max-height: 15em;
-  transition: 1s;
-  padding-bottom: .25em; }
-
-.rr .selected > .claimPad > .childIndicatorSpace {
-  height: 0; }
-
 .rr .ancestor > .claimPad {
   cursor: pointer;
   cursor: -webkit-zoom-out;
@@ -106,22 +95,35 @@
   transition: 1s;
   padding-bottom: .25em; }
 
-.rr .parent > .claimPad {
+  .rr .mainClaim > .claimPad {
   cursor: pointer;
-  cursor: -webkit-zoom-out;
-  max-height: 5em; }
+  cursor: -webkit-zoom-in;
+  max-height: inherit; }
 
-.rr .parent > .claimPad > .claim > .innerClaim {
+.rr .mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.5em;
   transition: 1s;
   padding-bottom: .25em; }
 
-.rr .mainClaim > .claimPad {
+.rr .selected > .claimPad > .claim > .innerClaim {
+  max-height: 15em;
+  transition: 1s;
+  padding-bottom: .25em; }
+
+.rr .selected > .claimPad > .childIndicatorSpace {
+  height: 0; }
+
+.rr .selected > .claimPad {
+  overflow: visible;
+  cursor: initial;
+ }
+
+.rr .parent > .claimPad {
   cursor: pointer;
   cursor: -webkit-zoom-out;
-  max-height: 5em; }
+  max-height: 20em; }
 
-.rr .mainClaim > .claimPad > .claim > .innerClaim {
+.rr .parent > .claimPad > .claim > .innerClaim {
   max-height: 2.5em;
   transition: 1s;
   padding-bottom: .25em; }
@@ -220,11 +222,24 @@
 .rr .addClaim.con {
   float: right; }
 
-.rr .hide > .claimPad {
+.rr .newClaim > .claimPad,
+.rr .notSelected > .claimPad {
   max-height: 0px;
   transition: 1s; }
 
-.rr .hide > .claimPad > .claim > .innerClaim {
+.rr .newClaim > .claimPad > .claim > .innerClaim,
+.rr .notSelected > .claimPad > .claim > .innerClaim {
+  max-height: 2.8em;
+  transition: 1s;
+  padding-bottom: .25em; }
+
+.rr .newClaim.mainClaim > .claimPad,
+.rr .notSelected.mainClaim > .claimPad {
+  max-height: 5em;
+  transition: 1s; }
+
+.rr .newClaim.mainClaim > .claimPad > .claim > .innerClaim,
+.rr .notSelected.mainClaim > .claimPad > .claim > .innerClaim {
   max-height: 2.8em;
   transition: 1s;
   padding-bottom: .25em; }
@@ -265,7 +280,7 @@
 }
 
 /*Settings*/
-.rr .hideScore .score{
+.rr.hideScore .score{
   max-width: 0;
   padding: 0;
   margin: 0;

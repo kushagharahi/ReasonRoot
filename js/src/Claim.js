@@ -1,5 +1,5 @@
-var Claim = (function () {
-    function Claim(id, isProMain) {
+class Claim {
+    constructor(id, isProMain) {
         /** Does this claim support the main top claim in this graph (true) or disput it (false) */
         this.isProMain = true;
         /** Does this claim affect the confidence or the importance of it's parent */
@@ -10,8 +10,7 @@ var Claim = (function () {
         if (isProMain !== undefined)
             this.isProMain = isProMain;
     }
-    return Claim;
-}());
+}
 // inspired by http://stackoverflow.com/a/27872144/96062
 function newId() {
     var len = 22;

@@ -1,5 +1,6 @@
-var RRDisplay = (function () {
-    function RRDisplay(claimElement) {
+class RRDisplay {
+    constructor(claimElement) {
+        this.settings = {};
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
@@ -24,20 +25,19 @@ var RRDisplay = (function () {
         this.render = hyperHTML.bind(claimElement);
         this.update();
     }
-    RRDisplay.prototype.clearDisplayState = function () {
-        for (var scoreId in this.scoresDict) {
+    clearDisplayState() {
+        for (let scoreId in this.scoresDict) {
             if (this.scoresDict.hasOwnProperty(scoreId)) {
                 this.scoresDict[scoreId].displayState = DisplayState.None;
             }
         }
-    };
-    RRDisplay.prototype.setClasses = function () {
+    }
+    setClasses() {
         this.setClassesLoop(this.mainScore);
-    };
-    RRDisplay.prototype.setClassesLoop = function (score, parent) {
-        for (var _i = 0, _a = score.claim.childIds; _i < _a.length; _i++) {
-            var childId = _a[_i];
-            var childScore = this.scoresDict[childId];
+    }
+    setClassesLoop(score, parent) {
+        for (let childId of score.claim.childIds) {
+            let childScore = this.scoresDict[childId];
             //process the children first
             this.setClassesLoop(childScore, score);
             if (childScore.displayState == DisplayState.Selected)
@@ -47,24 +47,69 @@ var RRDisplay = (function () {
             if (score.displayState == DisplayState.Selected)
                 childScore.displayState = DisplayState.Child;
         }
-    };
-    RRDisplay.prototype.update = function () {
+    }
+    update() {
         //save(dict[mainId], dict);
-        (_a = ["\n        <div class=\"", "\">\n            <div>", "</div>\n        </div>"], _a.raw = ["\n        <div class=\"", "\">\n            <div>", "</div>\n        </div>"], this.render(_a, 'rr ', this.renderNode(this.scoresDict[this.mainId], { open: true })));
-        var _a;
-    };
-    RRDisplay.prototype.renderNode = function (score, parent) {
-        var _this = this;
+        this.render `
+        <div class="${'rr ' +
+            (this.settings.hideScore ? 'hideScore ' : '')}">
+            <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
+                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="hideScore">Hide Score</label>
+                <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
+           </div>
+            <div>${this.renderNode(this.scoresDict[this.mainId], { open: true })}</div>
+            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
+                ⚙
+            </div>
+        </div>`;
+    }
+    updateSettings(settings, event) {
+        settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
+        this.update();
+        event.stopPropagation();
+    }
+    toggleSettings(event) {
+        this.settings.visible = !this.settings.visible;
+        this.update();
+    }
+    replaceAll(target, search, replacement) {
+        return target.split(search).join(replacement);
+    }
+    ;
+    renderNode(score, parent) {
         var claim = score.claim;
         var wire = hyperHTML.wire(score);
-        var result = (_a = ["\n                <li id=\"", "\" >\n                    <div class=\"claimPad\" >\n                        <div class=\"", "\" >\n                            <div class=\"innerClaim\">\n                                <span class=\"score\" > ", "</span>\n\n                                ", "\n                                ", "\n                                <a target=\"_blank\" href=\"", "\" > \n                                    <span class=\"citation\">", "</span>\n                                </a>\n\n                             </div>\n                        </div>\n                        \n                        <div class=\"", "\">\n                            <div class=\"", "\">\n                            <div class=\"childIndicatorInner\">\n                            ", " more\n                            </div>\n                            </div>\n                        </div>\n                    </div>  \n                      \n                    <ul>", "</ul>\n                </li>"], _a.raw = ["\n                <li id=\"", "\" >\n                    <div class=\"claimPad\" >\n                        <div class=\"", "\" >\n                            <div class=\"innerClaim\">\n                                <span class=\"score\" > ",
-            "</span>\n\n                                ", "\n                                ", "\n                                <a target=\"_blank\" href=\"", "\" > \n                                    <span class=\"citation\">", "</span>\n                                </a>\n\n                             </div>\n                        </div>\n                        \n                        <div class=\"", "\">\n                            <div class=\"", "\">\n                            <div class=\"childIndicatorInner\">\n                            ", " more\n                            </div>\n                            </div>\n                        </div>\n                    </div>  \n                      \n                    <ul>",
-            "</ul>\n                </li>"], wire(_a, claim.id, "claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : ''), (score.generation == 0 ?
+        var result = wire `
+                <li id="${claim.id}" >
+                    <div class="claimPad" >
+                        <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
+                            <div class="innerClaim">
+                                <span class="score" > ${(score.generation == 0 ?
             Math.round(score.animatedWeightedPercentage * 100) + '%' :
-            Math.floor(Math.abs(score.weightDif))), claim.content, claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : "", claim.citationUrl, claim.citation, "childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren'), "childIndicator " + (claim.isProMain ? 'pro' : 'con'), score.numDesc, claim.childIds.map(function (childId, i) { return _this.renderNode(_this.scoresDict[childId], score); })));
+            Math.floor(Math.abs(score.weightDif)))}</span>
+
+                                ${claim.content}
+                                ${claim.maxConf ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
+                                <a target="_blank" href="${claim.citationUrl}" > 
+                                    <span class="citation">${claim.citation}</span>
+                                </a>
+
+                             </div>
+                        </div>
+                        
+                        <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
+                            <div class="${"childIndicator " + (claim.isProMain ? 'pro' : 'con')}">
+                            <div class="childIndicatorInner">
+                            ${score.numDesc} more
+                            </div>
+                            </div>
+                        </div>
+                    </div>  
+                      
+                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))}</ul>
+                </li>`;
         return result;
-        var _a;
-    };
-    return RRDisplay;
-}());
-//# sourceMappingURL=rrDisplay.js.map
+    }
+}
+//# sourceMappingURL=RRDisplay.js.map

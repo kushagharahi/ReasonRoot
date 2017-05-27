@@ -9,6 +9,7 @@ class RRDisplay {
     settleIt: SettleIt;
     mainScore: Score;
     render: any;
+    settings: any = {};
 
     constructor(claimElement: Element) {
         this.mainId = claimElement.getAttribute('stmtId');
@@ -71,10 +72,35 @@ class RRDisplay {
         //save(dict[mainId], dict);
 
         this.render`
-        <div class="${'rr '}">
+        <div class="${'rr ' +
+            (this.settings.hideScore ? 'hideScore ' : '')
+            }">
+            <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
+                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this,this.settings)}">
+                <label for="hideScore">Hide Score</label>
+                <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
+           </div>
             <div>${this.renderNode(this.scoresDict[this.mainId], { open: true })}</div>
+            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
+                ⚙
+            </div>
         </div>`;
     }
+
+    updateSettings(settings,event): void {
+        settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
+        this.update();
+        event.stopPropagation();
+    }
+
+    toggleSettings(event): void {
+        this.settings.visible = !this.settings.visible;
+        this.update();
+    }
+
+    replaceAll(target, search, replacement): string {
+        return target.split(search).join(replacement);
+    };
 
     renderNode(score, parent): void {
         var claim = score.claim;

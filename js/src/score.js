@@ -1,11 +1,10 @@
-var Score = (function () {
+class Score {
     /** */
-    function Score(claim) {
+    constructor(claim) {
         if (claim)
             this.claim = claim;
     }
-    return Score;
-}());
+}
 var DisplayState;
 (function (DisplayState) {
     DisplayState[DisplayState["None"] = 0] = "None";

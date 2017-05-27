@@ -190,10 +190,15 @@ class RRDisplay {
         this.scoresDict[newClaim.id] = newScore;
         parentScore.claim.childIds.unshift(newClaim.id);
         this.claimsList.push(newScore.claim);
-        this.selectedScore = newScore;
-        this.setDisplayState();
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        newScore.displayState = "hideClaim";
         this.update();
+        setTimeout(() => {
+            this.selectedScore = newScore;
+            this.settings.isEditing = true;
+            this.settleIt.calculate(this.mainScore, this.scoresDict);
+            this.setDisplayState();
+            this.update();
+        }, 10);
         event.stopPropagation();
     }
 }

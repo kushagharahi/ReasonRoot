@@ -3,7 +3,7 @@
     id: string;
 
     /** The text of the claim with the claim. May include markdown in the future. */
-    content: string;
+    content: string = "New Claim";
 
     /** very short unique text for displaying of charts and other areas with limited space. */
     label: string;

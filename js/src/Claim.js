@@ -1,5 +1,7 @@
 class Claim {
     constructor(id, isProMain) {
+        /** The text of the claim with the claim. May include markdown in the future. */
+        this.content = "New Claim";
         /** Does this claim support the main top claim in this graph (true) or disput it (false) */
         this.isProMain = true;
         /** Does this claim affect the confidence or the importance of it's parent */

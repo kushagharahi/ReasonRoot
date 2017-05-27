@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class RRDisplay {
     constructor(claimElement) {
         this.settings = {};
@@ -70,7 +78,8 @@ class RRDisplay {
     updateSettings(settings, event) {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
-        event.stopPropagation();
+        if (event)
+            event.stopPropagation();
     }
     toggleSettings(event) {
         this.settings.visible = !this.settings.visible;
@@ -143,7 +152,7 @@ class RRDisplay {
                         </li>`;
         if (!wire.default) {
             wire.default = claim.content;
-            var inputs = result.querySelector('.claimPad').querySelectorAll('input');
+            let inputs = result.querySelector('.claimPad').querySelectorAll('input');
             for (let input of inputs) {
                 var bindName = input.getAttribute("bind");
                 if (bindName) {
@@ -165,11 +174,12 @@ class RRDisplay {
     }
     noBubbleClick(event) {
         var event = arguments[0] || window.event;
-        event.stopPropagation();
+        if (event)
+            event.stopPropagation();
     }
     updateClaim(claim, event) {
         //this.content = e.target.value;
-        var inputs = event.srcElement.parentElement.querySelectorAll('input');
+        let inputs = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind");
             if (bindName) {
@@ -193,7 +203,8 @@ class RRDisplay {
     editClaim(score, event) {
         this.settings.isEditing = !this.settings.isEditing;
         this.update();
-        event.stopPropagation();
+        if (event)
+            event.stopPropagation();
     }
     addClaim(parentScore, isProMain, event) {
         let newClaim = new Claim();
@@ -211,7 +222,34 @@ class RRDisplay {
             this.setDisplayState();
             this.update();
         }, 10);
-        event.stopPropagation();
+        if (event)
+            event.stopPropagation();
     }
+}
+let mainClaimsDict = {};
+window.onload = function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        var claimElements = document.getElementsByTagName('claim');
+        for (let claimElement of claimElements) {
+            let rr = new RRDisplay(claimElement);
+            mainClaimsDict[rr.mainId] = rr;
+        }
+        //Run the Demo ________________________________________________________________
+        demo();
+    });
+};
+function demo() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let rr = mainClaimsDict[0];
+        yield wait(3000);
+        rr.addClaim(rr.mainScore, false);
+    });
+}
+function wait(milliseconds) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
+    });
 }
 //# sourceMappingURL=RRDisplay.js.map

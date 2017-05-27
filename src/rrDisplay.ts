@@ -95,7 +95,7 @@ class RRDisplay {
     updateSettings(settings, event): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
-        event.stopPropagation();
+        if (event) event.stopPropagation();
     }
 
     toggleSettings(event): void {
@@ -177,7 +177,7 @@ class RRDisplay {
 
         if (!wire.default) {
             wire.default = claim.content;
-            var inputs = result.querySelector('.claimPad').querySelectorAll('input');
+            let inputs = result.querySelector('.claimPad').querySelectorAll('input');
             for (let input of inputs) {
                 var bindName = input.getAttribute("bind")
                 if (bindName) {
@@ -202,12 +202,12 @@ class RRDisplay {
 
     noBubbleClick(event): void {
         var event = arguments[0] || window.event;
-        event.stopPropagation();
+        if (event) event.stopPropagation();
     }
 
     updateClaim(claim, event) {
         //this.content = e.target.value;
-        var inputs = event.srcElement.parentElement.querySelectorAll('input');
+        let inputs = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind")
             if (bindName) {
@@ -229,13 +229,13 @@ class RRDisplay {
         this.update();
     }
 
-    editClaim(score: Score, event: Event): void {
+    editClaim(score: Score, event?: Event): void {
         this.settings.isEditing = !this.settings.isEditing;
         this.update();
-        event.stopPropagation();
+        if (event) event.stopPropagation();
     }
 
-    addClaim(parentScore: Score, isProMain: boolean, event: Event) {
+    addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
         let newClaim: Claim = new Claim();
         newClaim.isProMain = isProMain;
         let newScore: Score = new Score(newClaim)
@@ -253,7 +253,34 @@ class RRDisplay {
             this.update();
         }, 10)
 
-        event.stopPropagation();
+        if (event) event.stopPropagation();
     }
 
+}
+
+let mainClaimsDict = {}
+
+window.onload = async function () {
+
+    var claimElements = <any>document.getElementsByTagName('claim');
+
+    for (let claimElement of claimElements) {
+        let rr = new RRDisplay(claimElement);
+        mainClaimsDict[rr.mainId] = rr;
+    }
+
+    //Run the Demo ________________________________________________________________
+    demo();
+}
+
+async function demo() {
+    let rr = mainClaimsDict[0]
+    await wait(3000);
+    rr.addClaim(rr.mainScore, false)
+}
+
+async function wait(milliseconds: number) {
+    return new Promise<void>(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
 }

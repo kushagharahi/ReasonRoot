@@ -1,10 +1,7 @@
 class Demo {
     rr: RRDisplay;
     speed: number = .5;
-
-    constructor(rrDisplay?: RRDisplay) {
-        this.rr = rrDisplay
-    }
+    script: any;
 
     addClaim(content: string, isProMain: boolean = true, parent?: Score): Score {
         ///rr.addClaim(rr.mainScore, false)
@@ -26,14 +23,16 @@ class Demo {
         return newScore;
     }
 
-    run(rrDisplay?: RRDisplay) {
+    run(rrDisplay: RRDisplay, script) {
+        this.rr = rrDisplay;
+        this.script = script;
         this.runCurrentAct.bind(this)();
     }
 
     runCurrentAct() {
         let position = 0;
         let act = this.script[this.currentActId]
-        let write = act.code.bind(this, this.rr)();
+        let write = act.code(this.rr,this);
         if (write) {
             this.writeClaim(write)
         }
@@ -59,108 +58,7 @@ class Demo {
     currentActId = 0;
     bag: any = {}
 
-    script: any[] = [
-        { // Update settings and first statement
-            code: function (r) {
-                r.settings.noAutoSave = true;
-                r.settings.hideScore = true;
-                r.settings.hidePoints = true;
-                r.settings.showSiblings = true;
-                r.settings.hideClaimMenu = true;
-                r.settings.hideChildIndicator = true;
 
-                r.selectedScore = r.mainScore;
-                r.mainScore.claim.content = ""
-            }, delay: 0
-        }, {
-            code: (r) => {
-                return { score: r.mainScore, content: "This is MAIN CLAIM we will be measuring the confidence on." }
-            }, delay: 3000
-        }, {
-            code: (r) => {
-                return { score: r.mainScore, content: "This is MAIN CLAIM wel will be measuring the confidence on. We assume 100% confidence to start." }
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                r.calculate();
-                r.settings.hideScore = false;
-            }, delay: 1000
-        }, {
-            code: (r) => {
-                this.addClaim("ORANGE claims REDUCE the confidence.", false).weightDif = 1;
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                r.calculate();
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                this.addClaim("BLUE claims INCREASE the confidence.", true).weightDif = 1;
-            }, delay: 1000
-        }, {
-            code: (r) => {
-                r.calculate();
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                this.bag.s3 = this.addClaim("What if we add another reason it could be true?", true);
-                this.bag.s3.weightDif = 1;
-            }, delay: 1000
-        }, {
-            code: (r) => {
-                r.mainScore.claim.content = "";
-                return { score: r.mainScore, content: "What do you expect the confidence percentage to be now?" }
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                r.calculate();
-            }, delay: 1000
-        }, {
-            code: (r) => {
-                r.selectedScore = this.bag.s3;
-                r.setDisplayState();
-                this.addClaim("and a reason it may be false..", false, this.bag.s3).weightDif = 1;
-                this.addClaim("What if we add a reason it may be true..", true, this.bag.s3).weightDif = 1;
-            }, delay: 1000
-        }, {
-            code: (r: RRDisplay) => {
-                //this.bag.s3.claim.content = "";
-                this.bag.s3.weightDif = 0;
-                return { score: this.bag.s3, content: "This claim becomes undecided." }
-                //return { score: this.bag.s3, content: "This statement becomes undecided so it is worth zero points." }
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                r.calculate();
-            }, delay: 1000
-        }, {
-            code: (r) => {
-                this.addClaim("Let's add one more reason it may be true", true, this.bag.s3).weightDif = 1;
-            }, delay: 1000
-        }, {
-            code: (r: RRDisplay) => {
-                this.bag.s3.claim.content = "This claim";
-                this.bag.s3.weightDif = 1;
-                return { score: this.bag.s3, content: "This claim now has more reasons to be true." }
-
-                //return { score: this.bag.s3, content: "Now this statement has 2 blue points minus 1 orange point so the total is 1 point." }
-            }, delay: 2000
-        }, {
-            code: (r) => {
-                r.calculate();
-            }, delay: 1000
-        }
-        , {//Set everything back to normal
-            code: (r) => {
-                r.settings.hideClaimMenu = false;
-                r.settings.hideChildIndicator = false;
-                r.settings.showSiblings = false;
-                r.settings.hidePoints = false;
-                r.selectedScore = r.mainScore;
-                r.setDisplayState();
-            }, delay: 1000
-        }
-    ];
     //          , {
     //             code: (r) => {
     //             }, delay: 1000

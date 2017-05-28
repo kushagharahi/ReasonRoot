@@ -30,78 +30,98 @@ class Demo {
         return newScore;
     }
 
-    async wait(milliseconds: number) {
-        return new Promise<void>(resolve => {
-            setTimeout(resolve, milliseconds / this.speed);
-        });
+    run(rrDisplay?: RRDisplay) {
+        for (let act of this.script) {
+            setTimeout(
+                act.code.bind(this, this.rr)
+                , act.delay)
+        }
     }
 
-    async run(rrDisplay?: RRDisplay) {
-        let r = this.rr
-        r.settings.noAutoSave = true;
-        r.settings.hideScore = true;
-        r.settings.hidePoints = true;
-        r.settings.showSiblings = true;
-        r.settings.hideClaimMenu = true;
-        r.settings.hideChildIndicator = true;
 
-        r.mainScore.claim.content = "How confdient are we?"
-        r.selectedScore = r.mainScore;
-        r.update();
+    script: any[] = [
+        {
+            delay: 3000,
+            code: function (r) {
+                this.rr.settings.noAutoSave = true;
+                this.rr.settings.hideScore = true;
+                this.rr.settings.hidePoints = true;
+                this.rr.settings.showSiblings = true;
+                this.rr.settings.hideClaimMenu = true;
+                this.rr.settings.hideChildIndicator = true;
 
-        await this.wait(1000);
-        r.setDisplayState();
-        r.update();
+                this.rr.mainScore.claim.content = "How confdient are we?..."
+                this.rr.selectedScore = this.rr.mainScore;
+                this.rr.update();
+            }
+        }
+    ];
+    // async run(rrDisplay?: RRDisplay) {
+    //     let r = this.rr
+    //     r.settings.noAutoSave = true;
+    //     r.settings.hideScore = true;
+    //     r.settings.hidePoints = true;
+    //     r.settings.showSiblings = true;
+    //     r.settings.hideClaimMenu = true;
+    //     r.settings.hideChildIndicator = true;
 
-        //Add two statements
-        await this.wait(1000);
-        this.addClaim("It is true because...", true)
-        await this.wait(1000);
-        this.addClaim("It is false because...", false)
-        await this.wait(1000);
-        r.calculate();
-        r.settings.hideScore = false;
-        r.update();
-        await this.wait(1000);
-        //r.settings.hideScore = true;
-        r.update();
-        await this.wait(1000);
+    //     r.mainScore.claim.content = "How confdient are we?"
+    //     r.selectedScore = r.mainScore;
+    //     r.update();
 
-        //Add a third Claim
-        let c3 = this.addClaim("Here is another reason it could be false...", true)
-        await this.wait(1000);
-        r.calculate();
-        r.settings.hideScore = false;
-        r.update();
+    //     await this.wait(1000);
+    //     r.setDisplayState();
+    //     r.update();
 
-        //Make the last claim 50% confident
-        await this.wait(1000);
-        r.selectedScore = c3;
-        this.addClaim("The blue side says this claim is false because..", true, c3)
-        this.addClaim("The orange side says this claim is false because..", false, c3)
-        r.setDisplayState();
-        r.update();
+    //     //Add two statements
+    //     await this.wait(1000);
+    //     this.addClaim("It is true because...", true)
+    //     await this.wait(1000);
+    //     this.addClaim("It is false because...", false)
+    //     await this.wait(1000);
+    //     r.calculate();
+    //     r.settings.hideScore = false;
+    //     r.update();
+    //     await this.wait(1000);
+    //     //r.settings.hideScore = true;
+    //     r.update();
+    //     await this.wait(1000);
 
-        //Show what happens
-        await this.wait(1000);
-        r.calculate();
-        r.update();
+    //     //Add a third Claim
+    //     let c3 = this.addClaim("Here is another reason it could be false...", true)
+    //     await this.wait(1000);
+    //     r.calculate();
+    //     r.settings.hideScore = false;
+    //     r.update();
 
-        //show points
-        await this.wait(1000);
-        r.settings.hidePoints = false;
-        r.update();
+    //     //Make the last claim 50% confident
+    //     await this.wait(1000);
+    //     r.selectedScore = c3;
+    //     r.setDisplayState();
+    //     this.addClaim("The blue side says this claim is false because..", true, c3)
+    //     this.addClaim("The orange side says this claim is false because..", false, c3)
+    //     r.update();
 
-        //set it so they can edit
-        await this.wait(1000);
-        r.settings.hideClaimMenu = false;
-        r.settings.hideChildIndicator = false;
-        r.settings.showSiblings = false;
-        r.selectedScore = r.mainScore;
-        r.setDisplayState();
-        r.update();
+    //     //Show what happens
+    //     await this.wait(1000);
+    //     r.calculate();
+    //     r.update();
 
-    }
+    //     //show points
+    //     await this.wait(1000);
+    //     r.settings.hidePoints = false;
+    //     r.update();
+
+    //     //set it so they can edit
+    //     await this.wait(1000);
+    //     r.settings.hideClaimMenu = false;
+    //     r.settings.hideChildIndicator = false;
+    //     r.settings.showSiblings = false;
+    //     r.selectedScore = r.mainScore;
+    //     r.setDisplayState();
+    //     r.update();
+
+    // }
 
 }
 

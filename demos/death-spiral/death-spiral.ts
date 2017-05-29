@@ -20,7 +20,7 @@ var death_spiral: any[] = [
         }, delay: 3000
     }, {
         code: (r, d) => {
-            d.addClaim("BLUE claims INCREASE the confidence.", true)
+            d.addClaim("PURPLE claims INCREASE the confidence.", true)
         }, delay: 1000
     }
 ];

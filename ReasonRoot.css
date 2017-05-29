@@ -8,7 +8,7 @@
 .rr ul {
   border-left: 1px solid #ECECEC;
   padding: 0;
-  margin: 0 0 0 20px;
+  margin: 0 0 0 10px;
   width: 100%; }
 
 .rr li {
@@ -49,7 +49,7 @@
 
 .rr .editClaimButton {
   border-radius: .25em;
-  background: #cccccc;
+  background: #aaaaaa;
   font-size: 100%;
   padding: 1px 5px;
   margin: auto;
@@ -177,14 +177,14 @@
   }
 
 .rr .pro {
-  background-color: #61B3D9;
+  background-color: #cb61d9;
   color: white;
-  border-color: #61B3D9; }
+  border-color: #cb61d9; }
 
 .rr .con {
-  background-color: #F5A623;
+  background-color: #ff9f00;
   color: white;
-  border-color: #F5A623; }
+  border-color: #ff9f00; }
 
 .rr .pro:after, .con:after {
   top: 50%;
@@ -195,21 +195,21 @@
   position: absolute;
   /*pointer-events: none;*/
   border-left-color: transparent;
-  border-right-color: #61B3D9;
+  border-right-color: #cb61d9;
   border-width: 10px;
   margin-top: -10px; }
 
 .rr .pro:after {
   right: 100%;
   border-left-color: transparent;
-  border-right-color: #61B3D9;
+  border-right-color: #cb61d9;
   border-width: 10px;
   margin-top: -10px; }
 
 .rr .con:after {
   left: 100%;
   border-right-color: transparent;
-  border-left-color: #F5A623;
+  border-left-color: #ff9f00;
   border-width: 10px;
   margin-top: -10px; }
 

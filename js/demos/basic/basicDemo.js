@@ -9,7 +9,7 @@ var basicDemo = [
             r.settings.hideChildIndicator = true;
             r.selectedScore = r.mainScore;
             r.mainScore.claim.content = "";
-        }, delay: 0
+        }, delay: 1000
     }, {
         code: (r, d) => {
             return { score: r.mainScore, content: "This is MAIN CLAIM we will be measuring the confidence on." };
@@ -85,12 +85,12 @@ var basicDemo = [
     }, {
         code: (r, d) => {
             r.calculate();
-        }, delay: 1000
+        }, delay: 500
     }, {
         code: (r, d) => {
             r.mainScore.claim.content = "";
             return { score: r.mainScore, content: "Now you can try it!" };
-        }, delay: 2000
+        }, delay: 500
     },
     {
         code: (r, d) => {
@@ -100,7 +100,7 @@ var basicDemo = [
             r.settings.hidePoints = false;
             r.selectedScore = r.mainScore;
             r.setDisplayState();
-        }, delay: 1000
+        }, delay: 0
     }
 ];
 //# sourceMappingURL=basicDemo.js.map

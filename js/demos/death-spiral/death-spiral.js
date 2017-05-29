@@ -2,31 +2,21 @@ var death_spiral = [
     {
         code: function (r, d) {
             r.settings.noAutoSave = true;
-            r.settings.hideScore = true;
-            r.settings.hidePoints = true;
-            r.settings.showSiblings = true;
+            //r.settings.hideScore = true;
+            //r.settings.hidePoints = true;
+            //r.settings.showSiblings = true;
             r.settings.hideClaimMenu = true;
-            r.settings.hideChildIndicator = true;
+            //r.settings.hideChildIndicator = true;
             r.selectedScore = r.mainScore;
             r.mainScore.claim.content = "";
-        }, delay: 0
-    }, {
-        code: (r, d) => {
-            return { score: r.mainScore, content: "This is MAIN CLAIM we will be measuring the confidence on." };
+            r.calculate();
+            return { score: r.mainScore, content: "'Obamacare is in a death spiral' - Hugh Hewitt on Meet the Press, March 26, 2017." };
         }, delay: 3000
     }, {
         code: (r, d) => {
-            return { score: r.mainScore, content: "This is MAIN CLAIM wel will be measuring the confidence on. We assume 100% confidence to start." };
-        }, delay: 2000
-    }, {
-        code: (r, d) => {
-            r.calculate();
-            r.settings.hideScore = false;
-        }, delay: 1000
-    }, {
-        code: (r, d) => {
             d.addClaim("ORANGE claims REDUCE the confidence.", false).weightDif = 1;
-        }, delay: 2000
+            r.calculate();
+        }, delay: 3000
     }, {
         code: (r, d) => {
             r.calculate();

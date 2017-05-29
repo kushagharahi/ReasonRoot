@@ -16,7 +16,7 @@ var basicDemo = [
         }, delay: 3000
     }, {
         code: (r, d) => {
-            return { score: r.mainScore, content: "This is MAIN CLAIM wel will be measuring the confidence on. We assume 100% confidence to start." };
+            return { score: r.mainScore, content: "This is MAIN CLAIM we will be measuring the confidence on. We assume 100% confidence to start." };
         }, delay: 2000
     }, {
         code: (r, d) => {

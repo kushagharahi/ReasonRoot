@@ -177,9 +177,9 @@
   }
 
 .rr .pro {
-  background-color: #cb61d9;
+  background-color: #B85BFF;
   color: white;
-  border-color: #cb61d9; }
+  border-color: #B85BFF; }
 
 .rr .con {
   background-color: #ff9f00;
@@ -195,14 +195,14 @@
   position: absolute;
   /*pointer-events: none;*/
   border-left-color: transparent;
-  border-right-color: #cb61d9;
+  border-right-color: #B85BFF;
   border-width: 10px;
   margin-top: -10px; }
 
 .rr .pro:after {
   right: 100%;
   border-left-color: transparent;
-  border-right-color: #cb61d9;
+  border-right-color: #B85BFF;
   border-width: 10px;
   margin-top: -10px; }
 

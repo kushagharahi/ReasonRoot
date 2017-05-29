@@ -1,7 +1,9 @@
 class RRDisplay {
-    constructor(claimElement) {
+    constructor(claimElement, settings) {
         this.settings = {};
         this.savePrefix = "rr_";
+        if (settings)
+            this.settings = settings;
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));

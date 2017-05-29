@@ -13,7 +13,8 @@ class RRDisplay {
     selectedScore: Score;
     savePrefix: string = "rr_";
 
-    constructor(claimElement: Element) {
+    constructor(claimElement: Element, settings?: any) {
+        if (settings) this.settings = settings;
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));

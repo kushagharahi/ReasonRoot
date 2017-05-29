@@ -300,6 +300,8 @@
 .rr.showSiblings .sibling > .claimPad {
   max-height: 5em;
   transition: 1s; 
+  cursor: pointer;
+  cursor: -webkit-zoom-in;
 }
 
 .rr.hideClaimMenu .selected > .claimPad > .claimMenuHider {

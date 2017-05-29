@@ -63,7 +63,7 @@
             }, delay: 1000
         }, {
             code: (r: RRDisplay, d) => {
-                //d.bag.s3.claim.content = "";
+                d.bag.s3.claim.content = "";
                 d.bag.s3.weightDif = 0;
                 return { score: d.bag.s3, content: "This claim becomes undecided." }
                 //return { score: d.bag.s3, content: "This statement becomes undecided so it is worth zero points." }
@@ -81,13 +81,17 @@
                 d.bag.s3.claim.content = "This claim";
                 d.bag.s3.weightDif = 1;
                 return { score: d.bag.s3, content: "This claim now has more reasons to be true." } 
-
                 //return { score: this.bag.s3, content: "Now this statement has 2 purple points minus 1 orange point so the total is 1 point." }
             }, delay: 2000
         }, {
             code: (r,d) => {
                 r.calculate();
             }, delay: 1000
+        }, {
+            code: (r,d) => {
+                r.mainScore.claim.content = "";
+                return { score: r.mainScore, content: "Now you can try it!" }
+            }, delay: 2000
         }
         , {//Set everything back to normal
             code: (r,d) => {

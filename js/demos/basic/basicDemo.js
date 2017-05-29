@@ -62,7 +62,7 @@ var basicDemo = [
         }, delay: 1000
     }, {
         code: (r, d) => {
-            //d.bag.s3.claim.content = "";
+            d.bag.s3.claim.content = "";
             d.bag.s3.weightDif = 0;
             return { score: d.bag.s3, content: "This claim becomes undecided." };
             //return { score: d.bag.s3, content: "This statement becomes undecided so it is worth zero points." }
@@ -86,6 +86,11 @@ var basicDemo = [
         code: (r, d) => {
             r.calculate();
         }, delay: 1000
+    }, {
+        code: (r, d) => {
+            r.mainScore.claim.content = "";
+            return { score: r.mainScore, content: "Now you can try it!" };
+        }, delay: 2000
     },
     {
         code: (r, d) => {

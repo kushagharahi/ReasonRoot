@@ -193,9 +193,9 @@ class SettleIt {
         //prevents stataments form  if not the top statement
         if (score.generation != 0) {
             if (score.claim.isProMain && score.confidenceCon > score.confidencePro)
-                score.confidenceCon = score.confidencePro
-            if (!score.claim.isProMain && score.confidencePro > score.confidenceCon)
                 score.confidencePro = score.confidenceCon
+            if (!score.claim.isProMain && score.confidencePro > score.confidenceCon)
+                score.confidenceCon = score.confidencePro
         }
     }
 

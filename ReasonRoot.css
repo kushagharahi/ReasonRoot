@@ -3,7 +3,9 @@
   line-height: 1.1;
   max-width: 600px;
   margin: auto;
-  position: relative; }
+  position: relative;
+  font-size: 16px;
+}
 
 .rr ul {
   border-left: 1px solid #ECECEC;
@@ -31,7 +33,7 @@
   background: #ECECEC;
   padding: .25em;
   padding-bottom: 2px;
-  min-height: 2.8em;
+  min-height: 2.65em;
   font-size: 100%;
   z-index: 1; }
 
@@ -91,7 +93,7 @@
   max-height: 0px; }
 
 .rr .ancestor > .claimPad > .claim > .innerClaim {
-  /*max-height: 2.8em;*/
+  /*max-height: 2.65em;*/
   transition: 1s;
   padding-bottom: .25em; }
 
@@ -101,7 +103,7 @@
   max-height: inherit; }
 
 .rr .mainClaim > .claimPad > .claim > .innerClaim {
-  max-height: 2.8em;
+  max-height: 2.65em;
   transition: 1s;
   padding-bottom: .25em; }
 
@@ -124,7 +126,7 @@
   max-height: 20em; }
 
 .rr .parent > .claimPad > .claim > .innerClaim {
-  max-height: 2.8em;
+  max-height: 2.65em;
   transition: 1s;
   padding-bottom: .25em; }
 
@@ -134,7 +136,7 @@
   max-height: 5em; }
 
 .rr .child > .claimPad > .claim > .innerClaim {
-  max-height: 2.8em;
+  max-height: 2.65em;
   transition: 1s;
   padding-bottom: .25em; }
 
@@ -244,7 +246,7 @@
 .rr .newClaim > .claimPad > .claim > .innerClaim,
 .rr .sibling > .claimPad > .claim > .innerClaim,
 .rr .notSelected > .claimPad > .claim > .innerClaim {
-  max-height: 2.8em;
+  max-height: 2.65em;
   transition: 1s;
   padding-bottom: .25em; }
 
@@ -257,7 +259,7 @@
 .rr .newClaim.mainClaim > .claimPad > .claim > .innerClaim,
 .rr .sibling.mainClaim > .claimPad > .claim > .innerClaim,
 .rr .notSelected.mainClaim > .claimPad > .claim > .innerClaim {
-  max-height: 2.8em;
+  max-height: 2.65em;
   transition: 1s;
   padding-bottom: .25em; }
 

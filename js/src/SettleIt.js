@@ -168,11 +168,13 @@ class SettleIt {
                 score.confidenceCon = score.claim.maxConf / 10;
             }
         }
-        //prevents stataments form reversing
-        if (score.claim.isProMain && score.confidenceCon > score.confidencePro)
-            score.confidenceCon = score.confidencePro;
-        if (!score.claim.isProMain && score.confidencePro > score.confidenceCon)
-            score.confidencePro = score.confidenceCon;
+        //prevents stataments form  if not the top statement
+        if (score.generation != 0) {
+            if (score.claim.isProMain && score.confidenceCon > score.confidencePro)
+                score.confidenceCon = score.confidencePro;
+            if (!score.claim.isProMain && score.confidencePro > score.confidenceCon)
+                score.confidencePro = score.confidenceCon;
+        }
     }
     /** This performs Importance calculations for both Claims that affect Confidence and Importance.
      * Confidence: sum children(importance)

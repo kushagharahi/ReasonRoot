@@ -71,7 +71,8 @@ class RRDisplay {
             (this.settings.hidePoints ? ' hidePoints' : '') +
             (this.settings.hideClaimMenu ? ' hideClaimMenu' : '') +
             (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
-            (this.settings.showSiblings ? ' showSiblings' : '')}">
+            (this.settings.showSiblings ? ' showSiblings' : '') +
+            (this.settings.showCompetition ? ' showCompetition' : '')}">
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
@@ -85,6 +86,9 @@ class RRDisplay {
                 <label for="hideClaimMenu">Hide Claim Menu</label>
                 <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideChildIndicator">Hide Child Indicator</label>
+                <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <label for="showCompetition">Show Competition</label>
+
                 <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
            </div>
             <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
@@ -121,6 +125,9 @@ class RRDisplay {
                                 <span class="${score.generation == 0 ? 'score' : 'points'}" >${(score.generation == 0 ?
             Math.round(score.animatedWeightedPercentage * 100) + '%' :
             (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))}</span>
+
+            <span class="proPoints" >${Math.round(score.weightPro)}</span>
+            <span class="conPoints" >${Math.round(score.weightCon)}</span>
 
                                 ${claim.content}
                                 ${claim.maxConf && claim.maxConf < 100 ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}

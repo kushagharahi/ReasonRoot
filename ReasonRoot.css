@@ -165,15 +165,27 @@
   font-style: italic; }
 
 .rr .score,
-.rr .points {
+.rr .points,
+.rr .proPoints,
+.rr .conPoints {
   display: block;
   float: left;
   font-size: 1.98em;
   padding-right: .25em;
-  padding-right: .25em; 
   max-width: 10em;
   transition: .5s;
   overflow: hidden;
+  }
+
+.rr .proPoints,
+.rr .conPoints{
+  max-width: 0;
+  padding: 0;
+  margin: 0;
+  }
+
+  .rr .conPoints{
+  float: right;
   }
 
 .rr .pro {
@@ -310,3 +322,19 @@
 
 .rr.hideChildIndicator .childIndicatorSpace {
   height: 0; }
+
+.rr.showCompetition .proPoints{
+    max-width: 10em;
+    padding: 0 .1em;
+    /*padding: .1em;
+    background-color: hsl(274, 100%, 75%);
+    border-radius: .25em;  max-width: 10em;*/
+}
+
+.rr.showCompetition .conPoints{
+    max-width: 10em;
+    padding: 0 .1em;
+    /*padding: .1em;
+    background-color: hsl(37, 100%, 55%);
+    border-radius: .25em;*/
+}

@@ -1,12 +1,8 @@
 class Demo {
     constructor() {
-        this.speed = .5;
+        this.speed = 1;
         this.currentActId = 0;
         this.bag = {};
-        //          , {
-        //             code: (r) => {
-        //             }, delay: 1000
-        //         }
     }
     addClaim(content, isProMain = true, parent) {
         ///rr.addClaim(rr.mainScore, false)

@@ -328,15 +328,19 @@
 .rr.showCompetition .proPoints{
     max-width: 10em;
     padding: 0 .1em;
-    /*padding: .1em;
-    background-color: hsl(274, 100%, 75%);
-    border-radius: .25em;  max-width: 10em;*/
+    /*background-color: hsl(274, 100%, 75%);
+    border-radius: .2em;
+    margin-right: .2em;
+    border: white 2px solid;
+    font-size: 1.5em;*/
 }
 
 .rr.showCompetition .conPoints{
     max-width: 10em;
     padding: 0 .1em;
-    /*padding: .1em;
-    background-color: hsl(37, 100%, 55%);
-    border-radius: .25em;*/
+    /*background-color: hsl(37, 100%, 55%);
+    border-radius: .2em;
+    margin-left: .2em;
+    border: white 2px solid;
+    font-size: 1.5em;*/
 }

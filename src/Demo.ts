@@ -1,6 +1,6 @@
 class Demo {
     rr: RRDisplay;
-    speed: number = .5;
+    speed: number = 1;
     script: any;
 
     addClaim(content: string, isProMain: boolean = true, parent?: Score): Score {
@@ -57,12 +57,5 @@ class Demo {
 
     currentActId = 0;
     bag: any = {}
-
-
-    //          , {
-    //             code: (r) => {
-    //             }, delay: 1000
-    //         }
-
 }
 

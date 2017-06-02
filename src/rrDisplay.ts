@@ -1,3 +1,5 @@
+//import * as firebase from 'firebase/app';
+
 declare class hyperHTML {
     static wire(optObj: any);
 }
@@ -12,6 +14,8 @@ class RRDisplay {
     settings: any = {};
     selectedScore: Score;
     savePrefix: string = "rr_";
+    //dbRef: firebase.database.Reference;
+
 
     constructor(claimElement: Element, settings?: any) {
         if (settings) this.settings = settings;
@@ -19,6 +23,19 @@ class RRDisplay {
         this.settleIt = new SettleIt();
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
         this.scoresDict = createDict(this.claimsList);
+
+        // //set up the firebase connectivity
+        // firebase.initializeApp({
+        //     apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
+        //     authDomain: "settleitorg.firebaseapp.com",
+        //     databaseURL: "https://settleitorg.firebaseio.com",
+        //     projectId: "settleitorg",
+        //     storageBucket: "settleitorg.appspot.com",
+        //     messagingSenderId: "835574079849"
+        // });
+        // this.dbRef = firebase.database().ref('claims');
+        // this.dbRef.on('child_changed',this.dataFromDB);
+
 
         //restore saved dictionairy
         let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
@@ -40,6 +57,11 @@ class RRDisplay {
         this.render = hyperHTML.bind(claimElement);
         this.update();
     }
+
+dataFromDB (data) {
+    console.log(data);
+  //setCommentValues(postElement, data.key, data.val().text, data.val().author);
+}
 
     clearDisplayState(): void {
         for (let scoreId in this.scoresDict) {
@@ -93,8 +115,8 @@ class RRDisplay {
             (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
             (this.settings.showSiblings ? ' showSiblings' : '') +
             (this.settings.showCompetition ? ' showCompetition' : '')
-            
-        }">
+
+            }">
             <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>

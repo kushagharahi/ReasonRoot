@@ -1,5 +1,7 @@
 //import * as firebase from 'firebase/app';
 
+declare class firebase {}
+
 declare class hyperHTML {
     static wire(optObj: any);
 }
@@ -14,7 +16,7 @@ class RRDisplay {
     settings: any = {};
     selectedScore: Score;
     savePrefix: string = "rr_";
-    //dbRef: firebase.database.Reference;
+    dbRef: firebase.database.Reference;
 
 
     constructor(claimElement: Element, settings?: any) {
@@ -24,17 +26,19 @@ class RRDisplay {
         this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
         this.scoresDict = createDict(this.claimsList);
 
-        // //set up the firebase connectivity
-        // firebase.initializeApp({
-        //     apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
-        //     authDomain: "settleitorg.firebaseapp.com",
-        //     databaseURL: "https://settleitorg.firebaseio.com",
-        //     projectId: "settleitorg",
-        //     storageBucket: "settleitorg.appspot.com",
-        //     messagingSenderId: "835574079849"
-        // });
-        // this.dbRef = firebase.database().ref('claims');
-        // this.dbRef.on('child_changed',this.dataFromDB);
+        //set up the firebase connectivity
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
+                authDomain: "settleitorg.firebaseapp.com",
+                databaseURL: "https://settleitorg.firebaseio.com",
+                projectId: "settleitorg",
+                storageBucket: "settleitorg.appspot.com",
+                messagingSenderId: "835574079849"
+            });
+        }
+        this.dbRef = firebase.database().ref('claims');
+        this.dbRef.on('child_changed', this.dataFromDB);
 
 
         //restore saved dictionairy
@@ -58,10 +62,10 @@ class RRDisplay {
         this.update();
     }
 
-dataFromDB (data) {
-    console.log(data);
-  //setCommentValues(postElement, data.key, data.val().text, data.val().author);
-}
+    dataFromDB(data) {
+        console.log(data.val());
+        //setCommentValues(postElement, data.key, data.val().text, data.val().author);
+    }
 
     clearDisplayState(): void {
         for (let scoreId in this.scoresDict) {

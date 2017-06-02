@@ -1,9 +1,9 @@
 //import * as firebase from 'firebase/app';
 
-declare class firebase {}
+declare class firebase { }
 
 declare class hyperHTML {
-    static wire(optObj: any);
+    static wire(optObj: any):any;
 }
 
 class RRDisplay {
@@ -37,7 +37,7 @@ class RRDisplay {
                 messagingSenderId: "835574079849"
             });
         }
-        this.dbRef = firebase.database().ref('claims');
+        this.dbRef = firebase.database().ref('claims/' + this.mainId);
         this.dbRef.on('child_changed', this.dataFromDB);
 
 
@@ -62,7 +62,7 @@ class RRDisplay {
         this.update();
     }
 
-    dataFromDB(data) {
+    dataFromDB(data:any) {
         console.log(data.val());
         //setCommentValues(postElement, data.key, data.val().text, data.val().author);
     }
@@ -146,23 +146,23 @@ class RRDisplay {
         </div>`;
     }
 
-    updateSettings(settings, event): void {
+    updateSettings(settings:any, event:Event): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
         if (event) event.stopPropagation();
     }
 
-    toggleSettings(event): void {
+    toggleSettings(event:Event): void {
         this.settings.visible = !this.settings.visible;
         this.update();
     }
 
-    replaceAll(target, search, replacement): string {
+    replaceAll(target:string, search:string, replacement:string): string {
         return target.split(search).join(replacement);
     };
 
     renderNode(score: Score, parent?: Score): void {
-        var claim = score.claim;
+        var claim:Claim = score.claim;
         var wire = hyperHTML.wire(score);
 
         this.animatenumbers()
@@ -268,7 +268,7 @@ class RRDisplay {
         if (found) setTimeout(() => this.update(), 100);
     }
 
-    selectScore(score: Score, e): void {
+    selectScore(score: Score, e:Event): void {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
@@ -276,12 +276,12 @@ class RRDisplay {
         }
     }
 
-    noBubbleClick(event): void {
-        var event = arguments[0] || window.event;
+    noBubbleClick(event:Event): void {
+        //var event = arguments[0] || window.event;
         if (event) event.stopPropagation();
     }
 
-    updateClaim(claim, event) {
+    updateClaim(claim:Claim, event:Event) {
         //this.content = e.target.value;
         let inputs = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
@@ -301,7 +301,7 @@ class RRDisplay {
         this.settleIt.calculate(this.mainScore, this.scoresDict)
     }
 
-    removeClaim(claim: Claim, parentScore: Score, event): void {
+    removeClaim(claim: Claim, parentScore: Score, event:Event): void {
         var index = parentScore.claim.childIds.indexOf(claim.id);
         if (index > -1) parentScore.claim.childIds.splice(index, 1);
         this.selectedScore = parentScore;

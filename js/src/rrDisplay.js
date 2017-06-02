@@ -20,7 +20,7 @@ class RRDisplay {
                 messagingSenderId: "835574079849"
             });
         }
-        this.dbRef = firebase.database().ref('claims');
+        this.dbRef = firebase.database().ref('claims/' + this.mainId);
         this.dbRef.on('child_changed', this.dataFromDB);
         //restore saved dictionairy
         let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
@@ -234,7 +234,7 @@ class RRDisplay {
         }
     }
     noBubbleClick(event) {
-        var event = arguments[0] || window.event;
+        //var event = arguments[0] || window.event;
         if (event)
             event.stopPropagation();
     }

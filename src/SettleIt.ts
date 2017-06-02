@@ -2,15 +2,28 @@ class Dict<T> {
     [K: string]: T;
 }
 
-function createDict(claims: Claim[], dict?: Dict<Score>): Dict<Score> {
+function createDict(claims: Dict<Claim>, dict?: Dict<Score>): Dict<Score> {
     if (dict === undefined) dict = new Dict<Score>();
-    for (let claim of claims) {
-        if (dict[claim.id] === undefined) {
-            let newScore = new Score();
-            newScore.claim = claim;
-            dict[claim.id] = newScore;
+
+    for (let claimId in claims) {
+        if (claims.hasOwnProperty(claimId)) {
+            if (dict[claimId] === undefined) {
+                let newScore = new Score();
+                newScore.claim = claims[claimId];
+                dict[claimId] = newScore;
+            }
         }
     }
+
+
+
+    // for (let claim of claims) {
+    //     if (dict[claim.id] === undefined) {
+    //         let newScore = new Score();
+    //         newScore.claim = claim;
+    //         dict[claim.id] = newScore;
+    //     }
+    // }
     return dict;
 }
 

@@ -7,8 +7,8 @@ class RRDisplay {
             this.settings = settings;
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
-        this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
-        this.scoresDict = createDict(this.claimsList);
+        this.claims = JSON.parse(claimElement.getAttribute('dict'));
+        this.scores = createDict(this.claims);
         //set up the firebase connectivity
         if (!firebase.apps.length) {
             firebase.initializeApp({
@@ -25,18 +25,18 @@ class RRDisplay {
         //restore saved dictionairy
         let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
         if (potentialDict) {
-            this.scoresDict = JSON.parse(potentialDict);
-            this.mainScore = this.scoresDict[this.mainId];
-            this.claimsList = [];
-            for (let scoreId in this.scoresDict) {
-                this.claimsList.push(this.scoresDict[scoreId].claim);
+            this.scores = JSON.parse(potentialDict);
+            this.mainScore = this.scores[this.mainId];
+            this.claims = new Dict();
+            for (let scoreId in this.scores) {
+                this.claims[scoreId] = this.scores[scoreId].claim;
             }
-            this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
+            this.settleIt.calculate(this.scores[this.mainId], this.scores);
         }
         else {
-            this.mainScore = this.scoresDict[this.mainId];
+            this.mainScore = this.scores[this.mainId];
             this.mainScore.isMain = true;
-            this.settleIt.calculate(this.mainScore, this.scoresDict);
+            this.settleIt.calculate(this.mainScore, this.scores);
             this.setDisplayState();
         }
         this.render = hyperHTML.bind(claimElement);
@@ -47,9 +47,9 @@ class RRDisplay {
         //setCommentValues(postElement, data.key, data.val().text, data.val().author);
     }
     clearDisplayState() {
-        for (let scoreId in this.scoresDict) {
-            if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = "notSelected";
+        for (let scoreId in this.scores) {
+            if (this.scores.hasOwnProperty(scoreId)) {
+                this.scores[scoreId].displayState = "notSelected";
             }
         }
     }
@@ -61,14 +61,14 @@ class RRDisplay {
         if (score == this.selectedScore)
             score.displayState = "selected";
         for (let childId of score.claim.childIds) {
-            let childScore = this.scoresDict[childId];
+            let childScore = this.scores[childId];
             //process the children first/
             this.setDisplayStateLoop(childScore);
             if (childScore == this.selectedScore) {
                 score.displayState = "parent";
                 //Set Siblings
                 for (let siblingId of score.claim.childIds) {
-                    let siblingScore = this.scoresDict[siblingId];
+                    let siblingScore = this.scores[siblingId];
                     if (siblingScore.displayState != "selected")
                         siblingScore.displayState = "sibling";
                 }
@@ -81,7 +81,7 @@ class RRDisplay {
     }
     update() {
         if (!this.settings.noAutoSave)
-            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));
+            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
         ;
         this.render `
         <div class="${'rr' +
@@ -107,9 +107,9 @@ class RRDisplay {
                 <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
-                <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
+                <input value="${this.replaceAll(JSON.stringify(this.claims), '\'', '&#39;')}"></input>
            </div>
-            <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
+            <div>${this.renderNode(this.scores[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
@@ -192,7 +192,7 @@ class RRDisplay {
 
                     </div>  
                       
-                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))}</ul>
+                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))}</ul>
                         </li>`;
         if (!wire.default) {
             wire.default = claim.content;
@@ -212,8 +212,8 @@ class RRDisplay {
     //Check for animating numbers
     animatenumbers() {
         var found = false;
-        for (var scoreId in this.scoresDict) {
-            var s = this.scoresDict[scoreId];
+        for (var scoreId in this.scores) {
+            var s = this.scores[scoreId];
             if (s.weightedPercentage != s.animatedWeightedPercentage) {
                 found = true;
                 var difference = s.weightedPercentage - s.animatedWeightedPercentage;
@@ -254,7 +254,7 @@ class RRDisplay {
         this.update();
     }
     calculate() {
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.settleIt.calculate(this.mainScore, this.scores);
     }
     removeClaim(claim, parentScore, event) {
         var index = parentScore.claim.childIds.indexOf(claim.id);
@@ -274,9 +274,9 @@ class RRDisplay {
         let newClaim = new Claim();
         newClaim.isProMain = isProMain;
         let newScore = new Score(newClaim);
-        this.scoresDict[newClaim.id] = newScore;
+        this.scores[newClaim.id] = newScore;
         parentScore.claim.childIds.unshift(newClaim.id);
-        this.claimsList.push(newScore.claim);
+        this.claims[newClaim.id] = newClaim;
         newScore.displayState = "notSelected";
         this.update();
         setTimeout(() => {

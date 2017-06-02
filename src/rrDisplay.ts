@@ -3,12 +3,12 @@
 declare class firebase { }
 
 declare class hyperHTML {
-    static wire(optObj: any):any;
+    static wire(optObj: any): any;
 }
 
 class RRDisplay {
-    scoresDict: Dict<Score>;
-    claimsList: Claim[];
+    scores: Dict<Score>;
+    claims: Dict<Claim>;
     mainId: string;
     settleIt: SettleIt;
     mainScore: Score;
@@ -23,8 +23,8 @@ class RRDisplay {
         if (settings) this.settings = settings;
         this.mainId = claimElement.getAttribute('stmtId');
         this.settleIt = new SettleIt();
-        this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
-        this.scoresDict = createDict(this.claimsList);
+        this.claims = JSON.parse(claimElement.getAttribute('dict'));
+        this.scores = createDict(this.claims);
 
         //set up the firebase connectivity
         if (!firebase.apps.length) {
@@ -44,17 +44,17 @@ class RRDisplay {
         //restore saved dictionairy
         let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
         if (potentialDict) {
-            this.scoresDict = JSON.parse(potentialDict);
-            this.mainScore = this.scoresDict[this.mainId];
-            this.claimsList = [];
-            for (let scoreId in this.scoresDict) {
-                this.claimsList.push(this.scoresDict[scoreId].claim);
+            this.scores = JSON.parse(potentialDict);
+            this.mainScore = this.scores[this.mainId];
+            this.claims = new Dict<Claim>();
+            for (let scoreId in this.scores) {
+                this.claims[scoreId] = this.scores[scoreId].claim;
             }
-            this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
+            this.settleIt.calculate(this.scores[this.mainId], this.scores);
         } else {
-            this.mainScore = this.scoresDict[this.mainId];
+            this.mainScore = this.scores[this.mainId];
             this.mainScore.isMain = true;
-            this.settleIt.calculate(this.mainScore, this.scoresDict)
+            this.settleIt.calculate(this.mainScore, this.scores)
             this.setDisplayState();
         }
 
@@ -62,15 +62,15 @@ class RRDisplay {
         this.update();
     }
 
-    dataFromDB(data:any) {
+    dataFromDB(data: any) {
         console.log(data.val());
         //setCommentValues(postElement, data.key, data.val().text, data.val().author);
     }
 
     clearDisplayState(): void {
-        for (let scoreId in this.scoresDict) {
-            if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = "notSelected";
+        for (let scoreId in this.scores) {
+            if (this.scores.hasOwnProperty(scoreId)) {
+                this.scores[scoreId].displayState = "notSelected";
             }
         }
     }
@@ -85,7 +85,7 @@ class RRDisplay {
             score.displayState = "selected";
 
         for (let childId of score.claim.childIds) {
-            let childScore = this.scoresDict[childId];
+            let childScore = this.scores[childId];
             //process the children first/
             this.setDisplayStateLoop(childScore);
 
@@ -93,7 +93,7 @@ class RRDisplay {
                 score.displayState = "parent";
                 //Set Siblings
                 for (let siblingId of score.claim.childIds) {
-                    let siblingScore = this.scoresDict[siblingId];
+                    let siblingScore = this.scores[siblingId];
                     if (siblingScore.displayState != "selected")
                         siblingScore.displayState = "sibling";
                 }
@@ -109,7 +109,7 @@ class RRDisplay {
 
     update(): void {
         if (!this.settings.noAutoSave)
-            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));;
+            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));;
 
         this.render`
         <div class="${'rr' +
@@ -137,32 +137,32 @@ class RRDisplay {
                 <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
-                <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
+                <input value="${this.replaceAll(JSON.stringify(this.claims), '\'', '&#39;')}"></input>
            </div>
-            <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
+            <div>${this.renderNode(this.scores[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
         </div>`;
     }
 
-    updateSettings(settings:any, event:Event): void {
+    updateSettings(settings: any, event: Event): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
         if (event) event.stopPropagation();
     }
 
-    toggleSettings(event:Event): void {
+    toggleSettings(event: Event): void {
         this.settings.visible = !this.settings.visible;
         this.update();
     }
 
-    replaceAll(target:string, search:string, replacement:string): string {
+    replaceAll(target: string, search: string, replacement: string): string {
         return target.split(search).join(replacement);
     };
 
     renderNode(score: Score, parent?: Score): void {
-        var claim:Claim = score.claim;
+        var claim: Claim = score.claim;
         var wire = hyperHTML.wire(score);
 
         this.animatenumbers()
@@ -230,7 +230,7 @@ class RRDisplay {
                     </div>  
                       
                     <ul>${
-            claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))
+            claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))
             }</ul>
                         </li>`
 
@@ -254,8 +254,8 @@ class RRDisplay {
     //Check for animating numbers
     animatenumbers() {
         var found = false;
-        for (var scoreId in this.scoresDict) {
-            var s = this.scoresDict[scoreId];
+        for (var scoreId in this.scores) {
+            var s = this.scores[scoreId];
             if (s.weightedPercentage != s.animatedWeightedPercentage) {
                 found = true;
                 var difference = s.weightedPercentage - s.animatedWeightedPercentage
@@ -268,7 +268,7 @@ class RRDisplay {
         if (found) setTimeout(() => this.update(), 100);
     }
 
-    selectScore(score: Score, e:Event): void {
+    selectScore(score: Score, e: Event): void {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
@@ -276,12 +276,12 @@ class RRDisplay {
         }
     }
 
-    noBubbleClick(event:Event): void {
+    noBubbleClick(event: Event): void {
         //var event = arguments[0] || window.event;
         if (event) event.stopPropagation();
     }
 
-    updateClaim(claim:Claim, event:Event) {
+    updateClaim(claim: Claim, event: Event) {
         //this.content = e.target.value;
         let inputs = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
@@ -298,10 +298,10 @@ class RRDisplay {
     }
 
     calculate(): void {
-        this.settleIt.calculate(this.mainScore, this.scoresDict)
+        this.settleIt.calculate(this.mainScore, this.scores)
     }
 
-    removeClaim(claim: Claim, parentScore: Score, event:Event): void {
+    removeClaim(claim: Claim, parentScore: Score, event: Event): void {
         var index = parentScore.claim.childIds.indexOf(claim.id);
         if (index > -1) parentScore.claim.childIds.splice(index, 1);
         this.selectedScore = parentScore;
@@ -319,9 +319,9 @@ class RRDisplay {
         let newClaim: Claim = new Claim();
         newClaim.isProMain = isProMain;
         let newScore: Score = new Score(newClaim)
-        this.scoresDict[newClaim.id] = newScore;
+        this.scores[newClaim.id] = newScore;
         parentScore.claim.childIds.unshift(newClaim.id);
-        this.claimsList.push(newScore.claim);
+        this.claims[newClaim.id] = newClaim;
         newScore.displayState = "notSelected";
         this.update();
 

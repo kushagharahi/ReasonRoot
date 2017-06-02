@@ -12,9 +12,9 @@ class Demo {
         newClaim.content = content;
         newClaim.isProMain = isProMain;
         let newScore = new Score(newClaim);
-        this.rr.scoresDict[newClaim.id] = newScore;
+        this.rr.scores[newClaim.id] = newScore;
         parent.claim.childIds.unshift(newClaim.id);
-        this.rr.claimsList.push(newScore.claim);
+        this.rr.claims.push(newScore.claim);
         newScore.displayState = "newClaim";
         this.rr.update();
         setTimeout(() => {

@@ -1,37 +1,70 @@
 class RRDisplay {
-    constructor(claimElement, settings) {
+    constructor(claimElement) {
         this.settings = {};
         this.savePrefix = "rr_";
-        if (settings)
-            this.settings = settings;
-        this.mainId = claimElement.getAttribute('stmtId');
+        this.root = new Root();
         this.settleIt = new SettleIt();
-        this.claimsList = JSON.parse(claimElement.getAttribute('dict'));
-        this.scoresDict = createDict(this.claimsList);
+        this.root = JSON.parse(claimElement.getAttribute('root'));
+        this.mainId = this.root.mainId;
+        this.claims = this.root.claims;
+        if (this.root.settings)
+            this.settings = this.root.settings;
+        //if (this.root.scores) this.scores = this.root.scores;
+        this.scores = createDict(this.claims);
+        //set up the firebase connectivity
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
+                authDomain: "settleitorg.firebaseapp.com",
+                databaseURL: "https://settleitorg.firebaseio.com",
+                projectId: "settleitorg",
+                storageBucket: "settleitorg.appspot.com",
+                messagingSenderId: "835574079849"
+            });
+        }
+        this.db = firebase.database();
+        // this.dbRef = firebase.database().ref('objects/' + this.mainId);
+        // this.dbRef.on('child_changed', this.dataFromDB);
+        let claimsRef = this.db.ref('objects/' + this.mainId + '/claims');
+        claimsRef.once('value', this.claimsFromDB.bind(this));
+        claimsRef.on('child_changed', this.claimFromDB.bind(this));
         //restore saved dictionairy
-        let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
-        if (potentialDict) {
-            this.scoresDict = JSON.parse(potentialDict);
-            this.mainScore = this.scoresDict[this.mainId];
-            this.claimsList = [];
-            for (let scoreId in this.scoresDict) {
-                this.claimsList.push(this.scoresDict[scoreId].claim);
-            }
-            this.settleIt.calculate(this.scoresDict[this.mainId], this.scoresDict);
-        }
-        else {
-            this.mainScore = this.scoresDict[this.mainId];
-            this.mainScore.isMain = true;
-            this.settleIt.calculate(this.mainScore, this.scoresDict);
-            this.setDisplayState();
-        }
+        // let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
+        // if (potentialDict) {
+        //     this.scores = JSON.parse(potentialDict);
+        //     this.mainScore = this.scores[this.mainId];
+        //     this.claims = new Dict<Claim>();
+        //     for (let scoreId in this.scores) {
+        //         this.claims[scoreId] = this.scores[scoreId].claim;
+        //     }
+        //     this.settleIt.calculate(this.mainId, this.scores);
+        // } else {
+        this.mainScore = this.scores[this.mainId];
+        this.mainScore.isMain = true;
+        this.settleIt.calculate(this.mainId, this.claims, this.scores);
+        this.setDisplayState();
+        //}
         this.render = hyperHTML.bind(claimElement);
         this.update();
     }
+    ;
+    claimsFromDB(data) {
+        console.log(data.val());
+        this.claims = data.val();
+        this.calculate();
+        this.update();
+    }
+    claimFromDB(data) {
+        console.log(data.val());
+        let claim = data.val();
+        this.claims[claim.claimId] = claim;
+        this.calculate();
+        this.update();
+    }
     clearDisplayState() {
-        for (let scoreId in this.scoresDict) {
-            if (this.scoresDict.hasOwnProperty(scoreId)) {
-                this.scoresDict[scoreId].displayState = "notSelected";
+        for (let scoreId in this.scores) {
+            if (this.scores.hasOwnProperty(scoreId)) {
+                this.scores[scoreId].displayState = "notSelected";
             }
         }
     }
@@ -42,15 +75,15 @@ class RRDisplay {
     setDisplayStateLoop(score) {
         if (score == this.selectedScore)
             score.displayState = "selected";
-        for (let childId of score.claim.childIds) {
-            let childScore = this.scoresDict[childId];
+        for (let childId of this.claims[score.claimId].childIds) {
+            let childScore = this.scores[childId];
             //process the children first/
             this.setDisplayStateLoop(childScore);
             if (childScore == this.selectedScore) {
                 score.displayState = "parent";
                 //Set Siblings
-                for (let siblingId of score.claim.childIds) {
-                    let siblingScore = this.scoresDict[siblingId];
+                for (let siblingId of this.claims[score.claimId].childIds) {
+                    let siblingScore = this.scores[siblingId];
                     if (siblingScore.displayState != "selected")
                         siblingScore.displayState = "sibling";
                 }
@@ -62,9 +95,8 @@ class RRDisplay {
         }
     }
     update() {
-        if (!this.settings.noAutoSave)
-            localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scoresDict));
-        ;
+        // if (!this.settings.noAutoSave)
+        //     localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
         this.render `
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
@@ -89,9 +121,13 @@ class RRDisplay {
                 <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
-                <input value="${this.replaceAll(JSON.stringify(this.claimsList), '\'', '&#39;')}"></input>
+                <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
+                
+                <div  onclick="${this.signIn.bind(this)}"> 
+                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : 'Sign In'}]
+                </div>
            </div>
-            <div>${this.renderNode(this.scoresDict[this.mainId])}</div>
+            <div>${this.renderNode(this.scores[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
@@ -112,11 +148,11 @@ class RRDisplay {
     }
     ;
     renderNode(score, parent) {
-        var claim = score.claim;
+        var claim = this.claims[score.claimId];
         var wire = hyperHTML.wire(score);
         this.animatenumbers();
         var result = wire `
-                <li id="${claim.id}" class="${score.displayState +
+                <li id="${claim.claimId}" class="${score.displayState +
             (score.isMain ? ' mainClaim' : '') +
             (this.settings.isEditing && this.selectedScore == score ? ' editing' : '')}">
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
@@ -160,7 +196,7 @@ class RRDisplay {
                                 <button onclick="${this.removeClaim.bind(this, claim, parent)}" name="button">
                                     Remove this claim from it's parent
                                 </button><br/>
-                                ID:${claim.id}
+                                ID:${claim.claimId}
                             </div>
                         </div>
 
@@ -174,7 +210,7 @@ class RRDisplay {
 
                     </div>  
                       
-                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scoresDict[childId], score))}</ul>
+                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))}</ul>
                         </li>`;
         if (!wire.default) {
             wire.default = claim.content;
@@ -194,8 +230,8 @@ class RRDisplay {
     //Check for animating numbers
     animatenumbers() {
         var found = false;
-        for (var scoreId in this.scoresDict) {
-            var s = this.scoresDict[scoreId];
+        for (var scoreId in this.scores) {
+            var s = this.scores[scoreId];
             if (s.weightedPercentage != s.animatedWeightedPercentage) {
                 found = true;
                 var difference = s.weightedPercentage - s.animatedWeightedPercentage;
@@ -216,12 +252,10 @@ class RRDisplay {
         }
     }
     noBubbleClick(event) {
-        var event = arguments[0] || window.event;
         if (event)
             event.stopPropagation();
     }
     updateClaim(claim, event) {
-        //this.content = e.target.value;
         let inputs = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind");
@@ -232,16 +266,19 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
+        //Update the DB
+        firebase.database().ref('objects/' + this.mainId + '/claims/' + claim.claimId).set(claim);
+        //update the UI
         this.calculate();
         this.update();
     }
     calculate() {
-        this.settleIt.calculate(this.mainScore, this.scoresDict);
+        this.settleIt.calculate(this.mainId, this.claims, this.scores);
     }
     removeClaim(claim, parentScore, event) {
-        var index = parentScore.claim.childIds.indexOf(claim.id);
+        var index = this.claims[parentScore.claimId].childIds.indexOf(claim.claimId);
         if (index > -1)
-            parentScore.claim.childIds.splice(index, 1);
+            this.claims[parentScore.claimId].childIds.splice(index, 1);
         this.selectedScore = parentScore;
         this.setDisplayState();
         this.update();
@@ -256,9 +293,9 @@ class RRDisplay {
         let newClaim = new Claim();
         newClaim.isProMain = isProMain;
         let newScore = new Score(newClaim);
-        this.scoresDict[newClaim.id] = newScore;
-        parentScore.claim.childIds.unshift(newClaim.id);
-        this.claimsList.push(newScore.claim);
+        this.scores[newClaim.claimId] = newScore;
+        this.claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
+        this.claims[newClaim.claimId] = newClaim;
         newScore.displayState = "notSelected";
         this.update();
         setTimeout(() => {
@@ -270,6 +307,26 @@ class RRDisplay {
         }, 10);
         if (event)
             event.stopPropagation();
+    }
+    signIn() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            console.log(result);
+            // ...
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            console.log(error);
+        });
     }
 }
 //# sourceMappingURL=rrDisplay.js.map

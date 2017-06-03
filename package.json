@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "dependencies": {
+    "firebase": "^4.1.1",
     "jasmine": "^2.6.0",
     "typescript": "^2.3.2"
   },

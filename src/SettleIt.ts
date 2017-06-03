@@ -59,12 +59,14 @@ class SettleIt {
     public step1ValidateClaims(score: Score, parent?: Score) {
 
         //todo make this a 62bit GUID [a-z,A-Z,0-9]
+
         //if (this.claims[score.claimId].id == undefined) this.claims[score.claimId].id = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
         this.calculateProMainParent(score, parent);
 
         this.calculateGeneration(score, parent);
-        var claim 
-        for (let childId of this.claims[score.claimId].childIds) {
+        let claim = this.claims[score.claimId]
+        if (claim.childIds == undefined) claim.childIds = new Array<string>();
+        for (let childId of claim.childIds) {
             if (this.claims[childId].disabled) continue; //skip if diabled
             this.step1ValidateClaims(this.scores[childId], score);
         }

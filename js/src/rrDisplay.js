@@ -22,8 +22,12 @@ class RRDisplay {
                 messagingSenderId: "835574079849"
             });
         }
-        this.dbRef = firebase.database().ref('claims/' + this.mainId);
-        this.dbRef.on('child_changed', this.dataFromDB);
+        this.db = firebase.database();
+        // this.dbRef = firebase.database().ref('objects/' + this.mainId);
+        // this.dbRef.on('child_changed', this.dataFromDB);
+        let claimsRef = this.db.ref('objects/' + this.mainId + '/claims');
+        claimsRef.once('value', this.claimsFromDB.bind(this));
+        claimsRef.on('child_changed', this.claimFromDB.bind(this));
         //restore saved dictionairy
         // let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
         // if (potentialDict) {
@@ -44,8 +48,18 @@ class RRDisplay {
         this.update();
     }
     ;
-    dataFromDB(data) {
+    claimsFromDB(data) {
         console.log(data.val());
+        this.claims = data.val();
+        this.calculate();
+        this.update();
+    }
+    claimFromDB(data) {
+        console.log(data.val());
+        let claim = data.val();
+        this.claims[claim.claimId] = claim;
+        this.calculate();
+        this.update();
     }
     clearDisplayState() {
         for (let scoreId in this.scores) {
@@ -84,6 +98,7 @@ class RRDisplay {
         // if (!this.settings.noAutoSave)
         //     localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
         this.render `
+        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : ''}]
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
             (this.settings.hidePoints ? ' hidePoints' : '') +

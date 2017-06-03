@@ -14,7 +14,8 @@ class RRDisplay {
     settings: any = {};
     selectedScore: Score;
     savePrefix: string = "rr_";
-    dbRef: firebase.database.Reference;
+    //dbRef: firebase.database.Reference;
+    db: any;
     root: Root = new Root();;
 
 
@@ -39,9 +40,13 @@ class RRDisplay {
                 messagingSenderId: "835574079849"
             });
         }
-        this.dbRef = firebase.database().ref('claims/' + this.mainId);
-        this.dbRef.on('child_changed', this.dataFromDB);
+        this.db = firebase.database();
+        // this.dbRef = firebase.database().ref('objects/' + this.mainId);
+        // this.dbRef.on('child_changed', this.dataFromDB);
+        let claimsRef = this.db.ref('objects/' + this.mainId + '/claims')
+        claimsRef.once('value', this.claimsFromDB.bind(this));
 
+        claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
         //restore saved dictionairy
         // let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
@@ -64,8 +69,19 @@ class RRDisplay {
         this.update();
     }
 
-    dataFromDB(data: any) {
+    claimsFromDB(data: any) {
         console.log(data.val());
+        this.claims = data.val();
+        this.calculate();
+        this.update();
+    }
+
+    claimFromDB(data: any) {
+        console.log(data.val());
+        let claim: Claim = data.val();
+        this.claims[claim.claimId] = claim;
+        this.calculate();
+        this.update();
     }
 
     clearDisplayState(): void {
@@ -113,6 +129,7 @@ class RRDisplay {
         //     localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
 
         this.render`
+        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : ''}]
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
             (this.settings.hidePoints ? ' hidePoints' : '') +

@@ -41,9 +41,9 @@ class RRDisplay {
             });
         }
         this.db = firebase.database();
-        // this.dbRef = firebase.database().ref('objects/' + this.mainId);
+        // this.dbRef = firebase.database().ref('roots/' + this.mainId);
         // this.dbRef.on('child_changed', this.dataFromDB);
-        let claimsRef = this.db.ref('objects/' + this.mainId + '/claims')
+        let claimsRef = this.db.ref('roots/' + this.mainId + '/claims')
         claimsRef.once('value', this.claimsFromDB.bind(this));
 
         claimsRef.on('child_changed', this.claimFromDB.bind(this));
@@ -313,7 +313,7 @@ class RRDisplay {
             }
         }
         //Update the DB
-        firebase.database().ref('objects/' + this.mainId + '/claims/' + claim.claimId).set(claim);
+        firebase.database().ref('roots/' + this.mainId + '/claims/' + claim.claimId).set(claim);
 
         //update the UI
         this.calculate();

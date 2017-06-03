@@ -24,7 +24,8 @@ function createDict(claims, dict) {
 class SettleIt {
     constructor() { }
     calculate(mainId, claims, scores, shouldSort) {
-        this.claims = claims;
+        if (claims !== undefined)
+            this.claims = claims;
         if (mainId !== undefined)
             this.mainId = mainId;
         if (scores !== undefined)

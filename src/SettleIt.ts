@@ -38,7 +38,7 @@ class SettleIt {
     constructor() { }
 
     public calculate(mainId?: string, claims?: Dict<Claim>, scores?: Dict<Score>, shouldSort?: boolean) {
-        this.claims = claims;
+        if (claims !== undefined) this.claims = claims;
         if (mainId !== undefined) this.mainId = mainId;
         if (scores !== undefined) this.scores = scores;
         if (shouldSort !== undefined) this.shouldSort = shouldSort;

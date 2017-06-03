@@ -80,18 +80,20 @@ class RRDisplay {
     claimsFromDB(data: any) {
         let value = data.val();
         if (value) {
-            this.claims = data.val();
+            this.claims = value;
             this.calculate();
             this.update();
         }
     }
 
     claimFromDB(data: any) {
-        console.log(data.val());
-        let claim: Claim = data.val();
-        this.claims[claim.claimId] = claim;
-        this.calculate();
-        this.update();
+        let value = data.val();
+        if (value) {
+            let claim: Claim = value;
+            this.claims[claim.claimId] = claim;
+            this.calculate();
+            this.update();
+        }
     }
 
     clearDisplayState(): void {

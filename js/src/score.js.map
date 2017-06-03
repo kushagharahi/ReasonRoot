@@ -1,1 +1,1 @@
-{"version":3,"file":"score.js","sourceRoot":"","sources":["../../src/score.ts"],"names":[],"mappings":"AAAA;IA4CI,MAAM;IACN,YAAY,KAAa;QACrB,EAAE,CAAC,CAAC,KAAK,CAAC;YAAC,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IAClC,CAAC;CAIJ;AAID,gEAAgE"}
+{"version":3,"file":"score.js","sourceRoot":"","sources":["../../src/score.ts"],"names":[],"mappings":"AAAA;IA4CI,MAAM;IACN,YAAY,KAAa;QACrB,EAAE,CAAC,CAAC,KAAK,CAAC;YAAC,IAAI,CAAC,OAAO,GAAG,KAAK,CAAC,OAAO,CAAC;IAC5C,CAAC;CAIJ"}

@@ -1,6 +1,6 @@
 ﻿class Claim {
     /** a base62 GUID string to identify each claim */
-    id: string;
+    claimId: string;
 
     /** The text of the claim with the claim. May include markdown in the future. */
     content: string = "New Claim";
@@ -30,7 +30,7 @@
     citation: string = "";
 
     constructor(id?: string, isProMain?: boolean) {
-        this.id = id || newId();
+        this.claimId = id || newId();
         if (isProMain !== undefined) this.isProMain = isProMain
     }
 

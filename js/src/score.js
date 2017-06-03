@@ -2,8 +2,7 @@ class Score {
     /** */
     constructor(claim) {
         if (claim)
-            this.claim = claim;
+            this.claimId = claim.claimId;
     }
 }
-//enum DisplayState { None, Parent, Ancestor, Selected, Child }; 
 //# sourceMappingURL=score.js.map

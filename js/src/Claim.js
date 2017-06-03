@@ -10,7 +10,7 @@ class Claim {
         this.childIds = [];
         this.citationUrl = "";
         this.citation = "";
-        this.id = id || newId();
+        this.claimId = id || newId();
         if (isProMain !== undefined)
             this.isProMain = isProMain;
     }

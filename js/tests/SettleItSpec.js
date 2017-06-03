@@ -12,7 +12,7 @@ describe('', function () {
         mainClaim = new Claim("s1");
         mainScore = new Score(mainClaim);
         dict = new Dict();
-        dict[mainClaim.id] = mainScore;
+        dict[mainClaim.claimId] = mainScore;
     });
     afterEach(function () {
     });
@@ -23,8 +23,8 @@ describe('', function () {
             let sc1_1 = new Score(st1_1);
             let st1_2 = new Claim("1_2", false);
             let sc1_2 = new Score(st1_2);
-            dict[st1_1.id] = sc1_1;
-            dict[st1_2.id] = sc1_2;
+            dict[st1_1.claimId] = sc1_1;
+            dict[st1_2.claimId] = sc1_2;
             //expected.weightedPercentage = 0.5;
             //expected.weighted = { difference: 0 };
             controller.calculate(mainScore, dict);

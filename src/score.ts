@@ -1,5 +1,5 @@
 ﻿class Score {
-    claim: Claim;
+    claimId: string;
 
     /**  */
     confidencePro: number;
@@ -44,7 +44,7 @@
 
     /** */
     constructor(claim?: Claim) {
-        if (claim) this.claim = claim;
+        if (claim) this.claimId = claim.claimId;
     }
     
     isMain: boolean;
@@ -52,5 +52,3 @@
 }
 
 type DisplayState = "newClaim" | "notSelected" | "parent" | "ancestor" | "selected"| "selected editing" | "child" | "sibling";
-
-//enum DisplayState { None, Parent, Ancestor, Selected, Child };

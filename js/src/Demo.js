@@ -12,8 +12,8 @@ class Demo {
         newClaim.content = content;
         newClaim.isProMain = isProMain;
         let newScore = new Score(newClaim);
-        this.rr.scores[newClaim.id] = newScore;
-        parent.claim.childIds.unshift(newClaim.id);
+        this.rr.scores[newClaim.claimId] = newScore;
+        parent.claim.childIds.unshift(newClaim.claimId);
         this.rr.claims.push(newScore.claim);
         newScore.displayState = "newClaim";
         this.rr.update();

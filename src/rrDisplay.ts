@@ -129,7 +129,6 @@ class RRDisplay {
         //     localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
 
         this.render`
-        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : ''}]
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
             (this.settings.hidePoints ? ' hidePoints' : '') +
@@ -156,6 +155,10 @@ class RRDisplay {
                 <label for="showCompetition">Show Competition</label>
 
                 <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
+                
+                <div  onclick="${this.signIn.bind(this)}"> 
+                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : 'Sign In'}]
+                </div>
            </div>
             <div>${this.renderNode(this.scores[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
@@ -309,6 +312,10 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
+        //Update the DB
+        firebase.database().ref('objects/' + this.mainId + '/claims/' + claim.claimId).set(claim);
+
+        //update the UI
         this.calculate();
         this.update();
     }
@@ -350,6 +357,27 @@ class RRDisplay {
         }, 10)
 
         if (event) event.stopPropagation();
+    }
+
+    signIn() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            console.log(result);
+            // ...
+        }).catch(function (error) { 
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            console.log(error);
+        });
     }
 
 }

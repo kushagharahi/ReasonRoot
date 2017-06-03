@@ -15,14 +15,18 @@ class RRDisplay {
     selectedScore: Score;
     savePrefix: string = "rr_";
     dbRef: firebase.database.Reference;
+    root: Root = new Root();;
 
 
-    constructor(claimElement: Element, settings?: any) {
-        if (settings) this.settings = settings;
-        this.mainId = claimElement.getAttribute('stmtId');
+    constructor(claimElement: Element) {
         this.settleIt = new SettleIt();
-        this.claims = JSON.parse(claimElement.getAttribute('dict'));
+        this.root = JSON.parse(claimElement.getAttribute('root'));
+        this.mainId = this.root.mainId;
+        this.claims = this.root.claims;
+        if (this.root.settings) this.settings = this.root.settings;
+        //if (this.root.scores) this.scores = this.root.scores;
         this.scores = createDict(this.claims);
+
 
         //set up the firebase connectivity
         if (!firebase.apps.length) {
@@ -50,10 +54,10 @@ class RRDisplay {
         //     }
         //     this.settleIt.calculate(this.mainId, this.scores);
         // } else {
-            this.mainScore = this.scores[this.mainId];
-            this.mainScore.isMain = true;
-            this.settleIt.calculate(this.mainId,this.claims, this.scores)
-            this.setDisplayState();
+        this.mainScore = this.scores[this.mainId];
+        this.mainScore.isMain = true;
+        this.settleIt.calculate(this.mainId, this.claims, this.scores)
+        this.setDisplayState();
         //}
 
         this.render = hyperHTML.bind(claimElement);
@@ -62,7 +66,6 @@ class RRDisplay {
 
     dataFromDB(data: any) {
         console.log(data.val());
-        //setCommentValues(postElement, data.key, data.val().text, data.val().author);
     }
 
     clearDisplayState(): void {
@@ -135,7 +138,7 @@ class RRDisplay {
                 <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
-                <input value="${this.replaceAll(JSON.stringify(this.claims), '\'', '&#39;')}"></input>
+                <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
            </div>
             <div>${this.renderNode(this.scores[this.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
@@ -294,7 +297,7 @@ class RRDisplay {
     }
 
     calculate(): void {
-        this.settleIt.calculate(this.mainId,this.claims, this.scores)
+        this.settleIt.calculate(this.mainId, this.claims, this.scores)
     }
 
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {

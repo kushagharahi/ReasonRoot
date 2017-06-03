@@ -7,7 +7,6 @@ declare class hyperHTML {
 class RRDisplay {
     scores: Dict<Score>;
     claims: Dict<Claim>;
-    mainId: string;
     settleIt: SettleIt;
     mainScore: Score;
     render: any;
@@ -22,7 +21,6 @@ class RRDisplay {
     constructor(claimElement: Element) {
         this.settleIt = new SettleIt();
         this.root = JSON.parse(claimElement.getAttribute('root'));
-        this.mainId = this.root.mainId;
         this.claims = this.root.claims;
         if (this.root.settings) this.settings = this.root.settings;
         //if (this.root.scores) this.scores = this.root.scores;
@@ -41,27 +39,37 @@ class RRDisplay {
             });
         }
         this.db = firebase.database();
-        // this.dbRef = firebase.database().ref('roots/' + this.mainId);
+        // this.dbRef = firebase.database().ref('roots/' + this.root.mainId);
         // this.dbRef.on('child_changed', this.dataFromDB);
-        let claimsRef = this.db.ref('roots/' + this.mainId + '/claims')
+        let claimsRef = this.db.ref('roots/' + this.root.mainId + '/claims')
         claimsRef.once('value', this.claimsFromDB.bind(this));
-
         claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
+        // //Check for write permissions
+        // let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
+        // permissionRef.on('value', function(snapshot){
+        //     this.canWrite = snapshot.val();
+        // })
+
+        // //Add Suggestions only for now
+        // firebase.database().ref(
+        //     'suggestions/' + this.root.mainId + "/users/" + firebase.auth().currentUser.uid
+        // ).set(this.root.mainId);
+
         //restore saved dictionairy
-        // let potentialDict = localStorage.getItem(this.savePrefix + this.mainId);
+        // let potentialDict = localStorage.getItem(this.savePrefix + this.root.mainId);
         // if (potentialDict) {
         //     this.scores = JSON.parse(potentialDict);
-        //     this.mainScore = this.scores[this.mainId];
+        //     this.mainScore = this.scores[this.root.mainId];
         //     this.claims = new Dict<Claim>();
         //     for (let scoreId in this.scores) {
         //         this.claims[scoreId] = this.scores[scoreId].claim;
         //     }
-        //     this.settleIt.calculate(this.mainId, this.scores);
+        //     this.settleIt.calculate(this.root.mainId, this.scores);
         // } else {
-        this.mainScore = this.scores[this.mainId];
+        this.mainScore = this.scores[this.root.mainId];
         this.mainScore.isMain = true;
-        this.settleIt.calculate(this.mainId, this.claims, this.scores)
+        this.settleIt.calculate(this.root.mainId, this.claims, this.scores)
         this.setDisplayState();
         //}
 
@@ -126,7 +134,7 @@ class RRDisplay {
 
     update(): void {
         // if (!this.settings.noAutoSave)
-        //     localStorage.setItem(this.savePrefix + this.mainId, JSON.stringify(this.scores));
+        //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
 
         this.render`
         <div class="${'rr' +
@@ -157,10 +165,10 @@ class RRDisplay {
                 <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
                 
                 <div  onclick="${this.signIn.bind(this)}"> 
-                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email + '-' +  firebase.auth().currentUser.uid: 'Sign In'} ]
+                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email + '-' + firebase.auth().currentUser.uid : 'Sign In'} ]
                 </div>
            </div>
-            <div>${this.renderNode(this.scores[this.mainId])}</div>
+            <div>${this.renderNode(this.scores[this.root.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
@@ -313,7 +321,8 @@ class RRDisplay {
             }
         }
         //Update the DB
-        firebase.database().ref('roots/' + this.mainId + '/claims/' + claim.claimId).set(claim);
+        firebase.database().ref('roots/' + this.root.mainId + '/claims/' + claim.claimId).set(claim);
+
 
         //update the UI
         this.calculate();
@@ -321,7 +330,7 @@ class RRDisplay {
     }
 
     calculate(): void {
-        this.settleIt.calculate(this.mainId, this.claims, this.scores)
+        this.settleIt.calculate(this.root.mainId, this.claims, this.scores)
     }
 
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
@@ -368,7 +377,7 @@ class RRDisplay {
             var user = result.user;
             console.log(result);
             // ...
-        }).catch(function (error) { 
+        }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;

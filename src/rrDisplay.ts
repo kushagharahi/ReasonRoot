@@ -157,7 +157,7 @@ class RRDisplay {
                 <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
                 
                 <div  onclick="${this.signIn.bind(this)}"> 
-                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email : 'Sign In'}]
+                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email + '-' +  firebase.auth().currentUser.uid: 'Sign In'} ]
                 </div>
            </div>
             <div>${this.renderNode(this.scores[this.mainId])}</div>

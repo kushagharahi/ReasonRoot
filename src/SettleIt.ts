@@ -42,17 +42,17 @@ class SettleIt {
         if (mainId !== undefined) this.mainId = mainId;
         if (scores !== undefined) this.scores = scores;
         if (shouldSort !== undefined) this.shouldSort = shouldSort;
-        let score = scores[mainId];
-        let claim = claims[mainId];
+        let score = this.scores[mainId];
+        let claim = this.claims[mainId];
         this.step1ValidateClaims(score);
         this.step2AscendClaims(score);
         this.step3DescendClaims(score);
         this.step4AscendClaims(score);
 
         return {
-            mainId: mainId,
-            claims: claims,
-            scores: scores
+            mainId: this.mainId,
+            claims: this.claims,
+            scores: this.scores
         }
     }
 

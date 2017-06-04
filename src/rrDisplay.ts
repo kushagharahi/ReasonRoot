@@ -4,7 +4,12 @@ declare class hyperHTML {
     static wire(optObj: any): any;
 }
 
+
+type WhichCopy = "original" | "local" | "suggestion";
+
 class RRDisplay {
+    userName: string = 'Sign In';
+    rrRef: any;//The current firebase reference to the ReasonRoot object
     scores: Dict<Score>;
     claims: Dict<Claim>;
     settleIt: SettleIt;
@@ -15,19 +20,82 @@ class RRDisplay {
     savePrefix: string = "rr_";
     //dbRef: firebase.database.Reference;
     db: any;
-    root: Root = new Root();;
+    rr: Root = new Root();
+    whichCopy: WhichCopy;
+    settingsVisible: boolean = false;
+    listenerRefs: any[];
 
 
     constructor(claimElement: Element) {
         this.settleIt = new SettleIt();
-        this.root = JSON.parse(claimElement.getAttribute('root'));
-        this.claims = this.root.claims;
-        if (this.root.settings) this.settings = this.root.settings;
-        //if (this.root.scores) this.scores = this.root.scores;
+        this.rr = JSON.parse(claimElement.getAttribute('root'));
+        this.initRr();
+        this.render = hyperHTML.bind(claimElement);
+        this.update();
+    }
+
+    initRr() {
+        this.claims = this.rr.claims;
+        if (this.rr.settings) this.settings = this.rr.settings;
         this.scores = createDict(this.claims);
+        this.mainScore = this.scores[this.rr.mainId];
+        this.mainScore.isMain = true;
+        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
+        this.setDisplayState();
+        this.calculate();
+    }
 
+    changeWhichCopy(whichCopy?: WhichCopy) {
+        if (this.whichCopy === whichCopy) return
 
-        //set up the firebase connectivity
+        if (whichCopy === undefined) {
+            //Determine which one to point to 
+        }
+
+        //Clear any existing observers
+        for (let ref of this.listenerRefs) ref.off();
+
+        if (whichCopy === "local") {
+            //pull local data if it exists and set it to save
+
+            let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
+            if (rr) {
+                this.rr = JSON.parse(rr);
+            }
+        }
+        else {
+            this.firebaseInit();
+            if (whichCopy === "original") {
+                this.rrRef = this.db.ref('roots/' + this.rr.mainId);
+                this.attachDB();
+            }
+            else if (whichCopy === "suggestion") {
+                //Find the ID of my suggestion
+                this.rrRef = this.db.ref('roots/' + this.rr.mainId);
+                this.attachDB();
+            }
+        }
+
+        this.initRr();
+        this.update();
+    }
+
+    attachDB() {
+        let claimsRef = this.rrRef.child('claims');
+        this.listenerRefs.push(claimsRef);
+        claimsRef.once('value', this.claimsFromDB.bind(this));
+        claimsRef.on('child_changed', this.claimFromDB.bind(this));
+
+        //Check for write permissions
+        let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
+        this.listenerRefs.push(permissionRef);
+        permissionRef.on('value', function(snapshot){
+            this.canWrite = snapshot.val();
+        })
+
+    }
+
+    firebaseInit() {
         if (!firebase.apps.length) {
             firebase.initializeApp({
                 apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
@@ -37,52 +105,15 @@ class RRDisplay {
                 storageBucket: "settleitorg.appspot.com",
                 messagingSenderId: "835574079849"
             });
+            this.db = firebase.database();
         }
-        this.db = firebase.database();
-        // this.dbRef = firebase.database().ref('roots/' + this.root.mainId);
-        // this.dbRef.on('child_changed', this.dataFromDB);
-        let claimsRef = this.db.ref('roots/' + this.root.mainId + '/claims')
-        claimsRef.once('value', this.claimsFromDB.bind(this));
-        claimsRef.on('child_changed', this.claimFromDB.bind(this));
-
-        // //Check for write permissions
-        // let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
-        // permissionRef.on('value', function(snapshot){
-        //     this.canWrite = snapshot.val();
-        // })
-
-        // //Add Suggestions only for now
-        // firebase.database().ref(
-        //     'suggestions/' + this.root.mainId + "/users/" + firebase.auth().currentUser.uid
-        // ).set(this.root.mainId);
-
-        //restore saved dictionairy
-        // let potentialDict = localStorage.getItem(this.savePrefix + this.root.mainId);
-        // if (potentialDict) {
-        //     this.scores = JSON.parse(potentialDict);
-        //     this.mainScore = this.scores[this.root.mainId];
-        //     this.claims = new Dict<Claim>();
-        //     for (let scoreId in this.scores) {
-        //         this.claims[scoreId] = this.scores[scoreId].claim;
-        //     }
-        //     this.settleIt.calculate(this.root.mainId, this.scores);
-        // } else {
-        this.mainScore = this.scores[this.root.mainId];
-        this.mainScore.isMain = true;
-        this.settleIt.calculate(this.root.mainId, this.claims, this.scores)
-        this.setDisplayState();
-        //}
-
-        this.render = hyperHTML.bind(claimElement);
-        this.update();
     }
 
     claimsFromDB(data: any) {
         let value = data.val();
         if (value) {
-            this.claims = value;
-            this.calculate();
-            this.update();
+            this.rr = value;
+            this.initRr();
         }
     }
 
@@ -150,7 +181,7 @@ class RRDisplay {
             (this.settings.showCompetition ? ' showCompetition' : '')
 
             }">
-            <div class = "${'settingsHider ' + (this.settings.visible ? 'open' : '')}"> 
+            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}"> 
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
                 <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings)}">
@@ -166,13 +197,13 @@ class RRDisplay {
                 <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
-                <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
+                <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
                 
                 <div  onclick="${this.signIn.bind(this)}"> 
-                        [${firebase.auth().currentUser ? firebase.auth().currentUser.email + '-' + firebase.auth().currentUser.uid : 'Sign In'} ]
+                        [${this.userName} ]
                 </div>
            </div>
-            <div>${this.renderNode(this.scores[this.root.mainId])}</div>
+            <div>${this.renderNode(this.scores[this.rr.mainId])}</div>
             <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
                 ⚙
             </div>
@@ -186,7 +217,7 @@ class RRDisplay {
     }
 
     toggleSettings(event: Event): void {
-        this.settings.visible = !this.settings.visible;
+        this.settingsVisible = !this.settingsVisible;
         this.update();
     }
 
@@ -324,8 +355,8 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
-        //Update the DB
-        firebase.database().ref('roots/' + this.root.mainId + '/claims/' + claim.claimId).set(claim);
+        //Update the storage
+        //firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
 
 
         //update the UI
@@ -334,7 +365,7 @@ class RRDisplay {
     }
 
     calculate(): void {
-        this.settleIt.calculate(this.root.mainId, this.claims, this.scores)
+        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
     }
 
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
@@ -373,12 +404,14 @@ class RRDisplay {
     }
 
     signIn() {
+        this.firebaseInit();
         var provider = new firebase.auth.GoogleAuthProvider();
         firebase.auth().signInWithPopup(provider).then(function (result) {
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = result.credential.accessToken;
             // The signed-in user info.
             var user = result.user;
+            this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
             console.log(result);
             // ...
         }).catch(function (error) {

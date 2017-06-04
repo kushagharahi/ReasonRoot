@@ -23,15 +23,19 @@ class RRDisplay {
     rr: Root = new Root();
     whichCopy: WhichCopy;
     settingsVisible: boolean = false;
-    listenerRefs: any[];
+    listenerRefs: any[] = new Array<any>();
+    canWrite: boolean;
 
 
     constructor(claimElement: Element) {
+        this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.initRr();
-        this.render = hyperHTML.bind(claimElement);
-        this.update();
+        this.firebaseInit();
+        this.changeWhichCopy("original");
+        //this.attachDB();
+        //this.initRr();
+        //this.update();
     }
 
     initRr() {
@@ -47,6 +51,7 @@ class RRDisplay {
 
     changeWhichCopy(whichCopy?: WhichCopy) {
         if (this.whichCopy === whichCopy) return
+        this.whichCopy = whichCopy
 
         if (whichCopy === undefined) {
             //Determine which one to point to 
@@ -67,13 +72,13 @@ class RRDisplay {
             this.firebaseInit();
             if (whichCopy === "original") {
                 this.rrRef = this.db.ref('roots/' + this.rr.mainId);
-                this.attachDB();
             }
             else if (whichCopy === "suggestion") {
-                //Find the ID of my suggestion
+                //to do Find the ID of my suggestion
                 this.rrRef = this.db.ref('roots/' + this.rr.mainId);
-                this.attachDB();
             }
+            this.attachDB();
+
         }
 
         this.initRr();
@@ -87,12 +92,17 @@ class RRDisplay {
         claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
         //Check for write permissions
-        let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
-        this.listenerRefs.push(permissionRef);
-        permissionRef.on('value', function(snapshot){
-            this.canWrite = snapshot.val();
-        })
+        if (firebase.auth().currentUser) {
+            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
+            this.listenerRefs.push(permissionRef);
 
+            //To do the can write below is on the wrong "this"
+            permissionRef.on('value', function (snapshot) {
+                this.canWrite = snapshot.val();
+            })
+        } else {
+            this.canWrite = false;
+        }
     }
 
     firebaseInit() {
@@ -105,15 +115,17 @@ class RRDisplay {
                 storageBucket: "settleitorg.appspot.com",
                 messagingSenderId: "835574079849"
             });
-            this.db = firebase.database();
         }
+        this.db = firebase.database();
     }
 
     claimsFromDB(data: any) {
         let value = data.val();
         if (value) {
-            this.rr = value;
-            this.initRr();
+            this.rr.claims = value;
+            this.claims = value;
+            this.calculate();
+            this.update();
         }
     }
 
@@ -355,8 +367,10 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
-        //Update the storage
-        //firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
+
+        //to do Update the storage
+        if (this.whichCopy == "original")
+            firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
 
 
         //update the UI

@@ -1,4 +1,4 @@
-declare class firebase { }
+declare var firebase: any;
 
 declare class hyperHTML {
     static wire(optObj: any): any;
@@ -93,7 +93,7 @@ class RRDisplay {
 
         //Check for write permissions
         if (firebase.auth().currentUser) {
-            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.root.mainId)
+            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
             this.listenerRefs.push(permissionRef);
 
             //To do the can write below is on the wrong "this"
@@ -222,7 +222,7 @@ class RRDisplay {
         </div>`;
     }
 
-    updateSettings(settings: any, event: Event): void {
+    updateSettings(settings: any, event: any): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
         if (event) event.stopPropagation();
@@ -357,7 +357,7 @@ class RRDisplay {
     }
 
     updateClaim(claim: Claim, event: Event) {
-        let inputs = event.srcElement.parentElement.querySelectorAll('input');
+        let inputs:any = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind")
             if (bindName) {

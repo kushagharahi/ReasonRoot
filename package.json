@@ -9,9 +9,13 @@
   "dependencies": {
     "firebase": "^4.1.1",
     "jasmine": "^2.6.0",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "webpack-dev-server": "^2.4.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ts-loader": "^2.1.0",
+    "webpack": "^2.6.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

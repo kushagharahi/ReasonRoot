@@ -420,7 +420,7 @@ class RRDisplay {
     signIn() {
         this.firebaseInit();
         var provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then(function (result) {
+        firebase.auth().signInWithPopup(provider).then((function (result) {
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = result.credential.accessToken;
             // The signed-in user info.
@@ -428,7 +428,7 @@ class RRDisplay {
             this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
             console.log(result);
             // ...
-        }).catch(function (error) {
+        }).bind(this)).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;

@@ -357,7 +357,7 @@ class RRDisplay {
     }
 
     updateClaim(claim: Claim, event: Event) {
-        let inputs:any = event.srcElement.parentElement.querySelectorAll('input');
+        let inputs: any = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind")
             if (bindName) {

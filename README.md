@@ -5,6 +5,7 @@ ReasonRoot is a widget you can put on your website that heps you have an open so
 ### The technologies we use are:
 
 - [HyperHTML](https://github.com/WebReflection/hyperHTML)
+- [Firebase](https://firebase.google.com/)
 - [Typescript](http://www.typescriptlang.org/)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [Webpack](https://webpack.js.org/)

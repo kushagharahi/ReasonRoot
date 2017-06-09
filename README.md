@@ -4,10 +4,11 @@ ReasonRoot is a widget you can put on your website that heps you have an open so
 ## Contribute
 ### The technologies we use are:
 
-- [Webpack](https://webpack.js.org/)
-- [Sass](http://sass-lang.com/)
 - [HyperHTML](https://github.com/WebReflection/hyperHTML)
 - [Typescript](http://www.typescriptlang.org/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Webpack](https://webpack.js.org/)
+- [Sass](http://sass-lang.com/)
 
 ### Tasks:
 You can see the tasks by reviewing the [ReasonRoot Open Tasks](https://github.com/SettleIt/ReasonRoot/projects/1) project in the reporitory.

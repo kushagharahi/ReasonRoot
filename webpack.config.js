@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './src/rrDisplay.ts',
+  entry: './index.js',
   output: {
     filename: 'bundle.js'
   },

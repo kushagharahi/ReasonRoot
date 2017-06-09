@@ -370,7 +370,11 @@ class RRDisplay {
 
         //to do Update the storage
         if (this.whichCopy == "original")
-            firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
+            if (this.canWrite)
+                firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
+            else { 
+                //Change over to a copy and set it up
+            }
 
 
         //update the UI
@@ -386,6 +390,7 @@ class RRDisplay {
         var index = this.claims[parentScore.claimId].childIds.indexOf(claim.claimId);
         if (index > -1) this.claims[parentScore.claimId].childIds.splice(index, 1);
         this.selectedScore = parentScore;
+        this.calculate();
         this.setDisplayState();
         this.update();
     }

@@ -12,4 +12,10 @@ ReasonRoot is a widget you can put on your website that heps you have an open so
 - [Sass](http://sass-lang.com/)
 
 ### Tasks:
-You can see the tasks by reviewing the [ReasonRoot Open Tasks](https://github.com/SettleIt/ReasonRoot/projects/1) project in the reporitory.
+You can see the tasks by reviewing the [ReasonRoot Open Tasks](https://github.com/SettleIt/ReasonRoot/projects/1) project in the reporitory. 
+
+- Create a fork
+- Look for tasks you can work in the "*Waiting to be Worked*" column
+- Start with the top card and move it to the "*Working On*" column
+- assign yourself to the card
+- submit a pull request with your changes

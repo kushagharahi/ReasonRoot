@@ -1,10 +1,5 @@
 declare var firebase: any;
 
-declare class hyperHTML {
-    static wire(optObj: any): any;
-}
-
-
 type WhichCopy = "original" | "local" | "suggestion";
 
 class RRDisplay {
@@ -27,7 +22,7 @@ class RRDisplay {
     canWrite: boolean;
 
 
-    constructor(claimElement: Element) {
+    constructor(claimElement: HTMLElement) {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));

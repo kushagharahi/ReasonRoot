@@ -21,7 +21,7 @@ var hyperHTML = (function () {'use strict';
   // A wire ➰ is a bridge between a document fragment
   // and its inevitably lost list of rendered nodes
   //
-  // var render = hyperHTML.wire();
+  // var render = hyperHTML.wire(optObj);
   // render`
   //  <div>Hello Wired!</div>
   // `;
@@ -36,7 +36,7 @@ var hyperHTML = (function () {'use strict';
       wireContent('html') :
       (obj == null ?
         wireContent(type || 'html') :
-        (wm.get(obj) || wireWeakly(obj, type || 'html'))
+        wireWeakly(obj, type || 'html')
       );
   };
 
@@ -56,7 +56,9 @@ var hyperHTML = (function () {'use strict';
     for (var
       attribute,
       value = IE ? uid : uidc,
-      attributes = slice.call(node.attributes),
+      attributes = IE ?
+        mapAttributes(node.attributes) :
+        slice.call(node.attributes),
       i = 0,
       length = attributes.length;
       i < length; i++
@@ -171,6 +173,7 @@ var hyperHTML = (function () {'use strict';
   function setAttribute(node, attribute) {
     var
       name = attribute.name,
+      isEvent = name.slice(0, 2) === 'on',
       isSpecial = name in node && !SHOULD_USE_ATTRIBUTE.test(name),
       oldValue
     ;
@@ -178,7 +181,14 @@ var hyperHTML = (function () {'use strict';
     return isSpecial ?
       function specialAttr(newValue) {
         if (oldValue !== newValue) {
-          node[name] = (oldValue = newValue);
+          oldValue = newValue;
+          if (isEvent) {
+            node[name] = 'handleEvent' in newValue ?
+              newValue.handleEvent.bind(newValue) :
+              newValue;
+          } else {
+            node[name] = newValue;
+          }
         }
       } :
       function attr(newValue) {
@@ -220,7 +230,8 @@ var hyperHTML = (function () {'use strict';
         default:
           if (Array.isArray(value)) {
             if (value.length === 0) {
-              any(value[0]);
+              removeNodeList(childNodes, 0);
+              childNodes = [];
             } else if(typeof value[0] === 'string') {
               any(value.join(''));
             } else {
@@ -278,10 +289,7 @@ var hyperHTML = (function () {'use strict';
 
   // given two collections, find
   // the first index that has different content.
-  // If the two lists are the same, return -1
-  // to indicate no differences were found.
   function indexOfDiffereces(a, b) {
-    if (a === b) return -1;
     var
       i = 0,
       aLength = a.length,
@@ -303,8 +311,10 @@ var hyperHTML = (function () {'use strict';
   // (I don't want to include a whole DOM parser for IE only here).
   function injectHTML(fragment, html) {
     var
-      fallback = IE && /^[^\S]*?<(t(?:head|body|foot|r|d|h))/i.test(html),
-      template = fragment.ownerDocument.createElement('template')
+      template = fragment.ownerDocument.createElement('template'),
+      fallback = IE &&
+                  !('content' in template) &&
+                  /^[^\S]*?<(t(?:head|body|foot|r|d|h))/i.test(html)
     ;
     template.innerHTML = fallback ? ('<table>' + html + '</table>') : html;
     if (fallback) {
@@ -316,20 +326,32 @@ var hyperHTML = (function () {'use strict';
     );
   }
 
+  // IE / Edge Attributes values are resolved at runtime
+  // no attribute.value is found if these are cleaned up when special
+  // TODO: this might be used for every browser instead of slice.call
+  //       to grant both name and value are preserved.
+  //       However, this really looks just an IE/Edge bug.
+  function mapAttributes(attributes) {
+    for (var out = [], i = attributes.length; i--; out[i] = {
+      name: attributes[i].name,
+      value: attributes[i].value
+    });
+    return out;
+  }
+
   // accordingly with the kind of child
   // it puts its content into a parent node
   function populateNode(parent, child) {
     switch (child.nodeType) {
       case 1:
-        var
-          childNodes = parent.childNodes,
-          length = childNodes.length
-        ;
-        if (0 < length && childNodes[0] === child) {
-          removeNodeList(childNodes, 1);
-        } else if (length !== 1) {
-          resetAndPopulate(parent, child);
+        var childNodes = parent.childNodes;
+        if (0 < childNodes.length) {
+          if (childNodes[0] === child) {
+            removeNodeList(childNodes, 1);
+            break;
+          }
         }
+        resetAndPopulate(parent, child);
         break;
       case 11:
         if (-1 < indexOfDiffereces(parent.childNodes, child.childNodes)) {
@@ -424,11 +446,20 @@ var hyperHTML = (function () {'use strict';
     };
   }
 
-  // get or create a wired weak reference
+  // returns or create a weak wire by ID
+  function wireByID(wires, id, type) {
+    return wires[id] || (wires[id] = wireContent(type));
+  }
+
+  // setup a weak reference if needed and return a wire by ID
   function wireWeakly(obj, type) {
-    var wire = wireContent(type);
-    wm.set(obj, wire);
-    return wire;
+    var
+      wires = wm.get(obj) || (wm.set(obj, wires = {}), wires),
+      i = type.indexOf(':')
+    ;
+    return i < 0 ?
+      wireByID(wires, type, type) :
+      wireByID(wires, type.slice(i + 1), type.slice(0, i) || 'html');
   }
 
   // -------------------------
@@ -459,6 +490,7 @@ var hyperHTML = (function () {'use strict';
     ;
     if (IE) {
       IEAttributes = [];
+      removeNodeList(this.childNodes, 0);
       injectHTML(this, html.replace(no, comments));
     } else if (this.nodeType === 1) {
       this.innerHTML = html;
@@ -469,35 +501,6 @@ var hyperHTML = (function () {'use strict';
     this[EXPANDO] = {s: statics, u: updates};
     return update.apply(this, arguments);
   }
-
-  // -------------------------
-  // the trash bin
-  // -------------------------
-
-  // IE used to suck.
-  /*
-  // even in a try/catch this throw an error
-  // since it's reliable though, I'll keep it around
-  function isIE() {
-    var p = document.createElement('p');
-    p.innerHTML = '<i onclick="<!---->">';
-    return p.childNodes[0].onclick == null;
-  }
-  //*/
-
-  // remove and/or add a list of nodes through a fragment
-  /* temporarily removed until it's demonstrated it's needed
-  function updateViaFragment(node, fragment, i) {
-    if (0 < i) {
-      removeNodeList(node.childNodes, i);
-      var slim = fragment.cloneNode();
-      appendNodes(slim, slice.call(fragment.childNodes, i));
-      node.appendChild(fragment, slim);
-    } else {
-      resetAndPopulate(node, fragment);
-    }
-  }
-  //*/
 
   // -------------------------
   // local variables
@@ -512,8 +515,11 @@ var hyperHTML = (function () {'use strict';
     uid = EXPANDO + ((Math.random() * new Date) | 0) + ';',
     // use comment nodes with pseudo unique content to setup
     uidc = '<!--' + uid + '-->',
-    // threat it differently
-    IE = 'documentMode' in document,
+    // if attributes order is shuffled, threat the browser differently
+    IE = (function (p) {
+      p.innerHTML = '<i data-i="" class=""></i>';
+      return /class/i.test(p.firstChild.attributes[0].name);
+    }(document.createElement('p'))),
     no = IE && new RegExp('([^\\S][a-z]+[a-z0-9_-]*=)([\'"])' + uidc + '\\2', 'g'),
     comments = IE && function ($0, $1, $2) {
       IEAttributes.push($1.slice(1, -1));

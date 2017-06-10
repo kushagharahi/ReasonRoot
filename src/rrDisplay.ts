@@ -103,12 +103,12 @@ class RRDisplay {
     firebaseInit() {
         if (!firebase.apps.length) {
             firebase.initializeApp({
-                apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
-                authDomain: "settleitorg.firebaseapp.com",
-                databaseURL: "https://settleitorg.firebaseio.com",
-                projectId: "settleitorg",
-                storageBucket: "settleitorg.appspot.com",
-                messagingSenderId: "835574079849"
+                apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
+                authDomain: "reasonrootdev.firebaseapp.com",
+                databaseURL: "https://reasonrootdev.firebaseio.com",
+                projectId: "reasonrootdev",
+                storageBucket: "reasonrootdev.appspot.com",
+                messagingSenderId: "680169719491"
             });
         }
         this.db = firebase.database();
@@ -367,7 +367,7 @@ class RRDisplay {
         if (this.whichCopy == "original")
             if (this.canWrite)
                 firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
-            else { 
+            else {
                 //Change over to a copy and set it up
             }
 

@@ -6,7 +6,7 @@ SettleIt = require('./js/src/SettleIt.js');
 Claim = require('./js/src/Claim.js');
 Dict = require('./js/src/Dict.js');
 require('./js/src/rrDisplay.js');
-require('./js/src/Root.js');
+Root = require('./js/src/Root.js');
 //require('./HyperHTML.js');
 
 //Import SCSS

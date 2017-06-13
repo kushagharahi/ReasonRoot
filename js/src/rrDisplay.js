@@ -15,8 +15,6 @@ window.onload = async function () {
 
 //Here ends this code block
 
-require('../../ReasonRoot.scss');
-
 class RRDisplay {
     constructor(claimElement) {
         this.userName = 'Sign In';

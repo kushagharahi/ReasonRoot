@@ -1,3 +1,20 @@
+//The code block that inflates the claims nodes
+//that was on index.html now are appended through this .js file
+
+let mainClaimsDict = {}
+
+window.onload = async function () {
+
+  var claimElements = document.getElementsByTagName('claim');
+
+  for (let claimElement of claimElements) {
+    let rr = new RRDisplay(claimElement);
+    mainClaimsDict[rr.mainId] = rr;
+  }
+};
+
+//Here ends this code block
+
 class RRDisplay {
     constructor(claimElement) {
         this.userName = 'Sign In';
@@ -31,7 +48,7 @@ class RRDisplay {
             return;
         this.whichCopy = whichCopy;
         if (whichCopy === undefined) {
-            //Determine which one to point to 
+            //Determine which one to point to
         }
         //Clear any existing observers
         for (let ref of this.listenerRefs)
@@ -150,7 +167,7 @@ class RRDisplay {
             (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
             (this.settings.showSiblings ? ' showSiblings' : '') +
             (this.settings.showCompetition ? ' showCompetition' : '')}">
-            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}"> 
+            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
                 <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings)}">
@@ -167,13 +184,13 @@ class RRDisplay {
                 <label for="showCompetition">Show Competition</label>
 
                 <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
-                
-                <div  onclick="${this.signIn.bind(this)}"> 
+
+                <div  onclick="${this.signIn.bind(this)}">
                         [${this.userName} ]
                 </div>
            </div>
             <div>${this.renderNode(this.scores[this.rr.mainId])}</div>
-            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
+            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}">
                 ⚙
             </div>
         </div>`;
@@ -212,13 +229,13 @@ class RRDisplay {
 
                                 ${claim.content}
                                 ${claim.maxConf && claim.maxConf < 100 ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
-                                <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}"> 
+                                <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}">
                                     <span class="citation">${claim.citation}</span>
                                 </a>
 
                              </div>
                         </div>
-                        
+
                         <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
                             <div class="${"childIndicator " + (claim.isProMain ? 'pro' : 'con')}">
                             <div class="childIndicatorInner">
@@ -253,8 +270,8 @@ class RRDisplay {
                             </div>
                         </div>
 
-                    </div>  
-                      
+                    </div>
+
                     <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))}</ul>
                         </li>`;
         if (!wire.default) {

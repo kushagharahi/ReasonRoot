@@ -17,6 +17,28 @@ window.onload = async function () {
 
 //Here ends this code block
 
+function createDict(claims, dict) {
+    if (dict === undefined)
+        dict = new Dict();
+    for (let claimId in claims) {
+        if (claims.hasOwnProperty(claimId)) {
+            if (dict[claimId] === undefined) {
+                let newScore = new Score();
+                newScore.claimId = claimId;
+                dict[claimId] = newScore;
+            }
+        }
+    }
+    // for (let claim of claims) {
+    //     if (dict[claim.id] === undefined) {
+    //         let newScore = new Score();
+    //         newthis.claims[score.claimId] = claim;
+    //         dict[claim.id] = newScore;
+    //     }
+    // }
+    return dict;
+}
+
 class RRDisplay {
     constructor(claimElement) {
         this.userName = 'Sign In';

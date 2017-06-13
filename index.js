@@ -2,8 +2,9 @@
 
 //Import JS
 Score = require('./js/src/score.js');
-require('./js/src/SettleIt.js');
-require('./js/src/Claim.js');
+SettleIt = require('./js/src/SettleIt.js');
+Claim = require('./js/src/Claim.js');
+Dict = require('./js/src/Dict.js');
 require('./js/src/rrDisplay.js');
 require('./js/src/Root.js');
 //require('./HyperHTML.js');

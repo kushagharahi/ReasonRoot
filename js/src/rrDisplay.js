@@ -1,3 +1,5 @@
+//TODO Refactor this code block to TypeScript syntax and add this to rrDisplay.ts
+
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file
 

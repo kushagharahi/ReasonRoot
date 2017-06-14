@@ -1,13 +1,7 @@
 //TODO Change js libs to their ts versions
 
 //Import JS
-hyperHTML = require('./HyperHTML.js');
-RRDisplay = require('./js/src/rrDisplay.js');
-Score = require('./js/src/score.js');
-SettleIt = require('./js/src/SettleIt.js');
-Claim = require('./js/src/Claim.js');
-Dict = require('./js/src/Dict.js');
-Root = require('./js/src/Root.js');
+import RRDisplay from './js/src/rrDisplay.js';
 
 //Import SCSS
 require('./ReasonRoot.scss');

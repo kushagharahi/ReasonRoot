@@ -1,3 +1,2 @@
-module.exports = class Dict {
-  
+export default class Dict {
 }

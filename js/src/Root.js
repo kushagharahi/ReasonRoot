@@ -1,6 +1,7 @@
 'use strict';
+import Dict from './Dict.js';
 
-module.exports = class Root {
+export default class Root {
     constructor() {
         this.claims = new Dict();
         this.scores = new Dict();

@@ -1,4 +1,11 @@
-module.exports = class RRDisplay {
+import hyperHTML from 'hyperhtml';
+
+import Root from './Root.js';
+import Dict from './Dict.js';
+import SettleIt from'./SettleIt.js';
+import Score from './score.js';
+
+export default class RRDisplay {
     constructor(claimElement) {
         this.userName = 'Sign In';
         this.settings = {};

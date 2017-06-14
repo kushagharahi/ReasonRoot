@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = class SettleIt {
+export default class SettleIt {
     constructor() { }
     calculate(mainId, claims, scores, shouldSort) {
         if (claims !== undefined)

@@ -7,7 +7,9 @@
     "test": "tests"
   },
   "dependencies": {
-    "firebase": "^4.1.1",
+    "firebase": "^4.1.2",
+    "firebaseui": "^2.1.1",
+    "hyperhtml": "^0.11.11",
     "jasmine": "^2.6.0",
     "typescript": "^2.3.2",
     "webpack-dev-server": "^2.4.5"

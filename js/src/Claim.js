@@ -1,4 +1,6 @@
-class Claim {
+'use strict';
+
+export default class Claim {
     constructor(id, isProMain) {
         /** The text of the claim with the claim. May include markdown in the future. */
         this.content = "New Claim";

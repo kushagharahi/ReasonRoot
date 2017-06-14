@@ -1,4 +1,6 @@
-class Score {
+'use strict';
+
+export default class Score {
     /** */
     constructor(claim) {
         if (claim)

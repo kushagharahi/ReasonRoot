@@ -1,4 +1,5 @@
 import hyperHTML from 'hyperhtml';
+import firebase from 'firebase';
 
 import Root from './Root.js';
 import Dict from './Dict.js';

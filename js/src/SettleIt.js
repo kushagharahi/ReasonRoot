@@ -1,27 +1,6 @@
-class Dict {
-}
-function createDict(claims, dict) {
-    if (dict === undefined)
-        dict = new Dict();
-    for (let claimId in claims) {
-        if (claims.hasOwnProperty(claimId)) {
-            if (dict[claimId] === undefined) {
-                let newScore = new Score();
-                newScore.claimId = claimId;
-                dict[claimId] = newScore;
-            }
-        }
-    }
-    // for (let claim of claims) {
-    //     if (dict[claim.id] === undefined) {
-    //         let newScore = new Score();
-    //         newthis.claims[score.claimId] = claim;
-    //         dict[claim.id] = newScore;
-    //     }
-    // }
-    return dict;
-}
-class SettleIt {
+'use strict';
+
+module.exports = class SettleIt {
     constructor() { }
     calculate(mainId, claims, scores, shouldSort) {
         if (claims !== undefined)

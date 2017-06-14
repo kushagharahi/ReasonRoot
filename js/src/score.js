@@ -1,6 +1,9 @@
-class Score {
+'use strict';
+
+module.exports = class Score {
     /** */
     constructor(claim) {
+      name = 'Tito';
         if (claim)
             this.claimId = claim.claimId;
     }

@@ -1,45 +1,4 @@
-//TODO Refactor this code block to TypeScript syntax and add this to rrDisplay.ts
-
-//The code block that inflates the claims nodes
-//that was on index.html now are appended through this .js file
-
-let mainClaimsDict = {}
-
-window.onload = async function () {
-
-  var claimElements = document.getElementsByTagName('claim');
-
-  for (let claimElement of claimElements) {
-    let rr = new RRDisplay(claimElement);
-    mainClaimsDict[rr.mainId] = rr;
-  }
-};
-
-//Here ends this code block
-
-function createDict(claims, dict) {
-    if (dict === undefined)
-        dict = new Dict();
-    for (let claimId in claims) {
-        if (claims.hasOwnProperty(claimId)) {
-            if (dict[claimId] === undefined) {
-                let newScore = new Score();
-                newScore.claimId = claimId;
-                dict[claimId] = newScore;
-            }
-        }
-    }
-    // for (let claim of claims) {
-    //     if (dict[claim.id] === undefined) {
-    //         let newScore = new Score();
-    //         newthis.claims[score.claimId] = claim;
-    //         dict[claim.id] = newScore;
-    //     }
-    // }
-    return dict;
-}
-
-class RRDisplay {
+module.exports = class RRDisplay {
     constructor(claimElement) {
         this.userName = 'Sign In';
         this.settings = {};
@@ -60,7 +19,7 @@ class RRDisplay {
         this.claims = this.rr.claims;
         if (this.rr.settings)
             this.settings = this.rr.settings;
-        this.scores = createDict(this.claims);
+        this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
@@ -416,6 +375,27 @@ class RRDisplay {
             var credential = error.credential;
             console.log(error);
         });
+    }
+    createDict(claims, dict) {
+        if (dict === undefined)
+            dict = new Dict();
+        for (let claimId in claims) {
+            if (claims.hasOwnProperty(claimId)) {
+                if (dict[claimId] === undefined) {
+                    let newScore = new Score();
+                    newScore.claimId = claimId;
+                    dict[claimId] = newScore;
+                }
+            }
+        }
+        // for (let claim of claims) {
+        //     if (dict[claim.id] === undefined) {
+        //         let newScore = new Score();
+        //         newthis.claims[score.claimId] = claim;
+        //         dict[claim.id] = newScore;
+        //     }
+        // }
+        return dict;
     }
 }
 //# sourceMappingURL=rrDisplay.js.map

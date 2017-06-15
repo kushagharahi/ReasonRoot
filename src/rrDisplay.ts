@@ -1,8 +1,18 @@
 declare var firebase: any;
+declare var require: any;
 
 type WhichCopy = "original" | "local" | "suggestion";
 
-class RRDisplay {
+var hyperHTML = require('hyperhtml');
+var firebase = require('firebase');
+
+import Root from './Root.ts';
+import Dict from './Dict.ts';
+import SettleIt from'./SettleIt.ts';
+import Score from './score.ts';
+import Claim from './Claim.ts';
+
+export default class RRDisplay {
     userName: string = 'Sign In';
     rrRef: any;//The current firebase reference to the ReasonRoot object
     scores: Dict<Score>;
@@ -36,7 +46,7 @@ class RRDisplay {
     initRr() {
         this.claims = this.rr.claims;
         if (this.rr.settings) this.settings = this.rr.settings;
-        this.scores = createDict(this.claims);
+        this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
@@ -49,7 +59,7 @@ class RRDisplay {
         this.whichCopy = whichCopy
 
         if (whichCopy === undefined) {
-            //Determine which one to point to 
+            //Determine which one to point to
         }
 
         //Clear any existing observers
@@ -188,7 +198,7 @@ class RRDisplay {
             (this.settings.showCompetition ? ' showCompetition' : '')
 
             }">
-            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}"> 
+            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
                 <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings)}">
@@ -205,13 +215,13 @@ class RRDisplay {
                 <label for="showCompetition">Show Competition</label>
 
                 <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
-                
-                <div  onclick="${this.signIn.bind(this)}"> 
+
+                <div  onclick="${this.signIn.bind(this)}">
                         [${this.userName} ]
                 </div>
            </div>
             <div>${this.renderNode(this.scores[this.rr.mainId])}</div>
-            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}"> 
+            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}">
                 ⚙
             </div>
         </div>`;
@@ -257,13 +267,13 @@ class RRDisplay {
 
                                 ${claim.content}
                                 ${claim.maxConf && claim.maxConf < 100 ? " (maximum confidence set to " + claim.maxConf + "%) " : ""}
-                                <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}"> 
+                                <a target="_blank" href="${claim.citationUrl}" onclick="${this.noBubbleClick}">
                                     <span class="citation">${claim.citation}</span>
                                 </a>
 
                              </div>
                         </div>
-                        
+
                         <div class="${"childIndicatorSpace" + (claim.childIds.length == 0 ? '' : ' hasChildren')}">
                             <div class="${"childIndicator " + (claim.isProMain ? 'pro' : 'con')}">
                             <div class="childIndicatorInner">
@@ -298,8 +308,8 @@ class RRDisplay {
                             </div>
                         </div>
 
-                    </div>  
-                      
+                    </div>
+
                     <ul>${
             claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))
             }</ul>
@@ -440,7 +450,29 @@ class RRDisplay {
         });
     }
 
+    createDict(claims: Dict<Claim>, dict?: Dict<Score>): Dict<Score> {
+        if (dict === undefined) dict = new Dict<Score>();
+
+        for (let claimId in claims) {
+            if (claims.hasOwnProperty(claimId)) {
+                if (dict[claimId] === undefined) {
+                    let newScore = new Score();
+                    newScore.claimId = claimId;
+                    dict[claimId] = newScore;
+                }
+            }
+        }
+
+
+
+        // for (let claim of claims) {
+        //     if (dict[claim.id] === undefined) {
+        //         let newScore = new Score();
+        //         newthis.claims[score.claimId] = claim;
+        //         dict[claim.id] = newScore;
+        //     }
+        // }
+        return dict;
+    }
+
 }
-
-
-

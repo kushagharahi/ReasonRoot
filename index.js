@@ -1,7 +1,7 @@
 //TODO Change js libs to their ts versions
 
 //Import JS
-import RRDisplay from './js/src/rrDisplay.js';
+import RRDisplay from './src/rrDisplay.ts';
 
 //Import SCSS
 require('./ReasonRoot.scss');

@@ -1,33 +1,9 @@
-class Dict<T> {
-    [K: string]: T;
-}
-
-function createDict(claims: Dict<Claim>, dict?: Dict<Score>): Dict<Score> {
-    if (dict === undefined) dict = new Dict<Score>();
-
-    for (let claimId in claims) {
-        if (claims.hasOwnProperty(claimId)) {
-            if (dict[claimId] === undefined) {
-                let newScore = new Score();
-                newScore.claimId = claimId;
-                dict[claimId] = newScore;
-            }
-        }
-    }
+import Dict from './Dict.ts';
+import Claim from './Claim.ts';
+import Score from './score.ts';
 
 
-
-    // for (let claim of claims) {
-    //     if (dict[claim.id] === undefined) {
-    //         let newScore = new Score();
-    //         newthis.claims[score.claimId] = claim;
-    //         dict[claim.id] = newScore;
-    //     }
-    // }
-    return dict;
-}
-
-class SettleIt {
+export default class SettleIt {
 
     //The variable s always means score object which contains a claim
     public shouldSort: boolean;
@@ -225,7 +201,7 @@ class SettleIt {
     }
 
     /** This performs Importance calculations for both Claims that affect Confidence and Importance.
-     * Confidence: sum children(importance) 
+     * Confidence: sum children(importance)
      * Importance: (score.importancePro + 1) / (score.importanceCon + 1) */
     private calculateImportance(score: Score) {
         if (this.claims[score.claimId].affects == "Importance") {

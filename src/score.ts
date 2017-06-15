@@ -1,4 +1,8 @@
-﻿class Score {
+import Root from './Root.ts';
+import Claim from './Claim.ts';
+
+
+﻿export default class Score {
     claimId: string;
 
     /**  */
@@ -46,7 +50,7 @@
     constructor(claim?: Claim) {
         if (claim) this.claimId = claim.claimId;
     }
-    
+
     isMain: boolean;
     isEditing: boolean;
 }

@@ -1,4 +1,4 @@
-﻿class Claim {
+﻿export default class Claim {
     /** a base62 GUID string to identify each claim */
     claimId: string;
 
@@ -55,5 +55,3 @@ function newId(): string {
 
     return result
 }
-
-

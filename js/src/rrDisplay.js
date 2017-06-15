@@ -5,6 +5,7 @@ import Root from './Root.js';
 import Dict from './Dict.js';
 import SettleIt from'./SettleIt.js';
 import Score from './score.js';
+import Claim from './Claim.js';
 
 export default class RRDisplay {
     constructor(claimElement) {

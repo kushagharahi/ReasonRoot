@@ -1,10 +1,8 @@
-//TODO Change js libs to their ts versions
-
 //Import JS
-import RRDisplay from './src/rrDisplay.ts';
+import RRDisplay from './app/rrDisplay.ts';
 
 //Import SCSS
-require('./ReasonRoot.scss');
+require ('./assets/styles/ReasonRoot.scss');
 
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file

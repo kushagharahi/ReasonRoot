@@ -19,11 +19,9 @@ module.exports = {
   module: {
     loaders: [ // loaders will work with webpack 1 or 2; but will be renamed "rules" in future
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-      { test: /\.tsx?$/, loader: 'ts-loader'
-      //, include: [path.resolve(__dirname, 'src/app')
+      { test: /\.tsx?$/, loader: 'ts-loader', exclude: path.resolve(__dirname, '/node_modules'),
+      //include: path.resolve(__dirname, '/src/app')
     },
-      { test:/\.css$/, loader:'style-loader!css-loader', exclude: /node_modules/},
-      //{ test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader', exclude: /node_modules/}
       { test: /\.scss$/, loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: [ 'css-loader', 'sass-loader' ] }) }
     ]
   },

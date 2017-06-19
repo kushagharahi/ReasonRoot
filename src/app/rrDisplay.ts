@@ -6,11 +6,11 @@ type WhichCopy = "original" | "local" | "suggestion";
 var hyperHTML = require('hyperhtml');
 var firebase = require('firebase');
 
-import Root from './Root.ts';
-import Dict from './Dict.ts';
-import SettleIt from'./SettleIt.ts';
-import Score from './score.ts';
-import Claim from './Claim.ts';
+import Root from './Root';
+import Dict from './Dict';
+import SettleIt from'./SettleIt';
+import Score from './score';
+import Claim from './Claim';
 
 export default class RRDisplay {
     userName: string = 'Sign In';
@@ -30,12 +30,13 @@ export default class RRDisplay {
     settingsVisible: boolean = false;
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
+    mainId: any;
 
         // constructor(){
         //   this.userName = 'Sign In';
         // };
 
-    constructor(claimElement: HTMLElement) {
+    constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));

@@ -1,5 +1,5 @@
-import Root from './Root.ts';
-import Claim from './Claim.ts';
+import Root from './Root';
+import Claim from './Claim';
 
 
 ﻿export default class Score {

@@ -1,8 +1,10 @@
+declare var require: any;
+
 //Import JS
-import RRDisplay from './app/rrDisplay.ts';
+import RRDisplay from './app/rrDisplay';
 
 //Import SCSS
-require ('./assets/styles/ReasonRoot.scss');
+require ('../src/assets/styles/ReasonRoot.scss');
 
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file

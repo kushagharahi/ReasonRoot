@@ -25,7 +25,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node node_modules/.bin/webpack-dev-server"
+    "start": "npm run transpile && node ./node_modules/.bin/webpack-dev-server",
+    "transpile": "node ./node_modules/typescript/bin/tsc -p ./tsconfig.json"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-import Dict from './Dict.ts';
-import Claim from './Claim.ts';
-import Score from './score.ts';
+import Dict from './Dict';
+import Claim from './Claim';
+import Score from './score';
 
 export default class Root {
     mainId: string;

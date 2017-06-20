@@ -9,8 +9,10 @@ var firebase = require('firebase');
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';
-import Score from './score';
+import Score from './Score';
 import Claim from './Claim';
+import Animation from './Animation';
+import Auth from './Auth';
 
 export default class RRDisplay {
     userName: string = 'Sign In';
@@ -30,11 +32,10 @@ export default class RRDisplay {
     settingsVisible: boolean = false;
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
+//
     mainId: any;
+    animation: Animation = new Animation();
 
-        // constructor(){
-        //   this.userName = 'Sign In';
-        // };
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
@@ -249,8 +250,7 @@ export default class RRDisplay {
     renderNode(score: Score, parent?: Score): void {
         var claim: Claim = this.claims[score.claimId];
         var wire = hyperHTML.wire(score);
-
-        this.animatenumbers()
+        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.update(), 100);
 
         var result = wire`
                 <li id="${claim.claimId}" class="${
@@ -334,23 +334,6 @@ export default class RRDisplay {
         }
 
         return result;
-    }
-
-    //Check for animating numbers
-    animatenumbers() {
-        var found = false;
-        for (var scoreId in this.scores) {
-            var s = this.scores[scoreId];
-            if (s.weightedPercentage != s.animatedWeightedPercentage) {
-                found = true;
-                var difference = s.weightedPercentage - s.animatedWeightedPercentage
-                if (Math.abs(difference) < .01)
-                    s.animatedWeightedPercentage = s.weightedPercentage
-                else
-                    s.animatedWeightedPercentage += difference / 100;
-            }
-        }
-        if (found) setTimeout(() => this.update(), 100);
     }
 
     selectScore(score: Score, e: Event): void {

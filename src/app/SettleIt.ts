@@ -1,6 +1,6 @@
 import Dict from './Dict';
 import Claim from './Claim';
-import Score from './score';
+import Score from './Score';
 
 
 export default class SettleIt {

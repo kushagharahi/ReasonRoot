@@ -35,13 +35,13 @@ export default class RRDisplay {
 //
     mainId: any;
     animation: Animation = new Animation();
-
+    auth: Auth = new Auth();
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.firebaseInit();
+        this.auth.firebaseInit();
         this.changeWhichCopy("original");
         //this.attachDB();
         //this.initRr();
@@ -79,16 +79,16 @@ export default class RRDisplay {
             }
         }
         else {
-            this.firebaseInit();
+          // This is the problem
+            this.auth.firebaseInit();
             if (whichCopy === "original") {
-                this.rrRef = this.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
             }
             else if (whichCopy === "suggestion") {
                 //to do Find the ID of my suggestion
-                this.rrRef = this.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
             }
             this.attachDB();
-
         }
 
         this.initRr();
@@ -113,20 +113,6 @@ export default class RRDisplay {
         } else {
             this.canWrite = false;
         }
-    }
-
-    firebaseInit() {
-        if (!firebase.apps.length) {
-            firebase.initializeApp({
-                apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
-                authDomain: "reasonrootdev.firebaseapp.com",
-                databaseURL: "https://reasonrootdev.firebaseio.com",
-                projectId: "reasonrootdev",
-                storageBucket: "reasonrootdev.appspot.com",
-                messagingSenderId: "680169719491"
-            });
-        }
-        this.db = firebase.database();
     }
 
     claimsFromDB(data: any) {
@@ -221,7 +207,7 @@ export default class RRDisplay {
 
                 <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
 
-                <div  onclick="${this.signIn.bind(this)}">
+                <div  onclick="${this.auth.signIn.bind(this)}">
                         [${this.userName} ]
                 </div>
            </div>
@@ -412,29 +398,6 @@ export default class RRDisplay {
         }, 10)
 
         if (event) event.stopPropagation();
-    }
-
-    signIn() {
-        this.firebaseInit();
-        var provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then((function (result) {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = result.credential.accessToken;
-            // The signed-in user info.
-            var user = result.user;
-            this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
-            console.log(result);
-            // ...
-        }).bind(this)).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            console.log(error);
-        });
     }
 
     createDict(claims: Dict<Claim>, dict?: Dict<Score>): Dict<Score> {

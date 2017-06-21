@@ -1,10 +1,9 @@
-declare var firebase: any;
-declare var require: any;
+declare const require: any;
 
 type WhichCopy = "original" | "local" | "suggestion";
 
-var hyperHTML = require('hyperhtml');
-var firebase = require('firebase');
+const hyperHTML = require('hyperhtml');
+const firebase = require('firebase');
 
 import Root from './Root';
 import Dict from './Dict';
@@ -13,6 +12,8 @@ import Score from './Score';
 import Claim from './Claim';
 import Animation from './Animation';
 import Auth from './Auth';
+import Setting from './Setting';
+
 
 export default class RRDisplay {
     userName: string = 'Sign In';
@@ -36,6 +37,7 @@ export default class RRDisplay {
     mainId: any;
     animation: Animation = new Animation();
     auth: Auth = new Auth();
+    setting: Setting = new Setting();
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
@@ -190,19 +192,19 @@ export default class RRDisplay {
 
             }">
             <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
-                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
-                <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="hidePoints">Hide Points</label>
-                <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="noAutoSave">No Auto Save</label>
-                <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="showSiblings">Show Sibllings</label>
-                <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="hideClaimMenu">Hide Claim Menu</label>
-                <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="hideChildIndicator">Hide Child Indicator</label>
-                <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings)}">
+                <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, this.settings)}">
                 <label for="showCompetition">Show Competition</label>
 
                 <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
@@ -212,21 +214,10 @@ export default class RRDisplay {
                 </div>
            </div>
             <div>${this.renderNode(this.scores[this.rr.mainId])}</div>
-            <div class="settingsButton" onclick="${this.toggleSettings.bind(this)}">
+            <div class="settingsButton" onclick="${this.setting.toggle.bind(this.settingsVisible,this)}">
                 ⚙
             </div>
         </div>`;
-    }
-
-    updateSettings(settings: any, event: any): void {
-        settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
-        this.update();
-        if (event) event.stopPropagation();
-    }
-
-    toggleSettings(event: Event): void {
-        this.settingsVisible = !this.settingsVisible;
-        this.update();
     }
 
     replaceAll(target: string, search: string, replacement: string): string {

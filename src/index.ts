@@ -1,7 +1,7 @@
 declare var require: any;
 
 //Import JS
-import RRDisplay from './app/rrDisplay';
+import ReasonRoot from './app/ReasonRoot';
 
 //Import SCSS
 require ('../src/assets/styles/ReasonRoot.scss');
@@ -16,7 +16,7 @@ window.onload = async function () {
   var claimElements = document.getElementsByTagName('claim');
 
   for (let claimElement of claimElements) {
-    let rr = new RRDisplay(claimElement);
+    let rr = new ReasonRoot(claimElement);
     mainClaimsDict[rr.mainId] = rr;
   }
 };

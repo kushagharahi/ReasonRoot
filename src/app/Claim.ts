@@ -4,7 +4,6 @@ const firebase = require('firebase');
 import Score from './Score';
 import Setting from './Setting';
 import Dict from './Dict';
-import Operation from './Operation';
 import Root from './Root';
 
 
@@ -16,7 +15,6 @@ type WhichCopy = "original" | "local" | "suggestion";
     selectedScore: Score;
     claims: Dict<Claim>;
     scores: Dict<Score>;
-    operation: Operation = new Operation();
     settings: any = {};
     whichCopy: WhichCopy;
     setting: Setting = new Setting();
@@ -54,43 +52,35 @@ type WhichCopy = "original" | "local" | "suggestion";
         this.claimId = id || newId();
         if (isProMain !== undefined) this.isProMain = isProMain
     }
-    
 
-    remove(claim: Claim, parentScore: Score, event: Event): void {
-        var index = this.claims[parentScore.claimId].childIds.indexOf(claim.claimId);
-        if (index > -1) this.claims[parentScore.claimId].childIds.splice(index, 1);
+
+    remove(claim: Claim, claims: Dict<Claim>, parentScore: Score, event: Event): void {
+        var index = claims[parentScore.claimId].childIds.indexOf(claim.claimId);
+        if (index > -1) claims[parentScore.claimId].childIds.splice(index, 1);
         this.selectedScore = parentScore;
 
-        this.operation.calculate();
-        this.operation.setDisplayState();
-        this.operation.update();
+        // this.operation.calculate();
+        // this.operation.setDisplayState();
+        // this.operation.update();
     }
 
     edit(score: Score, event?: Event): void {
         this.settings.isEditing = !this.settings.isEditing;
-        this.operation.update();
+        // this.operation.update();
         if (event) event.stopPropagation();
     }
 
-    add(parentScore: Score, isProMain: boolean, event?: Event) {
-        let newClaim: Claim = new Claim();
-        newClaim.isProMain = isProMain;
-        let newScore: Score = new Score(newClaim)
-        this.scores[newClaim.claimId] = newScore;
-        this.claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
-        this.claims[newClaim.claimId] = newClaim;
-        newScore.displayState = "notSelected";
-        this.operation.update();
+    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>) {
+      let newClaim: Claim = new Claim();
+      newClaim.isProMain = isProMain;
+      let newScore: Score = new Score(newClaim)
+      scores[newClaim.claimId] = newScore;
+      claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
+      claims[newClaim.claimId] = newClaim;
+      newScore.displayState = "notSelected";
 
-        setTimeout(() => {
-            this.selectedScore = newScore;
-            this.settings.isEditing = true;
-            this.operation.calculate();
-            this.operation.setDisplayState();
-            this.operation.update();
-        }, 10)
-
-        if (event) event.stopPropagation();
+      this.selectedScore = newScore;
+      this.settings.isEditing = true;
     }
 
     update(claim: Claim, event: Event) {
@@ -114,9 +104,9 @@ type WhichCopy = "original" | "local" | "suggestion";
             }
 
 
-        //update the UI
-        this.operation.calculate();
-        this.operation.update();
+        // //update the UI
+        // this.operation.calculate();
+        // this.operation.update();
     }
 
 }

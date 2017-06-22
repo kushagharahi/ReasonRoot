@@ -1,19 +1,42 @@
-import hyperHTML from 'hyperhtml';
-import firebase from 'firebase';
+declare var firebase: any;
+declare var require: any;
 
-import Root from './Root.js';
-import Dict from './Dict.js';
-import SettleIt from'./SettleIt.js';
-import Score from './score.js';
+type WhichCopy = "original" | "local" | "suggestion";
+
+var hyperHTML = require('hyperhtml');
+var firebase = require('firebase');
+
+import Root from './Root';
+import Dict from './Dict';
+import SettleIt from'./SettleIt';
+import Score from './score';
+import Claim from './Claim';
 
 export default class RRDisplay {
-    constructor(claimElement) {
-        this.userName = 'Sign In';
-        this.settings = {};
-        this.savePrefix = "rr_";
-        this.rr = new Root();
-        this.settingsVisible = false;
-        this.listenerRefs = new Array();
+    userName: string = 'Sign In';
+    rrRef: any;//The current firebase reference to the ReasonRoot object
+    scores: Dict<Score>;
+    claims: Dict<Claim>;
+    settleIt: SettleIt;
+    mainScore: Score;
+    render: any;
+    settings: any = {};
+    selectedScore: Score;
+    savePrefix: string = "rr_";
+    //dbRef: firebase.database.Reference;
+    db: any;
+    rr: Root = new Root();
+    whichCopy: WhichCopy;
+    settingsVisible: boolean = false;
+    listenerRefs: any[] = new Array<any>();
+    canWrite: boolean;
+    mainId: any;
+
+        // constructor(){
+        //   this.userName = 'Sign In';
+        // };
+
+    constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
@@ -23,29 +46,32 @@ export default class RRDisplay {
         //this.initRr();
         //this.update();
     }
+
     initRr() {
         this.claims = this.rr.claims;
-        if (this.rr.settings)
-            this.settings = this.rr.settings;
+        if (this.rr.settings) this.settings = this.rr.settings;
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
+        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
         this.setDisplayState();
         this.calculate();
     }
-    changeWhichCopy(whichCopy) {
-        if (this.whichCopy === whichCopy)
-            return;
-        this.whichCopy = whichCopy;
+
+    changeWhichCopy(whichCopy?: WhichCopy) {
+        if (this.whichCopy === whichCopy) return
+        this.whichCopy = whichCopy
+
         if (whichCopy === undefined) {
             //Determine which one to point to
         }
+
         //Clear any existing observers
-        for (let ref of this.listenerRefs)
-            ref.off();
+        for (let ref of this.listenerRefs) ref.off();
+
         if (whichCopy === "local") {
             //pull local data if it exists and set it to save
+
             let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
             if (rr) {
                 this.rr = JSON.parse(rr);
@@ -61,42 +87,48 @@ export default class RRDisplay {
                 this.rrRef = this.db.ref('roots/' + this.rr.mainId);
             }
             this.attachDB();
+
         }
+
         this.initRr();
         this.update();
     }
+
     attachDB() {
         let claimsRef = this.rrRef.child('claims');
         this.listenerRefs.push(claimsRef);
         claimsRef.once('value', this.claimsFromDB.bind(this));
         claimsRef.on('child_changed', this.claimFromDB.bind(this));
+
         //Check for write permissions
         if (firebase.auth().currentUser) {
-            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId);
+            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
             this.listenerRefs.push(permissionRef);
+
             //To do the can write below is on the wrong "this"
             permissionRef.on('value', function (snapshot) {
                 this.canWrite = snapshot.val();
-            });
-        }
-        else {
+            })
+        } else {
             this.canWrite = false;
         }
     }
+
     firebaseInit() {
         if (!firebase.apps.length) {
             firebase.initializeApp({
-                apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
-                authDomain: "settleitorg.firebaseapp.com",
-                databaseURL: "https://settleitorg.firebaseio.com",
-                projectId: "settleitorg",
-                storageBucket: "settleitorg.appspot.com",
-                messagingSenderId: "835574079849"
+                apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
+                authDomain: "reasonrootdev.firebaseapp.com",
+                databaseURL: "https://reasonrootdev.firebaseio.com",
+                projectId: "reasonrootdev",
+                storageBucket: "reasonrootdev.appspot.com",
+                messagingSenderId: "680169719491"
             });
         }
         this.db = firebase.database();
     }
-    claimsFromDB(data) {
+
+    claimsFromDB(data: any) {
         let value = data.val();
         if (value) {
             this.rr.claims = value;
@@ -105,33 +137,39 @@ export default class RRDisplay {
             this.update();
         }
     }
-    claimFromDB(data) {
+
+    claimFromDB(data: any) {
         let value = data.val();
         if (value) {
-            let claim = value;
+            let claim: Claim = value;
             this.claims[claim.claimId] = claim;
             this.calculate();
             this.update();
         }
     }
-    clearDisplayState() {
+
+    clearDisplayState(): void {
         for (let scoreId in this.scores) {
             if (this.scores.hasOwnProperty(scoreId)) {
                 this.scores[scoreId].displayState = "notSelected";
             }
         }
     }
-    setDisplayState() {
+
+    setDisplayState(): void {
         this.clearDisplayState();
         this.setDisplayStateLoop(this.mainScore);
     }
-    setDisplayStateLoop(score) {
+
+    setDisplayStateLoop(score: Score): void {
         if (score == this.selectedScore)
             score.displayState = "selected";
+
         for (let childId of this.claims[score.claimId].childIds) {
             let childScore = this.scores[childId];
             //process the children first/
             this.setDisplayStateLoop(childScore);
+
             if (childScore == this.selectedScore) {
                 score.displayState = "parent";
                 //Set Siblings
@@ -141,23 +179,29 @@ export default class RRDisplay {
                         siblingScore.displayState = "sibling";
                 }
             }
+
             if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
                 score.displayState = "ancestor";
+
             if (score == this.selectedScore)
                 childScore.displayState = "child";
         }
     }
-    update() {
+
+    update(): void {
         // if (!this.settings.noAutoSave)
         //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
-        this.render `
+
+        this.render`
         <div class="${'rr' +
             (this.settings.hideScore ? ' hideScore' : '') +
             (this.settings.hidePoints ? ' hidePoints' : '') +
             (this.settings.hideClaimMenu ? ' hideClaimMenu' : '') +
             (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
             (this.settings.showSiblings ? ' showSiblings' : '') +
-            (this.settings.showCompetition ? ' showCompetition' : '')}">
+            (this.settings.showCompetition ? ' showCompetition' : '')
+
+            }">
             <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
                 <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings)}">
                 <label for="hideScore">Hide Score</label>
@@ -186,34 +230,41 @@ export default class RRDisplay {
             </div>
         </div>`;
     }
-    updateSettings(settings, event) {
+
+    updateSettings(settings: any, event: any): void {
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update();
-        if (event)
-            event.stopPropagation();
+        if (event) event.stopPropagation();
     }
-    toggleSettings(event) {
+
+    toggleSettings(event: Event): void {
         this.settingsVisible = !this.settingsVisible;
         this.update();
     }
-    replaceAll(target, search, replacement) {
+
+    replaceAll(target: string, search: string, replacement: string): string {
         return target.split(search).join(replacement);
-    }
-    ;
-    renderNode(score, parent) {
-        var claim = this.claims[score.claimId];
+    };
+
+    renderNode(score: Score, parent?: Score): void {
+        var claim: Claim = this.claims[score.claimId];
         var wire = hyperHTML.wire(score);
-        this.animatenumbers();
-        var result = wire `
-                <li id="${claim.claimId}" class="${score.displayState +
+
+        this.animatenumbers()
+
+        var result = wire`
+                <li id="${claim.claimId}" class="${
+            score.displayState +
             (score.isMain ? ' mainClaim' : '') +
             (this.settings.isEditing && this.selectedScore == score ? ' editing' : '')}">
                     <div class="claimPad" onclick="${this.selectScore.bind(this, score)}">
                         <div class="${"claim " + (claim.isProMain ? 'pro' : 'con') + (claim.disabled ? ' disabled ' : '') + (claim.childIds.length > 0 && !score.open ? ' shadow' : '')}" >
                             <div class="innerClaim">
-                                <span class="${score.generation == 0 ? 'score' : 'points'}" >${(score.generation == 0 ?
-            Math.round(score.animatedWeightedPercentage * 100) + '%' :
-            (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))}</span>
+                                <span class="${score.generation == 0 ? 'score' : 'points'}" >${
+            (score.generation == 0 ?
+                Math.round(score.animatedWeightedPercentage * 100) + '%' :
+                (score.weightDif != undefined ? Math.floor(Math.abs(score.weightDif)) : ''))
+            }</span>
 
             <span class="proPoints" >${Math.round(score.weightPro)}</span>
             <span class="conPoints" >${Math.round(score.weightCon)}</span>
@@ -263,13 +314,16 @@ export default class RRDisplay {
 
                     </div>
 
-                    <ul>${claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))}</ul>
-                        </li>`;
+                    <ul>${
+            claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))
+            }</ul>
+                        </li>`
+
         if (!wire.default) {
             wire.default = claim.content;
             let inputs = result.querySelector('.claimPad').querySelectorAll('input');
             for (let input of inputs) {
-                var bindName = input.getAttribute("bind");
+                var bindName = input.getAttribute("bind")
                 if (bindName) {
                     if (input.type == "checkbox")
                         input.checked = claim[bindName];
@@ -278,8 +332,10 @@ export default class RRDisplay {
                 }
             }
         }
+
         return result;
     }
+
     //Check for animating numbers
     animatenumbers() {
         var found = false;
@@ -287,31 +343,32 @@ export default class RRDisplay {
             var s = this.scores[scoreId];
             if (s.weightedPercentage != s.animatedWeightedPercentage) {
                 found = true;
-                var difference = s.weightedPercentage - s.animatedWeightedPercentage;
+                var difference = s.weightedPercentage - s.animatedWeightedPercentage
                 if (Math.abs(difference) < .01)
-                    s.animatedWeightedPercentage = s.weightedPercentage;
+                    s.animatedWeightedPercentage = s.weightedPercentage
                 else
                     s.animatedWeightedPercentage += difference / 100;
             }
         }
-        if (found)
-            setTimeout(() => this.update(), 100);
+        if (found) setTimeout(() => this.update(), 100);
     }
-    selectScore(score, e) {
+
+    selectScore(score: Score, e: Event): void {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
             this.update();
         }
     }
-    noBubbleClick(event) {
-        if (event)
-            event.stopPropagation();
+
+    noBubbleClick(event: Event): void {
+        if (event) event.stopPropagation();
     }
-    updateClaim(claim, event) {
-        let inputs = event.srcElement.parentElement.querySelectorAll('input');
+
+    updateClaim(claim: Claim, event: Event) {
+        let inputs: any = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
-            var bindName = input.getAttribute("bind");
+            var bindName = input.getAttribute("bind")
             if (bindName) {
                 if (input.type == "checkbox")
                     claim[bindName] = input.checked;
@@ -319,49 +376,61 @@ export default class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
+
         //to do Update the storage
         if (this.whichCopy == "original")
-            firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
+            if (this.canWrite)
+                firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
+            else {
+                //Change over to a copy and set it up
+            }
+
+
         //update the UI
         this.calculate();
         this.update();
     }
-    calculate() {
-        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
+
+    calculate(): void {
+        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
     }
-    removeClaim(claim, parentScore, event) {
+
+    removeClaim(claim: Claim, parentScore: Score, event: Event): void {
         var index = this.claims[parentScore.claimId].childIds.indexOf(claim.claimId);
-        if (index > -1)
-            this.claims[parentScore.claimId].childIds.splice(index, 1);
+        if (index > -1) this.claims[parentScore.claimId].childIds.splice(index, 1);
         this.selectedScore = parentScore;
+        this.calculate();
         this.setDisplayState();
         this.update();
     }
-    editClaim(score, event) {
+
+    editClaim(score: Score, event?: Event): void {
         this.settings.isEditing = !this.settings.isEditing;
         this.update();
-        if (event)
-            event.stopPropagation();
+        if (event) event.stopPropagation();
     }
-    addClaim(parentScore, isProMain, event) {
-        let newClaim = new Claim();
+
+    addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
+        let newClaim: Claim = new Claim();
         newClaim.isProMain = isProMain;
-        let newScore = new Score(newClaim);
+        let newScore: Score = new Score(newClaim)
         this.scores[newClaim.claimId] = newScore;
         this.claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
         this.claims[newClaim.claimId] = newClaim;
         newScore.displayState = "notSelected";
         this.update();
+
         setTimeout(() => {
             this.selectedScore = newScore;
             this.settings.isEditing = true;
             this.calculate();
             this.setDisplayState();
             this.update();
-        }, 10);
-        if (event)
-            event.stopPropagation();
+        }, 10)
+
+        if (event) event.stopPropagation();
     }
+
     signIn() {
         this.firebaseInit();
         var provider = new firebase.auth.GoogleAuthProvider();
@@ -370,7 +439,7 @@ export default class RRDisplay {
             var token = result.credential.accessToken;
             // The signed-in user info.
             var user = result.user;
-            this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In';
+            this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
             console.log(result);
             // ...
         }).bind(this)).catch(function (error) {
@@ -384,9 +453,10 @@ export default class RRDisplay {
             console.log(error);
         });
     }
-    createDict(claims, dict) {
-        if (dict === undefined)
-            dict = new Dict();
+
+    createDict(claims: Dict<Claim>, dict?: Dict<Score>): Dict<Score> {
+        if (dict === undefined) dict = new Dict<Score>();
+
         for (let claimId in claims) {
             if (claims.hasOwnProperty(claimId)) {
                 if (dict[claimId] === undefined) {
@@ -396,6 +466,9 @@ export default class RRDisplay {
                 }
             }
         }
+
+
+
         // for (let claim of claims) {
         //     if (dict[claim.id] === undefined) {
         //         let newScore = new Score();
@@ -405,5 +478,5 @@ export default class RRDisplay {
         // }
         return dict;
     }
+
 }
-//# sourceMappingURL=rrDisplay.js.map

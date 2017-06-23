@@ -12,6 +12,7 @@ import Score from './Score';
 import Claim from './Claim';
 import Auth from './Auth';
 import Setting from './Setting';
+import Display from './Display';
 import Animation from './Animation';
 
 export default class ReasonRoot {
@@ -38,6 +39,7 @@ export default class ReasonRoot {
     animation: Animation = new Animation();
     score: Score = new Score();
     claim: Claim = new Claim();
+    display: Display = new Display();
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
@@ -94,7 +96,7 @@ export default class ReasonRoot {
         }
 
         this.initRr();
-        this.update(this.renderNode(this.scores[this.rr.mainId]));
+        this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
     }
 
     attachDB() {
@@ -123,7 +125,7 @@ export default class ReasonRoot {
             this.rr.claims = value;
             this.claims = value;
             this.calculate();
-            this.update(this.renderNode(this.scores[this.rr.mainId]));
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
         }
     }
 
@@ -133,7 +135,7 @@ export default class ReasonRoot {
             let claim: Claim = value;
             this.claims[claim.claimId] = claim;
             this.calculate();
-            this.update(this.renderNode(this.scores[this.rr.mainId]));
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
         }
     }
 
@@ -230,7 +232,7 @@ export default class ReasonRoot {
         var claim: Claim = this.claims[score.claimId];
         var claims = this.claims;
         var wire = hyperHTML.wire(score);
-        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.update(this.renderNode(this.scores[this.rr.mainId])), 100);
+        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render), 100);
 
         var result = wire`
                 <li id="${claim.claimId}" class="${
@@ -320,7 +322,7 @@ export default class ReasonRoot {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
-            this.update(this.renderNode(this.scores[this.rr.mainId]));
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
         }
     }
 
@@ -338,7 +340,7 @@ export default class ReasonRoot {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);
       this.calculate();
       this.setDisplayState();
-      this.update(this.renderNode(this.scores[this.rr.mainId]));
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
 
       if (event) event.stopPropagation();
     }
@@ -347,19 +349,19 @@ export default class ReasonRoot {
       this.claim.update(claim, event);
       //update the UI
       this.calculate();
-      this.update(this.renderNode(this.scores[this.rr.mainId]));
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
 
     }
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
       this.calculate();
       this.setDisplayState();
-      this.update(this.renderNode(this.scores[this.rr.mainId]));
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
     }
 
     editClaim(score: Score, event?: Event): void {
       this.settings.isEditing = !this.settings.isEditing;
-      this.update(this.renderNode(this.scores[this.rr.mainId]));
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
       if (event) event.stopPropagation();
     }
 

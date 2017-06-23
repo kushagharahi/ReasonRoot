@@ -1,20 +1,31 @@
-import Setting from './Setting';
 import Root from './Root';
-import Node from './Node';
+//import Node from './Node';
 import Auth from './Auth';
+import Dict from './Dict';
+import Score from './Score';
+import Claim from './Claim';
+import Setting from './Setting';
 
 export default class Display{
+  scores: Dict<Score>;
   userName: string = 'Sign In';
   render: any;
-  setting: Setting;
+  setting: Setting = new Setting();
   settingsVisible: boolean = false;
-  auth: Auth;
+  auth: Auth = new Auth;
+  root: Root = new Root();
+  settings: any = {};
+  mainScore: Score;
+  selectedScore: Score;
+  claims: Dict<Claim>;
 
-  update(node: any, settings: any, root: Root): void {
+  update(node: any, settings: any, render: any): void {
+    let root = this.root;
+
     // if (!this.settings.noAutoSave)
     //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
 
-    this.render`
+    render`
     <div class="${'rr' +
         (settings.hideScore ? ' hideScore' : '') +
         (settings.hidePoints ? ' hidePoints' : '') +
@@ -56,5 +67,45 @@ export default class Display{
 
   replaceAll(target: string, search: string, replacement: string): string {
       return target.split(search).join(replacement);
-  };
+  }
+
+  clearDisplayState(): void {
+      for (let scoreId in this.scores) {
+          if (this.scores.hasOwnProperty(scoreId)) {
+              this.scores[scoreId].displayState = "notSelected";
+          }
+      }
+  }
+
+  setDisplayState(): void {
+      this.clearDisplayState();
+      this.setDisplayStateLoop(this.mainScore);
+  }
+
+  setDisplayStateLoop(score: Score): void {
+      if (score == this.selectedScore)
+          score.displayState = "selected";
+
+      for (let childId of this.claims[score.claimId].childIds) {
+          let childScore = this.scores[childId];
+          //process the children first/
+          this.setDisplayStateLoop(childScore);
+
+          if (childScore == this.selectedScore) {
+              score.displayState = "parent";
+              //Set Siblings
+              for (let siblingId of this.claims[score.claimId].childIds) {
+                  let siblingScore = this.scores[siblingId];
+                  if (siblingScore.displayState != "selected")
+                      siblingScore.displayState = "sibling";
+              }
+          }
+
+          if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
+              score.displayState = "ancestor";
+
+          if (score == this.selectedScore)
+              childScore.displayState = "child";
+      }
+  }
 }

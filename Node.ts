@@ -9,20 +9,22 @@ import Display from './Display';
 import Animation from './Animation';
 
 export default class Node{
-  score: Score;
-  claim: Claim;
+  display: Display;
   claims: Dict<Claim>;
   scores: Dict<Score>;
+  selectedScore: Score;
   animation: Animation;
   root: Root = new Root();
   settings: any = {};
 
-
-  render(score: Score, scores: Dict<Score>, selectedScore: Score, claims: Dict<Claim>, claim: Claim, root: Root, display: Display, parent?: Score): void {
+  render(score: Score, claim: Claim, root: Root, parent?: Score): void {
     //var claim: Claim = this.claims[score.claimId];
-    //var claims = this.claims;
-    var wire = hyperHTML.wire(score);
-    if (this.animation.animateNumbers(this.scores)) setTimeout(() => display.update(this.render(scores[root.mainId], scores, claims, claim, root, display), this.settings, root), 100);
+    let display = this.display;
+    let claims = this.claims;
+    let scores = this.scores;
+    let selectedScore = this.selectedScore;
+    let wire = hyperHTML.wire(score);
+    if (this.animation.animateNumbers(this.scores)) setTimeout(() => display.update(this.render(scores[root.mainId], claim, root)), 100);
 
     var result = wire`
             <li id="${claim.claimId}" class="${
@@ -87,7 +89,7 @@ export default class Node{
                 </div>
 
                 <ul>${
-        claim.childIds.map((childId, i) => this.renderNode(this.scores[childId], score))
+        claim.childIds.map((childId, i) => this.render(scores[root.mainId], claim, root, score))
         }</ul>
                     </li>`
 
@@ -108,11 +110,16 @@ export default class Node{
     return result;
   }
 
-  selectScore(score: Score, e: Event): void {
-      if (score != this.selectedScore) {
-          this.selectedScore = score;
-          this.setDisplayState();
-          this.update(this.renderNode(this.scores[this.rr.mainId]));
-      }
+  selectScore(score: Score, e: Event, html: any): void {
+    if (score != this.selectedScore) {
+        this.selectedScore = score;
+        this.setDisplayState();
+        this.display.update(html);
+    }
   }
+
+  noBubbleClick(event: Event): void {
+    if (event) event.stopPropagation();
+  }
+
 }

@@ -14,7 +14,6 @@ import Auth from './Auth';
 import Setting from './Setting';
 import Animation from './Animation';
 
-
 export default class ReasonRoot {
     userName: string = 'Sign In';
     rrRef: any;//The current firebase reference to the ReasonRoot object
@@ -95,7 +94,7 @@ export default class ReasonRoot {
         }
 
         this.initRr();
-        this.update();
+        this.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 
     attachDB() {
@@ -124,7 +123,7 @@ export default class ReasonRoot {
             this.rr.claims = value;
             this.claims = value;
             this.calculate();
-            this.update();
+            this.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -134,7 +133,7 @@ export default class ReasonRoot {
             let claim: Claim = value;
             this.claims[claim.claimId] = claim;
             this.calculate();
-            this.update();
+            this.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -178,7 +177,7 @@ export default class ReasonRoot {
         }
     }
 
-    update(): void {
+    update(html): void {
         // if (!this.settings.noAutoSave)
         //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
 
@@ -214,11 +213,13 @@ export default class ReasonRoot {
                         [${this.userName} ]
                 </div>
            </div>
-            <div>${this.renderNode(this.scores[this.rr.mainId])}</div>
+            <div>${html}</div>
             <div class="settingsButton" onclick="${this.setting.toggle.bind(this.settingsVisible,this)}">
                 ⚙
             </div>
         </div>`;
+
+        console.log(this.renderNode(this.scores[this.rr.mainId]));
     }
 
     replaceAll(target: string, search: string, replacement: string): string {
@@ -229,7 +230,7 @@ export default class ReasonRoot {
         var claim: Claim = this.claims[score.claimId];
         var claims = this.claims;
         var wire = hyperHTML.wire(score);
-        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.update(), 100);
+        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.update(this.renderNode(this.scores[this.rr.mainId])), 100);
 
         var result = wire`
                 <li id="${claim.claimId}" class="${
@@ -319,7 +320,7 @@ export default class ReasonRoot {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
-            this.update();
+            this.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -337,7 +338,7 @@ export default class ReasonRoot {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);
       this.calculate();
       this.setDisplayState();
-      this.update();
+      this.update(this.renderNode(this.scores[this.rr.mainId]));
 
       if (event) event.stopPropagation();
     }
@@ -346,19 +347,19 @@ export default class ReasonRoot {
       this.claim.update(claim, event);
       //update the UI
       this.calculate();
-      this.update();
+      this.update(this.renderNode(this.scores[this.rr.mainId]));
 
     }
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
       this.calculate();
       this.setDisplayState();
-      this.update();
+      this.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 
     editClaim(score: Score, event?: Event): void {
       this.settings.isEditing = !this.settings.isEditing;
-      this.update();
+      this.update(this.renderNode(this.scores[this.rr.mainId]));
       if (event) event.stopPropagation();
     }
 
@@ -374,7 +375,7 @@ export default class ReasonRoot {
                 }
             }
         }
-        
+
         // for (let claim of claims) {
         //     if (dict[claim.id] === undefined) {
         //         let newScore = new Score();

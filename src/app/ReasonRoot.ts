@@ -1,55 +1,3 @@
-//Should be this class
-
-// this.calculate();
-  // this.settleIt.calculate
-
-// this.setDisplayState();
-  // this.clearDisplayState();
-  // this.setDisplayStateLoop();
-
-// this.update();
-  // this.renderNode();
-    // this.update();
-    // this.renderNode();
-
-// this.renderNode();
-  // this.selectScore();
-  // this.update();
-  // this.renderNode();
-
-// this.clearDisplayState();
-
-// this.initRr();
-  // this.setDisplayState();
-    // this.clearDisplayState();
-    // this.setDisplayStateLoop();
-  // this.calculate();
-    // this.settleIt.calculate
-
-// this.selectScore();
-  // this.setDisplayState();
-  // this.update();
-    // this.renderNode();
-      // this.renderNode();
-      // this.update();
-
-// this.updateClaim();
-  // this.calculate();
-  // this.update();
-
-// this.removeClaim();
-  // this.calculate();
-  // this.setDisplayState();
-  // this.update();
-
-// this.addClaim();
-  // this.calculate();
-  // this.setDisplayState();
-  // this.update();
-
-// this.editClaim();
-  // this.update();
-
 declare const require: any;
 
 type WhichCopy = "original" | "local" | "suggestion";
@@ -85,14 +33,12 @@ export default class ReasonRoot {
     settingsVisible: boolean = false;
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
-//
     mainId: any;
     auth: Auth = new Auth();
     setting: Setting = new Setting();
     animation: Animation = new Animation();
     score: Score = new Score();
     claim: Claim = new Claim();
-
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
@@ -428,9 +374,7 @@ export default class ReasonRoot {
                 }
             }
         }
-
-
-
+        
         // for (let claim of claims) {
         //     if (dict[claim.id] === undefined) {
         //         let newScore = new Score();

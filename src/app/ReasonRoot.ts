@@ -39,7 +39,7 @@ export default class ReasonRoot {
     animation: Animation = new Animation();
     score: Score = new Score();
     claim: Claim = new Claim();
-    display: Display = new Display();
+    display: Display;
 
     constructor(claimElement: Element) {
         this.render = hyperHTML.bind(claimElement);
@@ -58,6 +58,7 @@ export default class ReasonRoot {
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
+        this.display = new Display(this.mainScore, this.claims, this.scores, this.settings, this.render);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
         this.setDisplayState();
         this.calculate();
@@ -96,7 +97,7 @@ export default class ReasonRoot {
         }
 
         this.initRr();
-        this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+        this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 
     attachDB() {
@@ -125,7 +126,7 @@ export default class ReasonRoot {
             this.rr.claims = value;
             this.claims = value;
             this.calculate();
-            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -135,7 +136,7 @@ export default class ReasonRoot {
             let claim: Claim = value;
             this.claims[claim.claimId] = claim;
             this.calculate();
-            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -148,7 +149,7 @@ export default class ReasonRoot {
     }
 
     setDisplayState(): void {
-        this.clearDisplayState();
+        this.display.clearDisplayState();
         this.setDisplayStateLoop(this.mainScore);
     }
 
@@ -179,51 +180,6 @@ export default class ReasonRoot {
         }
     }
 
-    update(html): void {
-        // if (!this.settings.noAutoSave)
-        //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
-
-        this.render`
-        <div class="${'rr' +
-            (this.settings.hideScore ? ' hideScore' : '') +
-            (this.settings.hidePoints ? ' hidePoints' : '') +
-            (this.settings.hideClaimMenu ? ' hideClaimMenu' : '') +
-            (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
-            (this.settings.showSiblings ? ' showSiblings' : '') +
-            (this.settings.showCompetition ? ' showCompetition' : '')
-
-            }">
-            <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
-                <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="hideScore">Hide Score</label>
-                <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="hidePoints">Hide Points</label>
-                <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="noAutoSave">No Auto Save</label>
-                <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="showSiblings">Show Sibllings</label>
-                <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="hideClaimMenu">Hide Claim Menu</label>
-                <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="hideChildIndicator">Hide Child Indicator</label>
-                <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, this.settings)}">
-                <label for="showCompetition">Show Competition</label>
-
-                <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
-
-                <div  onclick="${this.auth.signIn.bind(this)}">
-                        [${this.userName} ]
-                </div>
-           </div>
-            <div>${html}</div>
-            <div class="settingsButton" onclick="${this.setting.toggle.bind(this.settingsVisible,this)}">
-                ⚙
-            </div>
-        </div>`;
-
-        console.log(this.renderNode(this.scores[this.rr.mainId]));
-    }
-
     replaceAll(target: string, search: string, replacement: string): string {
         return target.split(search).join(replacement);
     };
@@ -232,7 +188,7 @@ export default class ReasonRoot {
         var claim: Claim = this.claims[score.claimId];
         var claims = this.claims;
         var wire = hyperHTML.wire(score);
-        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render), 100);
+        if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.display.update(this.renderNode(this.scores[this.rr.mainId])), 100);
 
         var result = wire`
                 <li id="${claim.claimId}" class="${
@@ -322,7 +278,7 @@ export default class ReasonRoot {
         if (score != this.selectedScore) {
             this.selectedScore = score;
             this.setDisplayState();
-            this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+            this.display.update(this.renderNode(this.scores[this.rr.mainId]));
         }
     }
 
@@ -340,7 +296,7 @@ export default class ReasonRoot {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);
       this.calculate();
       this.setDisplayState();
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
       if (event) event.stopPropagation();
     }
@@ -349,19 +305,19 @@ export default class ReasonRoot {
       this.claim.update(claim, event);
       //update the UI
       this.calculate();
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
     }
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
       this.calculate();
       this.setDisplayState();
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 
     editClaim(score: Score, event?: Event): void {
       this.settings.isEditing = !this.settings.isEditing;
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]), this.settings, this.render);
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       if (event) event.stopPropagation();
     }
 

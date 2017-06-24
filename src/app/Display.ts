@@ -14,11 +14,10 @@ export default class Display{
   settingsVisible: boolean = false;
   auth: Auth = new Auth;
   root: Root = new Root();
-  score: Score = new Score();
   settings: any = {};
+  mainScore: Score;
   selectedScore: Score;
   claims: Dict<Claim>;
-  mainScore: Score;
 
   constructor(mainScore: Score, claims: Dict<Claim>, scores: Dict<Score>, settings: any, render: any){
     this.mainScore = mainScore;
@@ -81,7 +80,7 @@ export default class Display{
   clearDisplayState(): void {
       for (let scoreId in this.scores) {
           if (this.scores.hasOwnProperty(scoreId)) {
-              this.scores[scoreId].state = "notSelected";
+              this.scores[scoreId].displayState = "notSelected";
           }
       }
   }
@@ -93,7 +92,7 @@ export default class Display{
 
   setDisplayStateLoop(score: Score): void {
       if (score == this.selectedScore)
-          score.state = "selected";
+          score.displayState = "selected";
 
       for (let childId of this.claims[score.claimId].childIds) {
           let childScore = this.scores[childId];
@@ -101,20 +100,20 @@ export default class Display{
           this.setDisplayStateLoop(childScore);
 
           if (childScore == this.selectedScore) {
-              score.state = "parent";
+              score.displayState = "parent";
               //Set Siblings
               for (let siblingId of this.claims[score.claimId].childIds) {
                   let siblingScore = this.scores[siblingId];
-                  if (siblingScore.state != "selected")
-                      siblingScore.state = "sibling";
+                  if (siblingScore.displayState != "selected")
+                      siblingScore.displayState = "sibling";
               }
           }
 
-          if (childScore.state == "ancestor" || childScore.state == "parent")
-              score.state = "ancestor";
+          if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
+              score.displayState = "ancestor";
 
           if (score == this.selectedScore)
-              childScore.state = "child";
+              childScore.displayState = "child";
       }
   }
 }

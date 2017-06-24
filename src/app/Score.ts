@@ -43,7 +43,7 @@ import Claim from './Claim';
     animatedWeightedPercentage
 
     /** */
-    displayState: DisplayState;
+    state: State;
 
     /** */
     constructor(claim?: Claim) {
@@ -55,4 +55,4 @@ import Claim from './Claim';
 
 }
 
-type DisplayState = "newClaim" | "notSelected" | "parent" | "ancestor" | "selected"| "selected editing" | "child" | "sibling";
+type State = "newClaim" | "notSelected" | "parent" | "ancestor" | "selected"| "selected editing" | "child" | "sibling";

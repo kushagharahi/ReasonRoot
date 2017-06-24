@@ -77,7 +77,7 @@ type WhichCopy = "original" | "local" | "suggestion";
       scores[newClaim.claimId] = newScore;
       claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
       claims[newClaim.claimId] = newClaim;
-      newScore.displayState = "notSelected";
+      newScore.state = "notSelected";
 
       this.selectedScore = newScore;
       this.settings.isEditing = true;

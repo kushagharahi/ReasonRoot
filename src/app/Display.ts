@@ -14,41 +14,50 @@ export default class Display{
   settingsVisible: boolean = false;
   auth: Auth = new Auth;
   root: Root = new Root();
+  score: Score = new Score();
   settings: any = {};
-  mainScore: Score;
   selectedScore: Score;
   claims: Dict<Claim>;
+  mainScore: Score;
 
-  update(node: any, settings: any, render: any): void {
+  constructor(mainScore: Score, claims: Dict<Claim>, scores: Dict<Score>, settings: any, render: any){
+    this.mainScore = mainScore;
+    this.claims = claims;
+    this.scores = scores;
+    this.settings = settings;
+    this.render = render;
+  }
+
+  update(node: any): void {
     let root = this.root;
 
     // if (!this.settings.noAutoSave)
     //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
 
-    render`
+    this.render`
     <div class="${'rr' +
-        (settings.hideScore ? ' hideScore' : '') +
-        (settings.hidePoints ? ' hidePoints' : '') +
-        (settings.hideClaimMenu ? ' hideClaimMenu' : '') +
-        (settings.hideChildIndicator ? ' hideChildIndicator' : '') +
-        (settings.showSiblings ? ' showSiblings' : '') +
-        (settings.showCompetition ? ' showCompetition' : '')
+        (this.settings.hideScore ? ' hideScore' : '') +
+        (this.settings.hidePoints ? ' hidePoints' : '') +
+        (this.settings.hideClaimMenu ? ' hideClaimMenu' : '') +
+        (this.settings.hideChildIndicator ? ' hideChildIndicator' : '') +
+        (this.settings.showSiblings ? ' showSiblings' : '') +
+        (this.settings.showCompetition ? ' showCompetition' : '')
 
         }">
         <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
-            <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="hideScore">Hide Score</label>
-            <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="hidePoints">Hide Points</label>
-            <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="noAutoSave">No Auto Save</label>
-            <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="showSiblings">Show Sibllings</label>
-            <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="hideClaimMenu">Hide Claim Menu</label>
-            <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="hideChildIndicator">Hide Child Indicator</label>
-            <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, settings)}">
+            <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, this.settings)}">
             <label for="showCompetition">Show Competition</label>
 
             <input value="${this.replaceAll(JSON.stringify(root), '\'', '&#39;')}"></input>
@@ -72,7 +81,7 @@ export default class Display{
   clearDisplayState(): void {
       for (let scoreId in this.scores) {
           if (this.scores.hasOwnProperty(scoreId)) {
-              this.scores[scoreId].displayState = "notSelected";
+              this.scores[scoreId].state = "notSelected";
           }
       }
   }
@@ -84,7 +93,7 @@ export default class Display{
 
   setDisplayStateLoop(score: Score): void {
       if (score == this.selectedScore)
-          score.displayState = "selected";
+          score.state = "selected";
 
       for (let childId of this.claims[score.claimId].childIds) {
           let childScore = this.scores[childId];
@@ -92,20 +101,20 @@ export default class Display{
           this.setDisplayStateLoop(childScore);
 
           if (childScore == this.selectedScore) {
-              score.displayState = "parent";
+              score.state = "parent";
               //Set Siblings
               for (let siblingId of this.claims[score.claimId].childIds) {
                   let siblingScore = this.scores[siblingId];
-                  if (siblingScore.displayState != "selected")
-                      siblingScore.displayState = "sibling";
+                  if (siblingScore.state != "selected")
+                      siblingScore.state = "sibling";
               }
           }
 
-          if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
-              score.displayState = "ancestor";
+          if (childScore.state == "ancestor" || childScore.state == "parent")
+              score.state = "ancestor";
 
           if (score == this.selectedScore)
-              childScore.displayState = "child";
+              childScore.state = "child";
       }
   }
 }

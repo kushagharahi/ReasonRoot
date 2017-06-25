@@ -57,7 +57,7 @@ class SettleIt {
     }
 
     public getScore(claimId){
-        let score = this.getScore(claimId);
+        let score = this.scores[claimId];
         if (!score) {
             score = new Score();
             score.claimId = claimId;

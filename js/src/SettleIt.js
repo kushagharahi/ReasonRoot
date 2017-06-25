@@ -297,10 +297,16 @@ class SettleIt {
                 continue; //skip if disabled
             found = true;
             let child = this.getScore(childId);
-            if (child.weightDif > 0)
-                WeightedPluses += child.weightDif;
-            else
-                WeightedMinuses += child.weightDif;
+            if (child.weightDif > 0) {
+                //WeightedPluses += child.weightDif
+                WeightedPluses += child.weightPro;
+                WeightedMinuses += child.weightCon;
+            }
+            else {
+                //WeightedMinuses += child.weightDif
+                WeightedPluses += child.weightCon;
+                WeightedMinuses += child.weightPro;
+            }
         }
         score.animatedWeightedPercentage = score.weightedPercentage;
         if (found) {

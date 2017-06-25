@@ -8,26 +8,28 @@ import Setting from './Setting';
 
 export default class Display{
   scores: Dict<Score>;
+  claims: Dict<Claim>;
   userName: string = 'Sign In';
   render: any;
-  setting: Setting = new Setting();
-  settingsVisible: boolean = false;
-  auth: Auth = new Auth;
-  root: Root = new Root();
   settings: any = {};
-  mainScore: Score;
+  settingsVisible: boolean = false;
+  setting: Setting = new Setting();
+  root: Root = new Root();
+  auth: Auth = new Auth();
   selectedScore: Score;
-  claims: Dict<Claim>;
+  mainScore: Score;
 
-  constructor(mainScore: Score, claims: Dict<Claim>, scores: Dict<Score>, settings: any, render: any){
+  constructor(mainScore: Score, claims: Dict<Claim>, scores: Dict<Score>, settings: any, render: any, selectedScore: Score){
     this.mainScore = mainScore;
     this.claims = claims;
     this.scores = scores;
     this.settings = settings;
     this.render = render;
+    this.selectedScore = selectedScore;
   }
 
   update(node: any): void {
+    console.log("update");
     let root = this.root;
 
     // if (!this.settings.noAutoSave)
@@ -70,6 +72,7 @@ export default class Display{
             ⚙
         </div>
     </div>`;
+    //console.log("update" + node);
 
   }
 
@@ -78,6 +81,7 @@ export default class Display{
   }
 
   clearDisplayState(): void {
+    //console.log("clearDisplayState");
       for (let scoreId in this.scores) {
           if (this.scores.hasOwnProperty(scoreId)) {
               this.scores[scoreId].displayState = "notSelected";
@@ -86,20 +90,25 @@ export default class Display{
   }
 
   setDisplayState(): void {
+      //console.log("setDisplayState");
       this.clearDisplayState();
-      this.setDisplayStateLoop(this.mainScore);
+      //this.setDisplayStateLoop(this.mainScore);
   }
 
-  setDisplayStateLoop(score: Score): void {
-      if (score == this.selectedScore)
+  setDisplayStateLoop(score: Score, selectedScore: Score): Score {
+      //console.log("setDisplayStateLoop");
+      // Compare the param score whit
+      //console.log(score.claimId);
+      //console.log(selectedScore.claimId);
+      if (score == selectedScore)
           score.displayState = "selected";
 
       for (let childId of this.claims[score.claimId].childIds) {
           let childScore = this.scores[childId];
           //process the children first/
-          this.setDisplayStateLoop(childScore);
+          this.setDisplayStateLoop(childScore, selectedScore);
 
-          if (childScore == this.selectedScore) {
+          if (childScore == selectedScore) {
               score.displayState = "parent";
               //Set Siblings
               for (let siblingId of this.claims[score.claimId].childIds) {
@@ -112,8 +121,10 @@ export default class Display{
           if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
               score.displayState = "ancestor";
 
-          if (score == this.selectedScore)
+          if (score == selectedScore)
               childScore.displayState = "child";
       }
+      return score;
   }
+
 }

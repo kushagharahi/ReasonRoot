@@ -29,7 +29,7 @@ export default class Display{
   }
 
   update(node: any): void {
-    console.log("update");
+//    console.log("update");
     let root = this.root;
 
     // if (!this.settings.noAutoSave)
@@ -95,7 +95,7 @@ export default class Display{
       //this.setDisplayStateLoop(this.mainScore);
   }
 
-  setDisplayStateLoop(score: Score, selectedScore: Score): Score {
+  setDisplayStateLoop(score: Score, claims: Dict<Claim>, scores: Dict<Score>, selectedScore: Score): Score {
       //console.log("setDisplayStateLoop");
       // Compare the param score whit
       //console.log(score.claimId);
@@ -103,16 +103,16 @@ export default class Display{
       if (score == selectedScore)
           score.displayState = "selected";
 
-      for (let childId of this.claims[score.claimId].childIds) {
-          let childScore = this.scores[childId];
+      for (let childId of claims[score.claimId].childIds) {
+          let childScore = scores[childId];
           //process the children first/
-          this.setDisplayStateLoop(childScore, selectedScore);
+          this.setDisplayStateLoop(childScore, claims, scores, selectedScore);
 
           if (childScore == selectedScore) {
               score.displayState = "parent";
               //Set Siblings
-              for (let siblingId of this.claims[score.claimId].childIds) {
-                  let siblingScore = this.scores[siblingId];
+              for (let siblingId of claims[score.claimId].childIds) {
+                  let siblingScore = scores[siblingId];
                   if (siblingScore.displayState != "selected")
                       siblingScore.displayState = "sibling";
               }

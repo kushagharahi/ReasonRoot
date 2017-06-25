@@ -141,10 +141,10 @@ export default class ReasonRoot {
         }
     }
 
-    setDisplayState(selectedScore: Score): void {
-        ////console.log("setDisplayState");
+    setDisplayState(selectedScore?: Score): void {
         this.display.clearDisplayState();
-        this.mainScore = this.display.setDisplayStateLoop(this.mainScore, this.selectedScore);
+        ////console.log("setDisplayState");
+        this.mainScore = this.display.setDisplayStateLoop(this.mainScore, this.claims, this.scores, this.selectedScore);
     }
 
     replaceAll(target: string, search: string, replacement: string): string {
@@ -237,7 +237,8 @@ export default class ReasonRoot {
                 }
             }
         }
-        //console.log("renderNode" + result);
+        //console.log("Render");
+        //console.log(result);
 
         return result;
     }
@@ -245,10 +246,10 @@ export default class ReasonRoot {
     selectScore(score: Score, e: Event): void {
         if (score != this.selectedScore) {
             this.selectedScore = score;
-            this.setDisplayState(this.selectedScore);
+            this.setDisplayState();
             this.display.update(this.renderNode(this.scores[this.rr.mainId]));
         }
-        console.log(this.selectedScore);
+        //console.log(this.selectedScore);
     }
 
     noBubbleClick(event: Event): void {

@@ -91,7 +91,7 @@ class RRDisplay {
         firebase.auth().onAuthStateChanged(function (user) {
             //Check for write permissions
             if (firebase.auth().currentUser) {
-                let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId);
+                let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + that.rr.mainId);
                 that.listenerRefs.push(permissionRef);
                 //To do the can write below is on the wrong "this"
                 permissionRef.on('value', function (snapshot) {

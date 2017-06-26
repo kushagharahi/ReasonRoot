@@ -113,7 +113,7 @@ class RRDisplay {
         }
         this.db = firebase.database();
 
-        firebase.onAuth(function(authData) {
+        this.db.onAuth(function(authData) {
         //Check for write permissions
         if (firebase.auth().currentUser) {
             let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)

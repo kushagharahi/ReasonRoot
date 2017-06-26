@@ -30,12 +30,11 @@ export default class ReasonRoot {
     db: any;
     rr: Root = new Root();
     whichCopy: WhichCopy;
-    settingsVisible: boolean = false;
+    //settingsVisible: boolean = false;
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
     mainId: any;
     auth: Auth = new Auth();
-    setting: Setting = new Setting();
     animation: Animation = new Animation();
     score: Score = new Score();
     claim: Claim = new Claim();
@@ -58,9 +57,9 @@ export default class ReasonRoot {
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-        this.display = new Display(this.mainScore, this.claims, this.scores, this.settings, this.render);
+        this.display = new Display(this.render);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
-        this.setDisplayState();
+        this.setDisplayState(this.selectedScore);
         this.calculate();
     }
 
@@ -140,44 +139,9 @@ export default class ReasonRoot {
         }
     }
 
-    clearDisplayState(): void {
-        for (let scoreId in this.scores) {
-            if (this.scores.hasOwnProperty(scoreId)) {
-                this.scores[scoreId].displayState = "notSelected";
-            }
-        }
-    }
-
-    setDisplayState(): void {
-        this.display.clearDisplayState();
-        this.setDisplayStateLoop(this.mainScore);
-    }
-
-    setDisplayStateLoop(score: Score): void {
-        if (score == this.selectedScore)
-            score.displayState = "selected";
-
-        for (let childId of this.claims[score.claimId].childIds) {
-            let childScore = this.scores[childId];
-            //process the children first/
-            this.setDisplayStateLoop(childScore);
-
-            if (childScore == this.selectedScore) {
-                score.displayState = "parent";
-                //Set Siblings
-                for (let siblingId of this.claims[score.claimId].childIds) {
-                    let siblingScore = this.scores[siblingId];
-                    if (siblingScore.displayState != "selected")
-                        siblingScore.displayState = "sibling";
-                }
-            }
-
-            if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
-                score.displayState = "ancestor";
-
-            if (score == this.selectedScore)
-                childScore.displayState = "child";
-        }
+    setDisplayState(selectedScore?: Score): void {
+        this.display.clearDisplayState(this.scores);
+        this.mainScore = this.display.setDisplayStateLoop(this.mainScore, this.claims, this.scores, this.selectedScore);
     }
 
     replaceAll(target: string, search: string, replacement: string): string {
@@ -295,7 +259,7 @@ export default class ReasonRoot {
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);
       this.calculate();
-      this.setDisplayState();
+      this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
       if (event) event.stopPropagation();
@@ -311,7 +275,7 @@ export default class ReasonRoot {
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
       this.calculate();
-      this.setDisplayState();
+      this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 

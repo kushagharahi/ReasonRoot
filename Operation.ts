@@ -1,3 +1,5 @@
+declare const require: any;
+
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';
@@ -6,6 +8,8 @@ import Claim from './Claim';
 import Setting from './Setting';
 import Animation from './Animation';
 import Auth from './Auth';
+
+const hyperHTML = require('hyperhtml');
 
 export default class Operations{
   userName: string = 'Sign In';
@@ -22,14 +26,19 @@ export default class Operations{
   settingsVisible: boolean = false;
   animation: Animation = new Animation();
   auth: Auth = new Auth();
+  claim: Claim = new Claim();
 
   calculate(): void {
       this.settleIt.calculate(this.root.mainId, this.claims, this.scores)
   }
 
   replaceAll(target: string, search: string, replacement: string): string {
-      return target.split(search).join(replacement);
+    return target.split(search).join(replacement);
   };
+
+  noBubbleClick(event: Event): void {
+    if (event) event.stopPropagation();
+  }
 
   clearDisplayState(): void {
       for (let scoreId in this.scores) {
@@ -75,6 +84,8 @@ export default class Operations{
       // if (!this.settings.noAutoSave)
       //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
 
+      const updateSettings = () => this.setting.update.bind(this, this.settings);
+
       this.render`
       <div class="${'rr' +
           (this.settings.hideScore ? ' hideScore' : '') +
@@ -86,17 +97,17 @@ export default class Operations{
 
           }">
           <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
-              <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${updateSettings}">
               <label for="hideScore">Hide Score</label>
-              <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${updateSettings}">
               <label for="hidePoints">Hide Points</label>
-              <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${updateSettings}">
               <label for="noAutoSave">No Auto Save</label>
-              <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${updateSettings}">
               <label for="showSiblings">Show Sibllings</label>
-              <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${updateSettings}">
               <label for="hideClaimMenu">Hide Claim Menu</label>
-              <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, this.settings)}">
+              <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${updateSettings}">
               <label for="hideChildIndicator">Hide Child Indicator</label>
               <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, this.settings)}">
               <label for="showCompetition">Show Competition</label>
@@ -115,6 +126,11 @@ export default class Operations{
   }
 
   renderNode(score: Score, parent?: Score): void {
+    const updateClaim = () => this.claim.update.bind(this, claim);
+    const removeClaim = () => this.claim.remove.bind(this, claim, parent);
+    const addClaim = () => this.claim.add.bind(this, score, true);
+    const editClaim = () => this.claim.edit.bind(this, score);
+
       var claim: Claim = this.claims[score.claimId];
       var wire = hyperHTML.wire(score);
       if (this.animation.animateNumbers(this.scores)) setTimeout(() => this.update(), 100);
@@ -155,16 +171,16 @@ export default class Operations{
 
                       <div class="claimEditHider">
                           <div class="claimEditSection">
-                              <input bind="content"  oninput="${this.updateClaim.bind(this, claim)}" ><br>
-                              <input bind="citation" oninput="${this.updateClaim.bind(this, claim)}" ><br>
-                              <input bind="citationUrl" oninput="${this.updateClaim.bind(this, claim)}" ><br>
+                              <input bind="content"  oninput="${updateClaim}" ><br>
+                              <input bind="citation" oninput="${updateClaim}" ><br>
+                              <input bind="citationUrl" oninput="${updateClaim}" ><br>
                               <label for="maxConf" >Maximum Confidence </label><br/>
-                              <input bind="maxConf" name="maxConf" type="number" oninput="${this.updateClaim.bind(this, claim)}" ><br>
-                              <input type="checkbox" bind="isProMain" onclick="${this.updateClaim.bind(this, claim)}">
+                              <input bind="maxConf" name="maxConf" type="number" oninput="${updateClaim}" ><br>
+                              <input type="checkbox" bind="isProMain" onclick="${updateClaim}">
                               <label for="isProMain">Does this claim supports the main claim?</label><br/>
-                              <input type="checkbox" bind="disabled" onclick="${this.updateClaim.bind(this, claim)}">
+                              <input type="checkbox" bind="disabled" onclick="${updateClaim}">
                               <label for="disabled">Disabled?</label><br/>
-                              <button onclick="${this.removeClaim.bind(this, claim, parent)}" name="button">
+                              <button onclick="${removeClaim}" name="button">
                                   Remove this claim from it's parent
                               </button><br/>
                               ID:${claim.claimId}
@@ -173,9 +189,9 @@ export default class Operations{
 
                       <div class="claimMenuHider">
                           <div class="claimMenuSection">
-                              <div class="addClaim pro" onclick="${this.addClaim.bind(this, score, true)}">add</div>
-                              <div class="addClaim con" onclick="${this.addClaim.bind(this, score, false)}">add</div>
-                              <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
+                              <div class="addClaim pro" onclick="${addClaim}">add</div>
+                              <div class="addClaim con" onclick="${addClaim}">add</div>
+                              <div class="editClaimButton" onclick="${editClaim}">edit</div>
                           </div>
                       </div>
 

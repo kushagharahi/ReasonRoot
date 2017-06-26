@@ -87,18 +87,19 @@ class RRDisplay {
             });
         }
         this.db = firebase.database();
+        var that = this;
         firebase.auth().onAuthStateChanged(function (user) {
             //Check for write permissions
             if (firebase.auth().currentUser) {
-                let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId);
-                this.listenerRefs.push(permissionRef);
+                let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId);
+                that.listenerRefs.push(permissionRef);
                 //To do the can write below is on the wrong "this"
                 permissionRef.on('value', function (snapshot) {
-                    this.canWrite = snapshot.val();
+                    that.canWrite = snapshot.val();
                 });
             }
             else {
-                this.canWrite = false;
+                that.canWrite = false;
             }
         });
     }

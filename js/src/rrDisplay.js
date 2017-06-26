@@ -87,7 +87,7 @@ class RRDisplay {
             });
         }
         this.db = firebase.database();
-        this.db.onAuth(function (authData) {
+        firebase.auth().onAuthStateChanged(function (user) {
             //Check for write permissions
             if (firebase.auth().currentUser) {
                 let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId);

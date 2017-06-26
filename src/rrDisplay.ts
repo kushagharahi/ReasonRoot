@@ -113,20 +113,20 @@ class RRDisplay {
         }
         this.db = firebase.database();
 
-        this.db.onAuth(function(authData) {
-        //Check for write permissions
-        if (firebase.auth().currentUser) {
-            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
-            this.listenerRefs.push(permissionRef);
+        firebase.auth().onAuthStateChanged(function (user) {
+            //Check for write permissions
+            if (firebase.auth().currentUser) {
+                let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
+                this.listenerRefs.push(permissionRef);
 
-            //To do the can write below is on the wrong "this"
-            permissionRef.on('value', function (snapshot) {
-                this.canWrite = snapshot.val();
-            })
-        } else {
-            this.canWrite = false;
-        }
-});
+                //To do the can write below is on the wrong "this"
+                permissionRef.on('value', function (snapshot) {
+                    this.canWrite = snapshot.val();
+                })
+            } else {
+                this.canWrite = false;
+            }
+        });
     }
 
     claimsFromDB(data: any) {
@@ -382,7 +382,7 @@ class RRDisplay {
         if (this.whichCopy == "original")
             if (this.canWrite)
                 firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
-            else { 
+            else {
                 //Change over to a copy and set it up
             }
 

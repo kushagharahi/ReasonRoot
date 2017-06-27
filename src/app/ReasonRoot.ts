@@ -119,6 +119,35 @@ export default class ReasonRoot {
         }
     }
 
+    firebaseInit() {
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
+                authDomain: "settleitorg.firebaseapp.com",
+                databaseURL: "https://settleitorg.firebaseio.com",
+                projectId: "settleitorg",
+                storageBucket: "settleitorg.appspot.com",
+                messagingSenderId: "835574079849"
+            });
+        }
+        this.db = firebase.database();
+        var that = this;
+        firebase.auth().onAuthStateChanged(function (user) {
+            //Check for write permissions
+            if (firebase.auth().currentUser) {
+                let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + that.rr.mainId)
+                that.listenerRefs.push(permissionRef);
+
+                //To do the can write below is on the wrong "this"
+                permissionRef.on('value', function (snapshot) {
+                    that.canWrite = snapshot.val();
+                })
+            } else {
+                that.canWrite = false;
+            }
+        });
+    }
+
     claimsFromDB(data: any) {
         let value = data.val();
         if (value) {

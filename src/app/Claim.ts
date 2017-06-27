@@ -59,14 +59,10 @@ type WhichCopy = "original" | "local" | "suggestion";
         if (index > -1) claims[parentScore.claimId].childIds.splice(index, 1);
         this.selectedScore = parentScore;
 
-        // this.operation.calculate();
-        // this.operation.setDisplayState();
-        // this.operation.update();
     }
 
     edit(score: Score, event?: Event): void {
         this.settings.isEditing = !this.settings.isEditing;
-        // this.operation.update();
         if (event) event.stopPropagation();
     }
 
@@ -102,12 +98,8 @@ type WhichCopy = "original" | "local" | "suggestion";
             else {
                 //Change over to a copy and set it up
             }
-
-
-        // //update the UI
-        // this.operation.calculate();
-        // this.operation.update();
     }
+
 
 }
 

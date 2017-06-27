@@ -1,26 +1,16 @@
-declare var require: any;
+declare const require: any;
 
 const firebase = require('firebase');
 
-export default class Auth{
-  db: any;
+import Root from './Root';
 
-  firebaseInit(): any {
-      if (!firebase.apps.length) {
-          firebase.initializeApp({
-              apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
-              authDomain: "reasonrootdev.firebaseapp.com",
-              databaseURL: "https://reasonrootdev.firebaseio.com",
-              projectId: "reasonrootdev",
-              storageBucket: "reasonrootdev.appspot.com",
-              messagingSenderId: "680169719491"
-          });
-      }
-      return this.db = firebase.database();
-  }
+export default class Auth{
+  listenerRefs: any[] = new Array<any>();
+  db: any;
+  rr: Root = new Root();
 
   signIn() {
-      this.firebaseInit();
+      this.firebaseInit(this.rr, true);
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider).then((function (result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
@@ -40,6 +30,35 @@ export default class Auth{
           var credential = error.credential;
           console.log(error);
       });
+  }
+
+  firebaseInit(rr: Root, canWrite: Boolean) {
+    if (!firebase.apps.length) {
+        firebase.initializeApp({
+            apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
+            authDomain: "settleitorg.firebaseapp.com",
+            databaseURL: "https://settleitorg.firebaseio.com",
+            projectId: "settleitorg",
+            storageBucket: "settleitorg.appspot.com",
+            messagingSenderId: "835574079849"
+        });
+    }
+    this.db = firebase.database();
+    var that = this;
+    firebase.auth().onAuthStateChanged(function (user) {
+        //Check for write permissions
+        if (firebase.auth().currentUser) {
+            let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + rr.mainId)
+            that.listenerRefs.push(permissionRef);
+
+            //To do the can write below is on the wrong "this"
+            permissionRef.on('value', function (snapshot) {
+                canWrite = snapshot.val();
+            })
+        } else {
+            canWrite = false;
+        }
+    });
   }
 
 }

@@ -44,7 +44,7 @@ export default class Auth{
         });
     }
     this.db = firebase.database();
-    // There have to change firebase rules 
+    // There have to change firebase rules
     var fbRef = firebase.database().ref().child('test');
     fbRef.on('value', snap => console.log(snap.val()) );
     var that = this;

@@ -35,15 +35,18 @@ export default class Auth{
   firebaseInit(rr: Root, canWrite: Boolean) {
     if (!firebase.apps.length) {
         firebase.initializeApp({
-            apiKey: "AIzaSyAH_UO_f2F3OuVLfZvAqezEujnMesmx6hA",
-            authDomain: "settleitorg.firebaseapp.com",
-            databaseURL: "https://settleitorg.firebaseio.com",
-            projectId: "settleitorg",
-            storageBucket: "settleitorg.appspot.com",
-            messagingSenderId: "835574079849"
+          apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
+          authDomain: "reasonrootdev.firebaseapp.com",
+          databaseURL: "https://reasonrootdev.firebaseio.com",
+          projectId: "reasonrootdev",
+          storageBucket: "reasonrootdev.appspot.com",
+          messagingSenderId: "680169719491"
         });
     }
     this.db = firebase.database();
+    // There have to change firebase rules 
+    var fbRef = firebase.database().ref().child('test');
+    fbRef.on('value', snap => console.log(snap.val()) );
     var that = this;
     firebase.auth().onAuthStateChanged(function (user) {
         //Check for write permissions

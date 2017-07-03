@@ -16,9 +16,9 @@ window.onload = async function () {
 
   const txtEmail = <HTMLInputElement>document.getElementById('txtEmail');
   const txtPassword = <HTMLInputElement>document.getElementById('txtPassword');
-  const btnLogin = document.getElementById('btnLogin');
+  const btnSignIn = document.getElementById('btnSignIn');
   const btnSignUp = document.getElementById('btnSignUp');
-  const btnLogout = document.getElementById('btnLogout');
+  const btnSignOut = document.getElementById('btnSignOut');
   let auth = new Auth();
 
   // Add event listeners
@@ -27,6 +27,18 @@ window.onload = async function () {
     const email = txtEmail.value;
     const pass = txtPassword.value;
     auth.SignUp(email, pass);
+  });
+
+  btnSignIn.addEventListener('click', e => {
+    // Get email and password values
+    const email = txtEmail.value;
+    const pass = txtPassword.value;
+    auth.SignIn(email, pass);
+  });
+
+  // Logout
+  btnSignOut.addEventListener('click', e => {
+    auth.SignOut() ;
   });
 
   var claimElements = document.getElementsByTagName('claim');

@@ -44,31 +44,45 @@ export default class Auth{
         });
     }
     this.db = firebase.database();
-    // There have to change firebase rules
-    var fbRef = firebase.database().ref().child('test');
-    fbRef.on('value', snap => console.log(snap.val()) );
+    // // There have to change firebase rules
+    // var fbRef = firebase.database().ref().child('test');
+    // fbRef.on('value', snap => console.log(snap.val()) );
     var that = this;
-    firebase.auth().onAuthStateChanged(function (user) {
-        //Check for write permissions
-        if (firebase.auth().currentUser) {
-            let permissionRef = that.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + rr.mainId)
-            that.listenerRefs.push(permissionRef);
+    // onAuthStateChanged listen when a user do login or logout
+    // and onAuthStateChanged returns currentUser
+  firebase.auth().onAuthStateChanged(function (currentUser) {
+      // Check if the user is loged
+    if (currentUser) {
+      console.log(currentUser);
+      //Query user permissions
+      let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
+      that.listenerRefs.push(permissionRef);
 
-            //To do the can write below is on the wrong "this"
-            permissionRef.on('value', function (snapshot) {
-                canWrite = snapshot.val();
-            })
-        } else {
-            canWrite = false;
-        }
-    });
-  }
+      //To do the can write below is on the wrong "this"
+      permissionRef.on('value', function (snapshot) {
+        canWrite = snapshot.val();
+      })
+    } else {
+      // If user is not loged set write permissions false.
+      console.log("No logeado");
+      canWrite = false;
+    }
+  });
+}
 
   SignUp(email: String, password: String): void{
     const auth = firebase.auth();
-    // Sign In
     const promise = auth.createUserWithEmailAndPassword(email, password);
     promise.catch(e => console.log(e.message));
   };
 
+  SignIn(email: String, password: String){
+    const auth = firebase.auth();
+    const promise = auth.signInWithEmailAndPassword(email, password);
+    promise.catch(e => console.log(e.message));
+  };
+
+  SignOut(){
+    firebase.auth().signOut();
+  };
 }

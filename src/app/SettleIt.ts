@@ -1,6 +1,6 @@
 import Dict from './Dict';
 import Claim from './Claim';
-import Score from './score';
+import Score from './Score';
 
 
 export default class SettleIt {
@@ -18,7 +18,7 @@ export default class SettleIt {
         if (mainId !== undefined) this.mainId = mainId;
         if (scores !== undefined) this.scores = scores;
         if (shouldSort !== undefined) this.shouldSort = shouldSort;
-        let score = this.scores[mainId];
+        let score = this.getScore(mainId);
         let claim = this.claims[mainId];
         this.step1ValidateClaims(score);
         this.step2AscendClaims(score);
@@ -30,6 +30,16 @@ export default class SettleIt {
             claims: this.claims,
             scores: this.scores
         }
+    }
+
+    public getScore(claimId){
+        let score = this.scores[claimId];
+        if (!score) {
+            score = new Score();
+            score.claimId = claimId;
+            this.scores[claimId] = score;
+        }
+        return score;
     }
 
     public step1ValidateClaims(score: Score, parent?: Score) {
@@ -44,7 +54,7 @@ export default class SettleIt {
         if (claim.childIds == undefined) claim.childIds = new Array<string>();
         for (let childId of claim.childIds) {
             if (this.claims[childId].disabled) continue; //skip if diabled
-            this.step1ValidateClaims(this.scores[childId], score);
+            this.step1ValidateClaims(this.getScore(childId), score);
         }
     }
 
@@ -94,7 +104,7 @@ export default class SettleIt {
         score.siblingWeight = 1; // This may be wrong. Was only set if it has not parent but now there isn't a parent id
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            this.step2AscendClaims(this.scores[childId], score);
+            this.step2AscendClaims(this.getScore(childId), score);
         }
         if (this.claims[score.claimId].affects == undefined) this.claims[score.claimId].affects = "AverageTheConfidence";
 
@@ -111,7 +121,7 @@ export default class SettleIt {
         //Figure out what is the highest number of points among all the children
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             if (this.claims[child.claimId].affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
                 maxPoints = Math.max(childsTotal, maxPoints);
@@ -121,7 +131,7 @@ export default class SettleIt {
         //Figure out the multiplier so that all the children have the same weight
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             if (this.claims[child.claimId].affects != "Importance") {
                 var childsTotal = child.confidencePro + child.confidenceCon;
                 if (childsTotal == 0)
@@ -144,7 +154,7 @@ export default class SettleIt {
         //Add up all the children points
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             if (this.claims[child.claimId].affects == "AverageTheConfidence") {
                 found = true;
 
@@ -213,7 +223,7 @@ export default class SettleIt {
             //Add up all the importance children points
             for (let childId of this.claims[score.claimId].childIds) {
                 if (this.claims[score.claimId].disabled) continue; //skip if diabled
-                let child = this.scores[childId];
+                let child = this.getScore(childId);
                 if (this.claims[child.claimId].affects == "Importance") {
                     proImportance += child.importancePro;
                     conImportance += child.importanceCon;
@@ -230,7 +240,7 @@ export default class SettleIt {
         score.numDesc = 0;
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             if (child.numDesc)
                 score.numDesc += child.numDesc + 1;
             else
@@ -246,7 +256,7 @@ export default class SettleIt {
         this.calculateMainPercent(score, parent);
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             this.step3DescendClaims(child, score);
         }
     }
@@ -254,7 +264,7 @@ export default class SettleIt {
     private step4AscendClaims(score: Score, parent?: Score) {
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if diabled
-            let child = this.scores[childId];
+            let child = this.getScore(childId);
             this.step4AscendClaims(child, score);
         }
         this.calculateWeightedPercentage(score, parent);
@@ -291,11 +301,17 @@ export default class SettleIt {
         for (let childId of this.claims[score.claimId].childIds) {
             if (this.claims[score.claimId].disabled) continue; //skip if disabled
             found = true;
-            let child = this.scores[childId];
-            if (child.weightDif > 0)
+            let child = this.getScore(childId);
+            if (child.weightDif > 0){
                 WeightedPluses += child.weightDif
-            else
+                //WeightedPluses += child.weightPro;
+                //WeightedMinuses += child.weightCon;
+            }
+            else {
                 WeightedMinuses += child.weightDif
+                //WeightedPluses += child.weightCon;
+                //WeightedMinuses += child.weightPro;
+            }
         }
 
         score.animatedWeightedPercentage = score.weightedPercentage;
@@ -314,7 +330,7 @@ export default class SettleIt {
     private sort(score: Score, parent: Score) {
         if (!this.shouldSort) return;
         this.claims[score.claimId].childIds.sort((a, b) =>
-            Math.abs(this.scores[b].weightDif) - Math.abs(this.scores[a].weightDif)
+            Math.abs(this.getScore(b).weightDif) - Math.abs(this.getScore(a).weightDif)
         );
     }
 

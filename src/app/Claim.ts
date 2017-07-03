@@ -1,6 +1,25 @@
+declare const require: any;
+const firebase = require('firebase');
+
+import Score from './Score';
+import Setting from './Setting';
+import Dict from './Dict';
+import Root from './Root';
+
+
+type WhichCopy = "original" | "local" | "suggestion";
+
 ﻿export default class Claim {
     /** a base62 GUID string to identify each claim */
     claimId: string;
+    selectedScore: Score;
+    claims: Dict<Claim>;
+    scores: Dict<Score>;
+    settings: any = {};
+    whichCopy: WhichCopy;
+    setting: Setting = new Setting();
+    canWrite: boolean;
+    root: Root = new Root();
 
     /** The text of the claim with the claim. May include markdown in the future. */
     content: string = "New Claim";
@@ -33,6 +52,54 @@
         this.claimId = id || newId();
         if (isProMain !== undefined) this.isProMain = isProMain
     }
+
+
+    remove(claim: Claim, claims: Dict<Claim>, parentScore: Score, event: Event): void {
+        var index = claims[parentScore.claimId].childIds.indexOf(claim.claimId);
+        if (index > -1) claims[parentScore.claimId].childIds.splice(index, 1);
+        this.selectedScore = parentScore;
+
+    }
+
+    edit(score: Score, event?: Event): void {
+        this.settings.isEditing = !this.settings.isEditing;
+        if (event) event.stopPropagation();
+    }
+
+    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>) {
+      let newClaim: Claim = new Claim();
+      newClaim.isProMain = isProMain;
+      let newScore: Score = new Score(newClaim)
+      scores[newClaim.claimId] = newScore;
+      claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
+      claims[newClaim.claimId] = newClaim;
+      newScore.displayState = "notSelected";
+
+      this.selectedScore = newScore;
+      this.settings.isEditing = true;
+    }
+
+    update(claim: Claim, event: Event) {
+        let inputs: any = event.srcElement.parentElement.querySelectorAll('input');
+        for (let input of inputs) {
+            var bindName = input.getAttribute("bind")
+            if (bindName) {
+                if (input.type == "checkbox")
+                    claim[bindName] = input.checked;
+                else
+                    claim[bindName] = input.value;
+            }
+        }
+
+        //to do Update the storage
+        if (this.whichCopy == "original")
+            if (this.canWrite)
+                firebase.database().ref('roots/' + this.root.mainId + '/claims/' + claim.claimId).set(claim);
+            else {
+                //Change over to a copy and set it up
+            }
+    }
+
 
 }
 

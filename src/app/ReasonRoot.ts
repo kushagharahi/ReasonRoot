@@ -21,7 +21,7 @@ export default class ReasonRoot {
     rrRef: any;//The current firebase reference to the ReasonRoot object
     scores: Dict<Score>;
     claims: Dict<Claim>;
-    settleIt: SettleIt;
+    settleIt: SettleIt;node
     mainScore: Score;
     render: any;
     settings: any = {};
@@ -240,17 +240,16 @@ export default class ReasonRoot {
           this.setDisplayState();
           this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       }
-    }
+    };
 
     noBubbleClick(event: Event): void {
       if (event) event.stopPropagation();
-    }
+    };
 
 
     calculate(): void {
       this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
-
-    }
+    };
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
     // to their own class file, and then they only should be called from other classes like this.
@@ -262,7 +261,7 @@ export default class ReasonRoot {
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
       if (event) event.stopPropagation();
-    }
+    };
 
     updateClaim(claim: Claim, event: Event) {
       this.claim.update(claim, event);
@@ -270,13 +269,14 @@ export default class ReasonRoot {
       this.calculate();
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
-    }
+    };
+
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
-    }
+    };
 
     editClaim(score: Score, event?: Event): void {
       this.settings.isEditing = !this.settings.isEditing;

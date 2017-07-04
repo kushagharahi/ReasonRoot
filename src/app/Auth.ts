@@ -9,7 +9,7 @@ export default class Auth{
   db: any;
   rr: Root = new Root();
 
-  signIn() {
+  SignIn() {
       this.firebaseInit(this.rr, true);
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider).then((function (result) {
@@ -64,25 +64,32 @@ export default class Auth{
       })
     } else {
       // If user is not loged set write permissions false.
-      console.log("No logeado");
+      console.log("User not logged");
       canWrite = false;
     }
   });
 }
 
-  SignUp(email: String, password: String): void{
+  signUp(email: String, password: String): void{
     const auth = firebase.auth();
     const promise = auth.createUserWithEmailAndPassword(email, password);
     promise.catch(e => console.log(e.message));
   };
 
-  SignIn(email: String, password: String){
+  signIn(email: String, password: String){
     const auth = firebase.auth();
     const promise = auth.signInWithEmailAndPassword(email, password);
     promise.catch(e => console.log(e.message));
   };
 
-  SignOut(){
+  signOut(){
     firebase.auth().signOut();
+  };
+
+  createReasonRoot(rootId, content, citation) {
+    firebase.database().ref('roots/' + rootId).set({
+      content: content,
+      citation: citation
+    });
   };
 }

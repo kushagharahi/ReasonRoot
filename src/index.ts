@@ -19,6 +19,11 @@ window.onload = async function () {
   const btnSignIn = document.getElementById('btnSignIn');
   const btnSignUp = document.getElementById('btnSignUp');
   const btnSignOut = document.getElementById('btnSignOut');
+
+  const txtContent = <HTMLInputElement>document.getElementById('txtContent');
+  const txtCitation = <HTMLInputElement>document.getElementById('txtCitation');
+  const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
+
   let auth = new Auth();
 
   // Add event listeners
@@ -26,19 +31,26 @@ window.onload = async function () {
     // Get email and password values
     const email = txtEmail.value;
     const pass = txtPassword.value;
-    auth.SignUp(email, pass);
+    auth.signUp(email, pass);
   });
 
   btnSignIn.addEventListener('click', e => {
     // Get email and password values
     const email = txtEmail.value;
     const pass = txtPassword.value;
-    auth.SignIn(email, pass);
+    auth.signIn(email, pass);
   });
 
   // Logout
   btnSignOut.addEventListener('click', e => {
-    auth.SignOut() ;
+    auth.signOut();
+  });
+
+  btnCreateReasonRoot.addEventListener('click', e => {
+    const content = txtContent.value;
+    const citation = txtCitation.value;
+
+    auth.createReasonRoot("asdsadsadas", content, citation);
   });
 
   var claimElements = document.getElementsByTagName('claim');

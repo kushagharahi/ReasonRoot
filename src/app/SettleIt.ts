@@ -19,6 +19,11 @@ export default class SettleIt {
         if (scores !== undefined) this.scores = scores;
         if (shouldSort !== undefined) this.shouldSort = shouldSort;
         let score = this.getScore(mainId);
+        if (!score) {
+          score = new Score();
+          score.claimId = mainId;
+          scores[mainId] = score;
+        }
         let claim = this.claims[mainId];
         this.step1ValidateClaims(score);
         this.step2AscendClaims(score);

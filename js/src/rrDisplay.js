@@ -326,27 +326,40 @@ class RRDisplay {
                     claim[bindName] = input.value;
             }
         }
-        //to do Update the storage
+        this.updateCalimInDb(claim);
+        //update the UI
+        this.calculate();
+        this.update();
+    }
+    updateCalimInDb(claim) {
         if (this.whichCopy == "original")
             if (this.canWrite)
                 firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).set(claim);
             else {
                 //Change over to a copy and set it up
             }
-        //update the UI
-        this.calculate();
-        this.update();
+    }
+    deleteClaimFromDb(claim) {
+        if (this.whichCopy == "original")
+            if (this.canWrite)
+                firebase.database().ref('roots/' + this.rr.mainId + '/claims/' + claim.claimId).remove();
+            else {
+                //Change over to a copy and set it up
+            }
     }
     calculate() {
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
     }
     removeClaim(claim, parentScore, event) {
-        var index = this.claims[parentScore.claimId].childIds.indexOf(claim.claimId);
+        let parentClaim = this.claims[parentScore.claimId];
+        var index = parentClaim.childIds.indexOf(claim.claimId);
         if (index > -1)
-            this.claims[parentScore.claimId].childIds.splice(index, 1);
+            parentClaim.childIds.splice(index, 1);
         this.selectedScore = parentScore;
         this.calculate();
         this.setDisplayState();
+        this.updateCalimInDb(parentClaim);
+        this.deleteClaimFromDb(claim);
         this.update();
     }
     editClaim(score, event) {
@@ -357,10 +370,11 @@ class RRDisplay {
     }
     addClaim(parentScore, isProMain, event) {
         let newClaim = new Claim();
+        let parentClaim = this.claims[parentScore.claimId];
         newClaim.isProMain = isProMain;
         let newScore = new Score(newClaim);
         this.scores[newClaim.claimId] = newScore;
-        this.claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
+        parentClaim.childIds.unshift(newClaim.claimId);
         this.claims[newClaim.claimId] = newClaim;
         newScore.displayState = "notSelected";
         this.update();
@@ -371,6 +385,8 @@ class RRDisplay {
             this.setDisplayState();
             this.update();
         }, 10);
+        this.updateCalimInDb(newClaim);
+        this.updateCalimInDb(parentClaim);
         if (event)
             event.stopPropagation();
     }

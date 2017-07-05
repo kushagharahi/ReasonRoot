@@ -47,10 +47,10 @@ window.onload = async function () {
   });
 
   btnCreateReasonRoot.addEventListener('click', e => {
+    let rr = new ReasonRoot();
     const content = txtContent.value;
     const citation = txtCitation.value;
-
-    auth.createReasonRoot("asdsadsadas", content, citation);
+    rr.createReasonRoot(content, citation);
   });
 
   var claimElements = document.getElementsByTagName('claim');

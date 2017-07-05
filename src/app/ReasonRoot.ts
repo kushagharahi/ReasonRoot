@@ -40,7 +40,8 @@ export default class ReasonRoot {
     claim: Claim = new Claim();
     display: Display;
 
-    constructor(claimElement: Element) {
+    constructor(claimElement?: Element) {
+      if(claimElement){
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
@@ -49,6 +50,7 @@ export default class ReasonRoot {
         //this.attachDB();
         //this.initRr();
         //this.update();
+      }
     }
 
     initRr() {
@@ -253,6 +255,27 @@ export default class ReasonRoot {
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
     // to their own class file, and then they only should be called from other classes like this.
+
+    createReasonRoot(content, citation) {
+      let database = this.auth.getDatabase();
+      let mainId = this.claim.newId();
+      let currentUserId = this.auth.getCurrentUser().uid;
+
+      database.ref('permissions/users/' + currentUserId + '/' + mainId).push({
+        12345: "true"
+      });
+
+      let mainClaim = new Claim(mainId, true);
+      mainClaim.citation = citation;
+      mainClaim.content = content;
+
+      //console.log(mainClaim);
+
+      database.ref('roots/' + mainId).set({
+        claims: {mainClaim},
+        mainId: mainId
+      });
+    };
 
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);

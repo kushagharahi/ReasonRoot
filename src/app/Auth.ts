@@ -70,6 +70,14 @@ export default class Auth{
   });
 }
 
+getCurrentUser(): any{
+  return firebase.auth().currentUser;
+}
+
+getDatabase(): any{
+  return firebase.database();
+}
+
   signUp(email: String, password: String): void{
     const auth = firebase.auth();
     const promise = auth.createUserWithEmailAndPassword(email, password);
@@ -86,10 +94,4 @@ export default class Auth{
     firebase.auth().signOut();
   };
 
-  createReasonRoot(rootId, content, citation) {
-    firebase.database().ref('roots/' + rootId).set({
-      content: content,
-      citation: citation
-    });
-  };
 }

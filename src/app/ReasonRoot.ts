@@ -261,9 +261,9 @@ export default class ReasonRoot {
       let mainId = this.claim.newId();
       let currentUserId = this.auth.getCurrentUser().uid;
 
-      database.ref('permissions/users/' + currentUserId + '/' + mainId).push({
-        12345: "true"
-      });
+      let obj = {};
+      obj[mainId] = true;
+      database.ref('permissions/user/' + currentUserId).update(obj);
 
       let mainClaim = new Claim(mainId, true);
       mainClaim.citation = citation;

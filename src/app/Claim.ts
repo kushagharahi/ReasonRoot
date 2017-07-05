@@ -12,14 +12,6 @@ type WhichCopy = "original" | "local" | "suggestion";
 ﻿export default class Claim {
     /** a base62 GUID string to identify each claim */
     claimId: string;
-    selectedScore: Score;
-    claims: Dict<Claim>;
-    scores: Dict<Score>;
-    settings: any = {};
-    whichCopy: WhichCopy;
-    setting: Setting = new Setting();
-    canWrite: boolean;
-    root: Root = new Root();
 
     /** The text of the claim with the claim. May include markdown in the future. */
     content: string = "New Claim";
@@ -48,8 +40,15 @@ type WhichCopy = "original" | "local" | "suggestion";
     citationUrl: string = "";
     citation: string = "";
 
+    selectedScore: Score;
+    settings: any = {};
+    whichCopy: WhichCopy;
+    setting: Setting = new Setting();
+    canWrite: boolean;
+    root: Root = new Root();
+
     constructor(id?: string, isProMain?: boolean) {
-        this.claimId = id || newId();
+        this.claimId = id || this.newId();
         if (isProMain !== undefined) this.isProMain = isProMain
     }
 
@@ -100,6 +99,23 @@ type WhichCopy = "original" | "local" | "suggestion";
             }
     }
 
+    newId(): string {
+      //take the current date and convert to bas 62
+      let decimal = new Date().getTime();
+      let s = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      let result = "";
+      while (decimal >= 1) {
+          result = s[(decimal - (62 * Math.floor(decimal / 62)))] + result;
+          decimal = Math.floor(decimal / 62);
+      }
+
+      //Add 5 extra random characters in case multiple ids are creates at the same time
+      result += Array(5).join().split(',').map(function () {
+          return s[(Math.floor(Math.random() * s.length))];
+      }).join('');
+
+      return result
+    }
 
 }
 

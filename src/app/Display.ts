@@ -58,7 +58,7 @@ export default class Display{
             </div>
        </div>
         <div>${node}</div>
-        <div class="settingsButton" onclick="${this.setting.toggle.bind(this.settingsVisible,this)}">
+        <div class="settingsButton" onclick="${this.toggleSettings.bind(this, node)}">
             ⚙
         </div>
     </div>`;
@@ -75,6 +75,11 @@ export default class Display{
               scores[scoreId].displayState = "notSelected";
           }
       }
+  }
+
+  toggleSettings(event: Event, node: any): void {
+      this.settingsVisible = !this.settingsVisible;
+      this.update(node);
   }
 
   setDisplayStateLoop(score: Score, claims: Dict<Claim>, scores: Dict<Score>, selectedScore: Score): Score {

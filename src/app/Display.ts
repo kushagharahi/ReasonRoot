@@ -53,7 +53,7 @@ export default class Display{
 
             <input value="${this.replaceAll(JSON.stringify(root), '\'', '&#39;')}"></input>
 
-            <div  onclick="${this.auth.signIn.bind(this)}">
+            <div  onclick="${this.auth.SignIn.bind(this)}">
                     [${this.userName} ]
             </div>
        </div>

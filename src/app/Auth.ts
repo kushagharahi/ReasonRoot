@@ -10,7 +10,7 @@ export default class Auth{
   rr: Root = new Root();
 
   SignIn() {
-      this.firebaseInit(this.rr, true);
+      //this.firebaseInit(this.rr, true);
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider).then((function (result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
@@ -78,17 +78,17 @@ getDatabase(): any{
   return firebase.database();
 }
 
-  signUp(email: String, password: String): void{
-    const auth = firebase.auth();
-    const promise = auth.createUserWithEmailAndPassword(email, password);
-    promise.catch(e => console.log(e.message));
-  };
+signUp(email: String, password: String): void{
+  const auth = firebase.auth();
+  const promise = auth.createUserWithEmailAndPassword(email, password);
+  promise.catch(e => console.log(e.message));
+};
 
-  signIn(email: String, password: String){
-    const auth = firebase.auth();
-    const promise = auth.signInWithEmailAndPassword(email, password);
-    promise.catch(e => console.log(e.message));
-  };
+signIn(email: String, password: String){
+  const auth = firebase.auth();
+  const promise = auth.signInWithEmailAndPassword(email, password);
+  promise.catch(e => console.log(e.message));
+};
 
   signOut(){
     firebase.auth().signOut();

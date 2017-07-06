@@ -48,7 +48,7 @@ type WhichCopy = "original" | "local" | "suggestion";
 
     constructor(id?: string, isProMain?: boolean) {
         this.claimId = id || this.newId();
-        if (isProMain !== undefined) this.isProMain = isProMain
+        if (isProMain !== undefined) this.isProMain = isProMain;
     }
 
 

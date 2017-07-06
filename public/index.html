@@ -4,34 +4,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="ReasonRoot.css" media="screen" />
-  <script src="js/src/score.js"></script>
-  <script src="js/src/Claim.js"></script>
-  <script src="js/src/SettleIt.js"></script>
+
+  <!--This scripts and links importation was substituted by the entry propriety on the webpack.config.js file.>
+  <!link rel="stylesheet" type="text/css" href="ReasonRoot.css" media="screen"/>
   <script src="js/src/rrDisplay.js"></script>
+  <script src="js/src/Claim.js"></script>
+  <script src="js/src/score.js"></script>
   <script src="js/src/Root.js"></script>
   <script src="HyperHTML.js"></script>
+  <script src="js/src/SettleIt.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
   <script src="https://cdn.firebase.com/libs/firebaseui/2.0.0/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.0.0/firebaseui.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.0.0/firebaseui.css" /-->
+  <link rel="stylesheet" href="style.css">
+  <script src="bundle.js"></script>
+
 
 </head>
 
 <body>
+  <div>
+    <input id="txtEmail" type="email" placeholder="Email">
+    <input id="txtPassword" type="password" placeholder="Password">
+    <button id="btnSignIn">Sign In</button>
+    <button id="btnSignUp">Sign Up</button>
+    <button id="btnSignOut" class="hide">Sign Out</button>
+  </div>
+  <div>
+    <input id="txtContent" type="text" placeholder="Content">
+    <input id="txtCitation" type="text" placeholder="Citation">
+    <button id="btnCreateReasonRoot">Create ReasonRoot</button>
+  </div>
 
-  <script>
+  <!--This code block was passed to rrDisplay.js.-->
+
+  <!--script>
     let mainClaimsDict = {}
-
     window.onload = async function () {
-
       var claimElements = document.getElementsByTagName('claim');
-
-      for (let claimElement of claimElements) {
+      for (let claimElement of oElements) {
         let rr = new RRDisplay(claimElement);
         mainClaimsDict[rr.mainId] = rr;
       }
     };
-  </script>
+  </script-->
 
   <claim root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
   </claim>

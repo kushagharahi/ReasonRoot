@@ -13,7 +13,6 @@ import SettleIt from'./SettleIt';
 import Score from './Score';
 import Claim from './Claim';
 import Auth from './Auth';
-import Setting from './Setting';
 import Display from './Display';
 
 export default class ReasonRoot {
@@ -59,7 +58,7 @@ export default class ReasonRoot {
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-        this.display = new Display(this.render);
+        this.display = new Display(this.render, this.settings);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
         this.setDisplayState(this.selectedScore);
         this.calculate();

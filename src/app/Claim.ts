@@ -2,7 +2,6 @@ declare const require: any;
 const firebase = require('firebase');
 
 import Score from './Score';
-import Setting from './Setting';
 import Dict from './Dict';
 import Root from './Root';
 

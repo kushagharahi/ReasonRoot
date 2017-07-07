@@ -4,19 +4,18 @@ import Auth from './Auth';
 import Dict from './Dict';
 import Score from './Score';
 import Claim from './Claim';
-import Setting from './Setting';
 
 export default class Display{
   userName: string = 'Sign In';
   render: any;
   settings: any = {};
   settingsVisible: boolean = false;
-  setting: Setting = new Setting();
   root: Root = new Root();
   auth: Auth = new Auth();
 
-  constructor(render: any){
+  constructor(render: any, settings: any){
     this.render = render;
+    this.settings = settings;
   }
 
   update(node: any): void {
@@ -36,19 +35,19 @@ export default class Display{
 
         }">
         <div class = "${'settingsHider ' + (this.settingsVisible ? 'open' : '')}">
-            <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="hideScore" bind="hideScore" value="hideScore" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="hideScore">Hide Score</label>
-            <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="hidePoints" bind="hidePoints" value="hidePoints" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="hidePoints">Hide Points</label>
-            <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="noAutoSave" bind="noAutoSave" value="noAutoSave" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="noAutoSave">No Auto Save</label>
-            <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="showSiblings" bind="showSiblings" value="showSiblings" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="showSiblings">Show Sibllings</label>
-            <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="hideClaimMenu" bind="hideClaimMenu" value="hideClaimMenu" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="hideClaimMenu">Hide Claim Menu</label>
-            <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="hideChildIndicator" bind="hideChildIndicator" value="hideChildIndicator" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="hideChildIndicator">Hide Child Indicator</label>
-            <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.setting.update.bind(this, this.settings)}">
+            <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="showCompetition">Show Competition</label>
 
             <input value="${this.replaceAll(JSON.stringify(root), '\'', '&#39;')}"></input>
@@ -75,11 +74,6 @@ export default class Display{
               scores[scoreId].displayState = "notSelected";
           }
       }
-  }
-
-  toggleSettings(event: Event, node: any): void {
-      this.settingsVisible = !this.settingsVisible;
-      this.update(node);
   }
 
   setDisplayStateLoop(score: Score, claims: Dict<Claim>, scores: Dict<Score>, selectedScore: Score): Score {
@@ -128,6 +122,20 @@ export default class Display{
     }
     return found;
     // if (found) setTimeout(() => this.update(), 100);
+    }
+
+    updateSettings(settings: any, event: any, node: any): void {
+        console.log("updateSettings");
+        console.log(settings);
+        settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
+        this.update(node);
+        if (event) event.stopPropagation();
+    }
+
+    toggleSettings(event: Event, node: any): void {
+      console.log("toggleSettings");
+        this.settingsVisible = !this.settingsVisible;
+        this.update(node);
     }
 
 }

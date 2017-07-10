@@ -85,10 +85,12 @@ getDataById(id: string):string {
     data = snapshot.val();
   });
   // Re send query if response is undefined
-  if(data === undefined || data === {}){
+  if(JSON.stringify(data) != '{}'){
+    return JSON.stringify(data);
+  } else {
     this.getDataById(id);
   }
-  return JSON.stringify(data);
+
 }
 
 }

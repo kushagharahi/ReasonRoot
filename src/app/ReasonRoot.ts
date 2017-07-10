@@ -279,11 +279,15 @@ export default class ReasonRoot {
         mainId: mainId
       });
 
-      let data = this.firebase.getDataById('qkcrjXBKCCx0');
+      let data = this.firebase.getDataById(mainId);
       var element = document.createElement("claim");
       element.setAttribute("root", data);
       document.body.appendChild(element);
     };
+
+    isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+    }
 
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
       this.claim.add(parentScore, isProMain, this.scores, this.claims);

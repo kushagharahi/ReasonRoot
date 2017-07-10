@@ -22,14 +22,22 @@ window.onload = async function () {
     const content = txtContent.value;
     const citation = txtCitation.value;
     rr.createReasonRoot(content, citation);
+    uptade();
   });
 
-  var claimElements = document.getElementsByTagName('claim');
+function uptade(){
+  console.log("update");
+  let claimElements = document.getElementsByTagName('claim');
 
   for (let claimElement of claimElements) {
+    console.log(claimElement);
     let rr = new ReasonRoot(claimElement);
     mainClaimsDict[rr.mainId] = rr;
   }
+}
+
+uptade();
+
 };
 
 //Here ends this code block

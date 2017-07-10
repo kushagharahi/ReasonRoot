@@ -46,7 +46,7 @@ export default class ReasonRoot {
         this.rr = JSON.parse(claimElement.getAttribute('root'));
         this.firebase.firebaseInit(this.rr, this.canWrite);
         this.changeWhichCopy("original");
-        this.attachDB();
+        //this.attachDB();
         //this.initRr();
         //this.update();
       }
@@ -54,6 +54,7 @@ export default class ReasonRoot {
 
     initRr() {
         this.claims = this.rr.claims;
+        console.log(this.claims);
         if (this.rr.settings) this.settings = this.rr.settings;
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
@@ -94,7 +95,7 @@ export default class ReasonRoot {
                 //to do Find the ID of my suggestion
                 this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
-            this.attachDB();
+            //this.attachDB();
         }
 
         this.initRr();
@@ -103,31 +104,19 @@ export default class ReasonRoot {
 
     attachDB() {
       let claimsRef = this.rrRef.child('claims');
-      console.log("claimsRef");
-      console.log(claimsRef);
       this.listenerRefs.push(claimsRef);
       claimsRef.once('value', this.claimsFromDB.bind(this));
       claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
       //Check for write permissions
-
-
-      console.log("this.rr.mainId");
-      console.log(this.rr.mainId);
-
       console.log("currentUser");
       console.log(this.firebase.getCurrentUser());
       if (this.firebase.getCurrentUser()) {
-          let permissionRef = this.db.ref('permissions/user/' + this.firebase.getCurrentUser().currentUser.uid + "/" + this.rr.mainId);
-          console.log("permissionRef");
-          console.log(permissionRef);
+          let permissionRef = this.firebase.db.ref('permissions/user/' + this.firebase.getCurrentUser().uid + "/" + this.rr.mainId);
           this.listenerRefs.push(permissionRef);
-          console.log("listenerRefs");
-          console.log(this.listenerRefs);
           //To do the can write below is on the wrong "this"
           permissionRef.on('value', function (snapshot) {
               this.canWrite = snapshot.val();
-              console.log(snapshot.val());
           })
       } else {
           this.canWrite = false;
@@ -294,7 +283,6 @@ export default class ReasonRoot {
       var element = document.createElement("claim");
       element.setAttribute("root", data);
       document.body.appendChild(element);
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     };
 
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {

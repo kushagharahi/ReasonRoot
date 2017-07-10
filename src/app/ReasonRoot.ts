@@ -5,14 +5,14 @@ declare const require: any;
 type WhichCopy = "original" | "local" | "suggestion";
 
 const hyperHTML = require('hyperhtml');
-const firebase = require('firebase');
+//const firebase = require('firebase');
 
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';
 import Score from './Score';
 import Claim from './Claim';
-import Auth from './Auth';
+import Firebase from './Firebase';
 import Display from './Display';
 
 export default class ReasonRoot {
@@ -34,7 +34,7 @@ export default class ReasonRoot {
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
     mainId: any;
-    auth: Auth = new Auth();
+    firebase: Firebase = new Firebase();
     score: Score = new Score();
     claim: Claim = new Claim();
     display: Display;
@@ -44,9 +44,9 @@ export default class ReasonRoot {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.auth.firebaseInit(this.rr, this.canWrite);
+        this.firebase.firebaseInit(this.rr, this.canWrite);
         this.changeWhichCopy("original");
-        //this.attachDB();
+        this.attachDB();
         //this.initRr();
         //this.update();
       }
@@ -78,20 +78,21 @@ export default class ReasonRoot {
         if (whichCopy === "local") {
             //pull local data if it exists and set it to save
 
+            // TODO localStorage is null
             let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
+            console.log(rr);
             if (rr) {
                 this.rr = JSON.parse(rr);
             }
-        }
-        else {
+        } else {
           // This is the problem
-            this.auth.firebaseInit(this.rr, this.canWrite);
+            this.firebase.firebaseInit(this.rr, this.canWrite);
             if (whichCopy === "original") {
-                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
             else if (whichCopy === "suggestion") {
                 //to do Find the ID of my suggestion
-                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
             this.attachDB();
         }
@@ -101,23 +102,36 @@ export default class ReasonRoot {
     }
 
     attachDB() {
-        let claimsRef = this.rrRef.child('claims');
-        this.listenerRefs.push(claimsRef);
-        claimsRef.once('value', this.claimsFromDB.bind(this));
-        claimsRef.on('child_changed', this.claimFromDB.bind(this));
+      let claimsRef = this.rrRef.child('claims');
+      console.log("claimsRef");
+      console.log(claimsRef);
+      this.listenerRefs.push(claimsRef);
+      claimsRef.once('value', this.claimsFromDB.bind(this));
+      claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
-        //Check for write permissions
-        if (firebase.auth().currentUser) {
-            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
-            this.listenerRefs.push(permissionRef);
+      //Check for write permissions
 
-            //To do the can write below is on the wrong "this"
-            permissionRef.on('value', function (snapshot) {
-                this.canWrite = snapshot.val();
-            })
-        } else {
-            this.canWrite = false;
-        }
+
+      console.log("this.rr.mainId");
+      console.log(this.rr.mainId);
+
+      console.log("currentUser");
+      console.log(this.firebase.getCurrentUser());
+      if (this.firebase.getCurrentUser()) {
+          let permissionRef = this.db.ref('permissions/user/' + this.firebase.getCurrentUser().currentUser.uid + "/" + this.rr.mainId);
+          console.log("permissionRef");
+          console.log(permissionRef);
+          this.listenerRefs.push(permissionRef);
+          console.log("listenerRefs");
+          console.log(this.listenerRefs);
+          //To do the can write below is on the wrong "this"
+          permissionRef.on('value', function (snapshot) {
+              this.canWrite = snapshot.val();
+              console.log(snapshot.val());
+          })
+      } else {
+          this.canWrite = false;
+      }
     }
 
     claimsFromDB(data: any) {
@@ -256,9 +270,9 @@ export default class ReasonRoot {
     // to their own class file, and then they only should be called from other classes like this.
 
     createReasonRoot(content, citation) {
-      let database = this.auth.getDatabase();
+      let database = this.firebase.getDatabase();
       let mainId = this.claim.newId();
-      let currentUserId = this.auth.getCurrentUser().uid;
+      let currentUserId = this.firebase.getCurrentUser().uid;
 
       let permission = {};
       permission[mainId] = true;
@@ -267,6 +281,7 @@ export default class ReasonRoot {
       let mainClaim = new Claim(mainId, true);
       mainClaim.citation = citation;
       mainClaim.content = content;
+
       let claim = {};
       claim[mainId] = Object.assign({}, mainClaim);
 
@@ -274,6 +289,8 @@ export default class ReasonRoot {
         claims: claim,
         mainId: mainId
       });
+      console.log("Claims");
+      console.log(this.firebase.getDataById('qkcrjXBKCCx0'));
     };
 
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {

@@ -4,7 +4,7 @@ const firebase = require('firebase');
 
 import Root from './Root';
 
-export default class Auth{
+export default class Firebase{
   listenerRefs: any[] = new Array<any>();
   db: any;
   rr: Root = new Root();
@@ -70,28 +70,26 @@ export default class Auth{
   });
 }
 
-getCurrentUser(): any{
+getCurrentUser(): any {
   return firebase.auth().currentUser;
 }
 
-getDatabase(): any{
+getDatabase(): any {
   return firebase.database();
 }
 
-signUp(email: String, password: String): void{
-  const auth = firebase.auth();
-  const promise = auth.createUserWithEmailAndPassword(email, password);
-  promise.catch(e => console.log(e.message));
-};
-
-signIn(email: String, password: String){
-  const auth = firebase.auth();
-  const promise = auth.signInWithEmailAndPassword(email, password);
-  promise.catch(e => console.log(e.message));
-};
-
-  signOut(){
-    firebase.auth().signOut();
-  };
+getDataById(id: string) {
+  let ref = firebase.database().ref('roots/' + id);
+  let data = {};
+  ref.on('value', snapshot => {
+    data = snapshot.val();
+    console.log(data);
+  });
+  // Re send query if response is undefined
+  if(data === undefined){
+    this.getDataById(id);
+  }
+  return data;
+}
 
 }

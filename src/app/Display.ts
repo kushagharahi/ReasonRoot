@@ -1,6 +1,6 @@
 import Root from './Root';
 //import Node from './Node';
-import Auth from './Auth';
+import Firebase from './Firebase';
 import Dict from './Dict';
 import Score from './Score';
 import Claim from './Claim';
@@ -11,7 +11,7 @@ export default class Display{
   settings: any = {};
   settingsVisible: boolean = false;
   root: Root = new Root();
-  auth: Auth = new Auth();
+  firebase: Firebase = new Firebase();
 
   constructor(render: any, settings: any){
     this.render = render;
@@ -52,7 +52,7 @@ export default class Display{
 
             <input value="${this.replaceAll(JSON.stringify(root), '\'', '&#39;')}"></input>
 
-            <div  onclick="${this.auth.SignIn.bind(this)}">
+            <div  onclick="${this.firebase.SignIn.bind(this)}">
                     [${this.userName} ]
             </div>
        </div>

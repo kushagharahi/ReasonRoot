@@ -78,18 +78,17 @@ getDatabase(): any {
   return firebase.database();
 }
 
-getDataById(id: string) {
+getDataById(id: string):string {
   let ref = firebase.database().ref('roots/' + id);
   let data = {};
   ref.on('value', snapshot => {
     data = snapshot.val();
-    console.log(data);
   });
   // Re send query if response is undefined
-  if(data === undefined){
+  if(data === undefined || data === {}){
     this.getDataById(id);
   }
-  return data;
+  return JSON.stringify(data);
 }
 
 }

@@ -290,10 +290,10 @@ export default class ReasonRoot {
     }
 
     addClaim(isProMain: boolean, event?: Event) {
-      let newClaim: Claim;
-      let mainClaim: Claim = this.claims[this.selectedScore.claimId];
-      newClaim = this.claim.add(this.selectedScore, isProMain, this.scores, this.claims);
-      this.firebase.addData(mainClaim, newClaim);
+      let childClaim: Claim;
+      let parentClaim: Claim = this.claims[this.selectedScore.claimId];
+      childClaim = this.claim.add(this.selectedScore, isProMain, this.scores, this.claims);
+      this.firebase.addData(this.rr, parentClaim, childClaim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

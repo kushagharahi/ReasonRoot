@@ -92,26 +92,30 @@ getDataById(id: string):string {
   }
 }
 
-addData(mainClaim: any, newClaim: any): void{
-  let mainId = mainClaim.claimId;
-  let claimId = newClaim.claimId;
+addData(mainClaim: any, parentClaim: any, childClaim: any): void{
+  let mainId = mainClaim.mainId;
+  let parentId = parentClaim.claimId;
+  let childId = childClaim.claimId;
   let ref = firebase.database().ref('roots/' + mainId + '/claims');
 
   let claim = {};
-  claim[claimId] = Object.assign({}, newClaim);
+  claim[childId] = Object.assign({}, childClaim);
 
   ref.update(claim);
 
-  this.addChilds(mainClaim, newClaim);
+  this.addChilds(mainClaim, parentClaim);
 }
 
-addChilds(mainClaim: any, newClaim: any){
-  let mainId = mainClaim.claimId;
-  let childIds = mainClaim.childIds;
-  let claimId = newClaim.claimId;
-  let ref = firebase.database().ref('roots/' + mainId + '/claims/' + mainId + '/childIds');
-  console.log(childIds)
+addChilds(mainClaim: any, parentClaim: any){
+  let mainId = mainClaim.mainId;
+  let parentId = parentClaim.claimId;
+  let childIds = parentClaim.childIds;
+  let ref = firebase.database().ref('roots/' + mainId + '/claims/' + parentId + '/childIds');
   ref.set(childIds);
 }
+
+deleteData(){
+
+};
 
 }

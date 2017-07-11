@@ -90,7 +90,17 @@ getDataById(id: string):string {
   } else {
     this.getDataById(id);
   }
+}
 
+addData(parentScore: any, data: any): void{
+  let mainId = parentScore.claimId;
+  let claimId = data.claimId;
+  let ref = firebase.database().ref('roots/' + mainId + '/claims');
+
+  let claim = {};
+  claim[claimId] = Object.assign({}, data);
+
+  ref.update(claim);
 }
 
 }

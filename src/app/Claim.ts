@@ -51,11 +51,11 @@ type WhichCopy = "original" | "local" | "suggestion";
     }
 
 
-    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>) {
-      this.settings = {};
+    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>): Claim {
       let newClaim: Claim = new Claim();
-      newClaim.isProMain = isProMain;
       let newScore: Score = new Score(newClaim)
+      this.settings = {};
+      newClaim.isProMain = isProMain;
       scores[newClaim.claimId] = newScore;
       claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
       claims[newClaim.claimId] = newClaim;
@@ -63,6 +63,7 @@ type WhichCopy = "original" | "local" | "suggestion";
 
       this.selectedScore = newScore;
       this.settings.isEditing = true;
+      return newClaim
     }
 
     remove(claim: Claim, claims: Dict<Claim>, parentScore: Score, event: Event): void {

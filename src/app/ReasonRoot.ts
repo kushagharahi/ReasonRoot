@@ -290,7 +290,13 @@ export default class ReasonRoot {
     }
 
     addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
-      this.claim.add(parentScore, isProMain, this.scores, this.claims);
+      let newClaim: Claim;
+      console.log("parentScore");
+      newClaim = this.claim.add(parentScore, isProMain, this.scores, this.claims);
+      console.log(parentScore);
+      console.log("newClaim");
+      console.log(newClaim);
+      this.firebase.addData(parentScore, newClaim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

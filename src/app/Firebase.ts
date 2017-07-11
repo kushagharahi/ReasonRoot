@@ -101,6 +101,19 @@ addData(parentScore: any, data: any): void{
   claim[claimId] = Object.assign({}, data);
 
   ref.update(claim);
+
+  this.addChilds(parentScore, data);
+}
+
+addChilds(parentScore: any, data: any){
+  let mainId = parentScore.claimId;
+  let claimId = data.claimId;
+  let ref = firebase.database().ref('roots/' + mainId + '/claims/' + mainId + '/childIds');
+
+  let claim = {};
+  claim[claimId] = Object.assign({}, claimId);
+
+  ref.update(claim);
 }
 
 }

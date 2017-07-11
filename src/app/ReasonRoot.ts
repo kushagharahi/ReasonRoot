@@ -208,8 +208,8 @@ export default class ReasonRoot {
 
                       <div class="claimMenuHider">
                           <div class="claimMenuSection">
-                              <div class="addClaim pro" onclick="${this.addClaim.bind(this, score, true)}">add</div>
-                              <div class="addClaim con" onclick="${this.addClaim.bind(this, score, false)}">add</div>
+                              <div class="addClaim pro" onclick="${this.addClaim.bind(this, true)}">add</div>
+                              <div class="addClaim con" onclick="${this.addClaim.bind(this, false)}">add</div>
                               <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
                           </div>
                       </div>
@@ -289,14 +289,11 @@ export default class ReasonRoot {
     return Object.keys(obj).length === 0;
     }
 
-    addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
+    addClaim(isProMain: boolean, event?: Event) {
       let newClaim: Claim;
-      console.log("parentScore");
-      newClaim = this.claim.add(parentScore, isProMain, this.scores, this.claims);
-      console.log(parentScore);
-      console.log("newClaim");
-      console.log(newClaim);
-      this.firebase.addData(parentScore, newClaim);
+      let mainClaim: Claim = this.claims[this.selectedScore.claimId];
+      newClaim = this.claim.add(this.selectedScore, isProMain, this.scores, this.claims);
+      this.firebase.addData(mainClaim, newClaim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

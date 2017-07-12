@@ -114,6 +114,14 @@ export default class Firebase{
     ref.set(childIds);
   }
 
+  updateData(mainClaim: any, childClaim: any){
+    let mainId = mainClaim.mainId;
+    let childId = childClaim.claimId;
+
+    let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
+    ref.update(childClaim);
+  };
+
   deleteData(mainClaim: any, childClaim: any){
     let mainId = mainClaim.mainId;
     let childId = childClaim.claimId;

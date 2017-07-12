@@ -300,6 +300,7 @@ export default class ReasonRoot {
 
     updateClaim(claim: Claim, event: Event) {
       this.claim.update(claim, event);
+      this.firebase.updateData(this.rr, claim);
       //update the UI
       this.calculate();
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

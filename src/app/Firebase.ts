@@ -50,72 +50,95 @@ export default class Firebase{
     var that = this;
     // onAuthStateChanged listen when a user do login or logout
     // and onAuthStateChanged returns currentUser
-  firebase.auth().onAuthStateChanged(function (currentUser) {
-      // Check if the user is loged
-    if (currentUser) {
-      console.log(currentUser);
-      //Query user permissions
-      let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
-      that.listenerRefs.push(permissionRef);
+    firebase.auth().onAuthStateChanged(function (currentUser) {
+        // Check if the user is loged
+      if (currentUser) {
+        console.log(currentUser);
+        //Query user permissions
+        let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
+        that.listenerRefs.push(permissionRef);
 
-      //To do the can write below is on the wrong "this"
-      permissionRef.on('value', function (snapshot) {
-        canWrite = snapshot.val();
-      })
-    } else {
-      // If user is not loged set write permissions false.
-      console.log("User not logged");
-      canWrite = false;
-    }
-  });
-}
-
-getCurrentUser(): any {
-  return firebase.auth().currentUser;
-}
-
-getDatabase(): any {
-  return firebase.database();
-}
-
-getDataById(id: string):string {
-  let ref = firebase.database().ref('roots/' + id);
-  let data = {};
-  ref.on('value', snapshot => {
-    data = snapshot.val();
-  });
-  // Re send query if response is undefined
-  if(JSON.stringify(data) != '{}'){
-    return JSON.stringify(data);
-  } else {
-    this.getDataById(id);
+        //To do the can write below is on the wrong "this"
+        permissionRef.on('value', function (snapshot) {
+          canWrite = snapshot.val();
+        })
+      } else {
+        // If user is not loged set write permissions false.
+        console.log("User not logged");
+        canWrite = false;
+      }
+    });
   }
-}
 
-addData(mainClaim: any, parentClaim: any, childClaim: any): void{
-  let mainId = mainClaim.mainId;
-  let parentId = parentClaim.claimId;
-  let childId = childClaim.claimId;
-  let ref = firebase.database().ref('roots/' + mainId + '/claims');
+  getCurrentUser(): any {
+    return firebase.auth().currentUser;
+  }
 
-  let claim = {};
-  claim[childId] = Object.assign({}, childClaim);
+  getDatabase(): any {
+    return firebase.database();
+  }
 
-  ref.update(claim);
+  getDataById(id: string):string {
+    let ref = firebase.database().ref('roots/' + id);
+    let data = {};
+    ref.on('value', snapshot => {
+      data = snapshot.val();
+    });
+    // Re send query if response is undefined
+    if(JSON.stringify(data) != '{}'){
+      return JSON.stringify(data);
+    } else {
+      this.getDataById(id);
+    }
+  }
 
-  this.addChilds(mainClaim, parentClaim);
-}
+  addData(mainClaim: any, parentClaim: any, childClaim: any): void{
+    let mainId = mainClaim.mainId;
+    let parentId = parentClaim.claimId;
+    let childId = childClaim.claimId;
+    let ref = firebase.database().ref('roots/' + mainId + '/claims');
 
-addChilds(mainClaim: any, parentClaim: any){
-  let mainId = mainClaim.mainId;
-  let parentId = parentClaim.claimId;
-  let childIds = parentClaim.childIds;
-  let ref = firebase.database().ref('roots/' + mainId + '/claims/' + parentId + '/childIds');
-  ref.set(childIds);
-}
+    let claim = {};
+    claim[childId] = Object.assign({}, childClaim);
 
-deleteData(){
+    ref.update(claim);
 
-};
+    this.updateChilds(mainClaim, parentClaim);
+  }
+
+  updateChilds(mainClaim: any, parentClaim: any){
+    let mainId = mainClaim.mainId;
+    let parentId = parentClaim.claimId;
+    let childIds = parentClaim.childIds;
+    let ref = firebase.database().ref('roots/' + mainId + '/claims/' + parentId + '/childIds');
+    ref.set(childIds);
+  }
+
+  deleteData(mainClaim: any, childClaim: any){
+    let mainId = mainClaim.mainId;
+    let childId = childClaim.claimId;
+    let childIds = [];
+    childIds = childClaim.childIds;
+    console.log(childIds);
+
+    // Check if node has child
+    if(childIds != undefined){
+      for( let childId of childIds){
+        console.log(childId);
+        let childClaim = {};
+        let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
+        ref.on('value', snapshot => {
+          childClaim = snapshot.val();
+          console.log(childClaim);
+          this.deleteData(mainClaim, childClaim);
+        });
+      }
+    }
+
+    let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
+    ref.remove();
+
+    //this.updateChilds(mainClaim, childClaim);
+  };
 
 }

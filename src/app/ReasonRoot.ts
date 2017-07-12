@@ -54,7 +54,6 @@ export default class ReasonRoot {
 
     initRr() {
         this.claims = this.rr.claims;
-        console.log(this.claims);
         if (this.rr.settings) this.settings = this.rr.settings;
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
@@ -109,8 +108,6 @@ export default class ReasonRoot {
       claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
       //Check for write permissions
-      console.log("currentUser");
-      console.log(this.firebase.getCurrentUser());
       if (this.firebase.getCurrentUser()) {
           let permissionRef = this.firebase.db.ref('permissions/user/' + this.firebase.getCurrentUser().uid + "/" + this.rr.mainId);
           this.listenerRefs.push(permissionRef);
@@ -311,6 +308,7 @@ export default class ReasonRoot {
 
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
+      this.firebase.deleteData(this.rr, claim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

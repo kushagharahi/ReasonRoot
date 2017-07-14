@@ -20,7 +20,7 @@ export default class ReasonRoot {
     rrRef: any;//The current firebase reference to the ReasonRoot object
     scores: Dict<Score>;
     claims: Dict<Claim>;
-    settleIt: SettleIt;node
+    settleIt: SettleIt;
     mainScore: Score;
     render: any;
     settings: any = {};
@@ -327,6 +327,7 @@ export default class ReasonRoot {
     };
 
     editClaim(score: Score, event?: Event): void {
+      this.firebase.getReasonRootFromDB();
       this.settings.isEditing = !this.settings.isEditing;
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       if (event) event.stopPropagation();

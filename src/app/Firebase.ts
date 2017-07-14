@@ -8,6 +8,7 @@ export default class Firebase{
   listenerRefs: any[] = new Array<any>();
   db: any;
   rr: Root = new Root();
+  reasonRoots = [];
 
   SignIn() {
       //this.firebaseInit(this.rr, true);
@@ -53,7 +54,7 @@ export default class Firebase{
     firebase.auth().onAuthStateChanged(function (currentUser) {
         // Check if the user is loged
       if (currentUser) {
-        console.log(currentUser);
+        //console.log(currentUser);
         //Query user permissions
         let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
         that.listenerRefs.push(permissionRef);
@@ -62,6 +63,8 @@ export default class Firebase{
         permissionRef.on('value', function (snapshot) {
           canWrite = snapshot.val();
         })
+
+        that.getReasonRootFromDB();
       } else {
         // If user is not loged set write permissions false.
         console.log("User not logged");
@@ -130,14 +133,12 @@ export default class Firebase{
     console.log(childIds);
 
     // Check if node has child
-    if(childIds != undefined){
+    if(childIds !== undefined){
       for( let childId of childIds){
-        console.log(childId);
         let childClaim = {};
         let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
         ref.on('value', snapshot => {
           childClaim = snapshot.val();
-          console.log(childClaim);
           this.deleteData(mainClaim, childClaim);
         });
       }
@@ -147,6 +148,20 @@ export default class Firebase{
     ref.remove();
 
     //this.updateChilds(mainClaim, childClaim);
+  };
+
+  getReasonRootFromDB(): void{
+    let currentUser = firebase.auth().currentUser;
+    let reasonRoots;
+    let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+
+    ref.on('value', snapshot => {
+      reasonRoots = snapshot.val();
+      for(let reasonRoot in reasonRoots){
+        this.reasonRoots.push(reasonRoot);
+      }
+    })
+    console.log(this.reasonRoots);
   };
 
 }

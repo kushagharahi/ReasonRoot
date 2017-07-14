@@ -85,6 +85,7 @@ export default class ReasonRoot {
                 this.rr = JSON.parse(rr);
             }
         } else {
+          // Original and suggestion both mean remote
           // This is the problem
             this.firebase.firebaseInit(this.rr, this.canWrite);
             if (whichCopy === "original") {
@@ -94,7 +95,7 @@ export default class ReasonRoot {
                 //to do Find the ID of my suggestion
                 this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
-            //this.attachDB();
+            this.attachDB();
         }
 
         this.initRr();
@@ -103,6 +104,10 @@ export default class ReasonRoot {
 
     attachDB() {
       let claimsRef = this.rrRef.child('claims');
+      console.log("claimsRef");
+      claimsRef.on('value', function (snapshot) {
+          console.log(snapshot.val());
+      });
       this.listenerRefs.push(claimsRef);
       claimsRef.once('value', this.claimsFromDB.bind(this));
       claimsRef.on('child_changed', this.claimFromDB.bind(this));
@@ -121,7 +126,13 @@ export default class ReasonRoot {
     }
 
     claimsFromDB(data: any) {
+        // Here claims are pulled from firebase.
+        // value is the reason root object
+        console.log("data");
+        console.log(data);
         let value = data.val();
+        console.log("value");
+        console.log(value);
         if (value) {
             this.rr.claims = value;
             this.claims = value;

@@ -26,11 +26,9 @@ window.onload = async function () {
   });
 
 function uptade(){
-  console.log("update");
   let claimElements = document.getElementsByTagName('claim');
 
   for (let claimElement of claimElements) {
-    console.log(claimElement);
     let rr = new ReasonRoot(claimElement);
     mainClaimsDict[rr.mainId] = rr;
   }

@@ -1,4 +1,4 @@
-//On the
+    //On the
 
 declare const require: any;
 
@@ -44,8 +44,10 @@ export default class ReasonRoot {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
+        //console.log(this.rr);
         this.firebase.firebaseInit(this.rr, this.canWrite);
         this.changeWhichCopy("original");
+
         //this.attachDB();
         //this.initRr();
         //this.update();
@@ -59,7 +61,7 @@ export default class ReasonRoot {
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.display = new Display(this.render, this.settings);
-        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
+        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
         this.setDisplayState(this.selectedScore);
         this.calculate();
     }
@@ -96,6 +98,13 @@ export default class ReasonRoot {
                 this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
             this.attachDB();
+            // let reasonRoots = this.firebase.getReasonRootFromDB();
+            // console.log(reasonRoots);
+            // for( let reasonRoot in reasonRoots) {
+            //   console.log("reasonRoot");
+            //   console.log(reasonRoot);
+              //this.appendReasonRoot(reasonRoot);
+            // };
         }
 
         this.initRr();
@@ -104,10 +113,6 @@ export default class ReasonRoot {
 
     attachDB() {
       let claimsRef = this.rrRef.child('claims');
-      console.log("claimsRef");
-      claimsRef.on('value', function (snapshot) {
-          console.log(snapshot.val());
-      });
       this.listenerRefs.push(claimsRef);
       claimsRef.once('value', this.claimsFromDB.bind(this));
       claimsRef.on('child_changed', this.claimFromDB.bind(this));
@@ -128,11 +133,7 @@ export default class ReasonRoot {
     claimsFromDB(data: any) {
         // Here claims are pulled from firebase.
         // value is the reason root object
-        console.log("data");
-        console.log(data);
         let value = data.val();
-        console.log("value");
-        console.log(value);
         if (value) {
             this.rr.claims = value;
             this.claims = value;
@@ -287,15 +288,21 @@ export default class ReasonRoot {
         mainId: mainId
       });
 
-      let data = this.firebase.getDataById(mainId);
-      var element = document.createElement("claim");
-      element.setAttribute("root", data);
-      document.body.appendChild(element);
+      this.appendReasonRoot(mainId)
     };
 
-    isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-    }
+    appendReasonRoot(mainId){
+      let element = document.createElement("claim");
+      this.firebase.getDataById2(mainId)
+        .then(data => {
+          element.setAttribute("root", data);
+        })
+       .then(() => {
+         document.body.appendChild(element);
+       }
+     );
+    };
+
 
     addClaim(isProMain: boolean, event?: Event) {
       let childClaim: Claim;
@@ -327,7 +334,7 @@ export default class ReasonRoot {
     };
 
     editClaim(score: Score, event?: Event): void {
-      this.firebase.getReasonRootFromDB();
+
       this.settings.isEditing = !this.settings.isEditing;
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       if (event) event.stopPropagation();

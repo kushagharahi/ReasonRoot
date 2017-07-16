@@ -8,7 +8,6 @@ export default class Firebase{
   listenerRefs: any[] = new Array<any>();
   db: any;
   rr: Root = new Root();
-  reasonRoots = [];
 
   SignIn() {
       //this.firebaseInit(this.rr, true);
@@ -63,8 +62,7 @@ export default class Firebase{
         permissionRef.on('value', function (snapshot) {
           canWrite = snapshot.val();
         })
-
-        that.getReasonRootFromDB();
+        // that.getRootsFromUser();
       } else {
         // If user is not loged set write permissions false.
         console.log("User not logged");
@@ -94,6 +92,34 @@ export default class Firebase{
       this.getDataById(id);
     }
   }
+
+  getDataById2(id: string): Promise<string>{
+    let ref = firebase.database().ref('roots/' + id);
+    return ref.once('value')
+      .then(snapshot => {
+        console.log(snapshot.val());
+        return JSON.stringify(snapshot.val());
+      });
+    // Re send query if response is undefined
+  }
+
+  getRootsFromUser(): any{
+    let currentUser = firebase.auth().currentUser;
+    let reasonRoots;
+    let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+
+    ref.once('value', snapshot => {
+      reasonRoots = snapshot.val();
+      // this.reasonRoots = reasonRoots;
+    });
+
+    if(reasonRoots !== undefined){
+      return reasonRoots;
+    } else {
+      this.getRootsFromUser();
+    }
+
+  };
 
   addData(mainClaim: any, parentClaim: any, childClaim: any): void{
     let mainId = mainClaim.mainId;
@@ -130,7 +156,6 @@ export default class Firebase{
     let childId = childClaim.claimId;
     let childIds = [];
     childIds = childClaim.childIds;
-    console.log(childIds);
 
     // Check if node has child
     if(childIds !== undefined){
@@ -150,18 +175,11 @@ export default class Firebase{
     //this.updateChilds(mainClaim, childClaim);
   };
 
-  getReasonRootFromDB(): void{
-    let currentUser = firebase.auth().currentUser;
-    let reasonRoots;
-    let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+  // getReasonRootFromDB(){
+  //   console.log(this.reasonRoots);
+  //   return this.reasonRoots;
+  // };
 
-    ref.on('value', snapshot => {
-      reasonRoots = snapshot.val();
-      for(let reasonRoot in reasonRoots){
-        this.reasonRoots.push(reasonRoot);
-      }
-    })
-    console.log(this.reasonRoots);
-  };
+
 
 }

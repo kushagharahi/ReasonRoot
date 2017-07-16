@@ -97,7 +97,7 @@ export default class Firebase{
     let ref = firebase.database().ref('roots/' + id);
     return ref.once('value')
       .then(snapshot => {
-        console.log(snapshot.val());
+        //console.log(snapshot.val());
         return JSON.stringify(snapshot.val());
       });
     // Re send query if response is undefined

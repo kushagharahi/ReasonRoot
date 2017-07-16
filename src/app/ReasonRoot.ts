@@ -49,7 +49,7 @@ export default class ReasonRoot {
         this.changeWhichCopy("original");
 
         //this.attachDB();
-        //this.initRr();
+        this.initRr();
         //this.update();
       }
     }
@@ -61,6 +61,7 @@ export default class ReasonRoot {
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.display = new Display(this.render, this.settings);
+        console.log(this.scores);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
         this.setDisplayState(this.selectedScore);
         this.calculate();
@@ -261,13 +262,14 @@ export default class ReasonRoot {
 
 
     calculate(): void {
+      console.log(this.scores);
       this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
     };
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
     // to their own class file, and then they only should be called from other classes like this.
 
-    createReasonRoot(content, citation) {
+    createReasonRoot() {
       let database = this.firebase.getDatabase();
       let mainId = this.claim.newId();
       let currentUserId = this.firebase.getCurrentUser().uid;
@@ -277,8 +279,6 @@ export default class ReasonRoot {
       database.ref('permissions/user/' + currentUserId).update(permission);
 
       let mainClaim = new Claim(mainId, true);
-      mainClaim.citation = citation;
-      mainClaim.content = content;
 
       let claim = {};
       claim[mainId] = Object.assign({}, mainClaim);

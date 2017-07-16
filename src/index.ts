@@ -13,15 +13,11 @@ let mainClaimsDict = {}
 
 window.onload = async function () {
 
-  const txtContent = <HTMLInputElement>document.getElementById('txtContent');
-  const txtCitation = <HTMLInputElement>document.getElementById('txtCitation');
   const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
 
   btnCreateReasonRoot.addEventListener('click', e => {
     let rr = new ReasonRoot();
-    const content = txtContent.value;
-    const citation = txtCitation.value;
-    rr.createReasonRoot(content, citation);
+    rr.createReasonRoot();
     uptade();
   });
 

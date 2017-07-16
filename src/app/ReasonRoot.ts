@@ -270,25 +270,8 @@ export default class ReasonRoot {
     // to their own class file, and then they only should be called from other classes like this.
 
     createReasonRoot() {
-      let database = this.firebase.getDatabase();
-      let mainId = this.claim.newId();
-      let currentUserId = this.firebase.getCurrentUser().uid;
-
-      let permission = {};
-      permission[mainId] = true;
-      database.ref('permissions/user/' + currentUserId).update(permission);
-
-      let mainClaim = new Claim(mainId, true);
-
-      let claim = {};
-      claim[mainId] = Object.assign({}, mainClaim);
-
-      database.ref('roots/' + mainId).set({
-        claims: claim,
-        mainId: mainId
-      });
-
-      this.appendReasonRoot(mainId)
+      let claimId = this.firebase.createReasonRoot();
+      this.display.appendReasonRoot(claimId);
     };
 
     appendReasonRoot(mainId){

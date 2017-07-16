@@ -138,4 +138,16 @@ export default class Display{
         this.update(node);
     }
 
+    appendReasonRoot(mainId){
+      let element = document.createElement("claim");
+      this.firebase.getDataById2(mainId)
+        .then(data => {
+          element.setAttribute("root", data);
+        })
+       .then(() => {
+         document.body.appendChild(element);
+       }
+     );
+    };
+
 }

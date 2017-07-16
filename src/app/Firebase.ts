@@ -3,6 +3,7 @@ declare const require: any;
 const firebase = require('firebase');
 
 import Root from './Root';
+import Claim from './Claim';
 
 export default class Firebase{
   listenerRefs: any[] = new Array<any>();
@@ -180,6 +181,25 @@ export default class Firebase{
   //   return this.reasonRoots;
   // };
 
+  createReasonRoot(): String {
+    let database = firebase.database();
+    let currentUserId = firebase.auth().currentUser.uid;
+    let newClaim = new Claim();
+    let claimId = newClaim.claimId;
 
+    let permission = {};
+    permission[claimId] = newClaim.isProMain;
+    database.ref('permissions/user/' + currentUserId).update(permission);
+
+    let claim = {};
+    claim[claimId] = Object.assign({}, newClaim);
+
+    database.ref('roots/' + claimId).set({
+      claims: claim,
+      mainId: claimId
+    });
+
+    return claimId;
+  };
 
 }

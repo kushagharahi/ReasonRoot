@@ -1,4 +1,4 @@
-    //On the
+      //On the
 
 declare const require: any;
 
@@ -44,8 +44,8 @@ export default class ReasonRoot {
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        //console.log(this.rr);
-        this.firebase.firebaseInit(this.rr, this.canWrite);
+        this.firebase.firebaseInit();
+        this.firebase.onAuthStateChanged(this.rr, this.canWrite);
         this.changeWhichCopy("original");
 
         //this.attachDB();
@@ -57,11 +57,11 @@ export default class ReasonRoot {
     initRr() {
         this.claims = this.rr.claims;
         if (this.rr.settings) this.settings = this.rr.settings;
+        this.display = new Display(this.render, this.settings);
+        console.log(this.display);
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-        this.display = new Display(this.render, this.settings);
-        console.log(this.scores);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
         this.setDisplayState(this.selectedScore);
         this.calculate();
@@ -90,7 +90,7 @@ export default class ReasonRoot {
         } else {
           // Original and suggestion both mean remote
           // This is the problem
-            this.firebase.firebaseInit(this.rr, this.canWrite);
+            this.firebase.firebaseInit();
             if (whichCopy === "original") {
                 this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
@@ -98,6 +98,7 @@ export default class ReasonRoot {
                 //to do Find the ID of my suggestion
                 this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
+            console.log(this.display);
             this.attachDB();
             // let reasonRoots = this.firebase.getReasonRootFromDB();
             // console.log(reasonRoots);
@@ -107,7 +108,6 @@ export default class ReasonRoot {
               //this.appendReasonRoot(reasonRoot);
             // };
         }
-
         this.initRr();
         this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     }
@@ -262,7 +262,6 @@ export default class ReasonRoot {
 
 
     calculate(): void {
-      console.log(this.scores);
       this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
     };
 
@@ -271,12 +270,13 @@ export default class ReasonRoot {
 
     createReasonRoot() {
       let claimId = this.firebase.createReasonRoot();
-      this.display.appendReasonRoot(claimId);
+      console.log(this.display);
+      this.appendReasonRoot(claimId);
     };
 
     appendReasonRoot(mainId){
       let element = document.createElement("claim");
-      this.firebase.getDataById2(mainId)
+      this.firebase.getDataById(mainId)
         .then(data => {
           element.setAttribute("root", data);
         })
@@ -317,7 +317,7 @@ export default class ReasonRoot {
     };
 
     editClaim(score: Score, event?: Event): void {
-
+      console.log(this.firebase.getRootsFromUser());
       this.settings.isEditing = !this.settings.isEditing;
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       if (event) event.stopPropagation();

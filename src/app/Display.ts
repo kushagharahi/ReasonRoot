@@ -140,7 +140,7 @@ export default class Display{
 
     appendReasonRoot(mainId){
       let element = document.createElement("claim");
-      this.firebase.getDataById2(mainId)
+      this.firebase.getDataById(mainId)
         .then(data => {
           element.setAttribute("root", data);
         })

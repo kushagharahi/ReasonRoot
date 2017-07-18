@@ -4,6 +4,7 @@ const firebase = require('firebase');
 
 import Root from './Root';
 import Claim from './Claim';
+import ReasonRoot from './ReasonRoot';
 
 export default class Firebase{
   listenerRefs: any[] = new Array<any>();
@@ -63,7 +64,15 @@ export default class Firebase{
         permissionRef.on('value', function (snapshot) {
           canWrite = snapshot.val();
         })
-        // that.getRootsFromUser();
+        let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+        ref.once('value')
+          .then(snapshot => {
+            let ReasonRoots = snapshot.val();
+            for(let ReasonRoot in ReasonRoots){
+              console.log(ReasonRoot);
+              that.appendReasonRoot(ReasonRoot);
+            }
+        });
       } else {
         // If user is not loged set write permissions false.
         console.log("User not logged");
@@ -71,6 +80,18 @@ export default class Firebase{
       }
     });
   }
+
+  appendReasonRoot(mainId){
+    let element = document.createElement("claim");
+    this.getDataById(mainId)
+      .then(data => {
+        element.setAttribute("root", data);
+      })
+     .then(() => {
+       document.body.appendChild(element);
+     }
+   );
+  };
 
   getCurrentUser(): any {
     return firebase.auth().currentUser;
@@ -80,21 +101,7 @@ export default class Firebase{
     return firebase.database();
   }
 
-  getDataById(id: string):string {
-    let ref = firebase.database().ref('roots/' + id);
-    let data = {};
-    ref.on('value', snapshot => {
-      data = snapshot.val();
-    });
-    // Re send query if response is undefined
-    if(JSON.stringify(data) != '{}'){
-      return JSON.stringify(data);
-    } else {
-      this.getDataById(id);
-    }
-  }
-
-  getDataById2(id: string): Promise<string>{
+  getDataById(id: string): Promise<string>{
     let ref = firebase.database().ref('roots/' + id);
     return ref.once('value')
       .then(snapshot => {

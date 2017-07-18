@@ -271,12 +271,12 @@ export default class ReasonRoot {
 
     createReasonRoot() {
       let claimId = this.firebase.createReasonRoot();
-      this.display.appendReasonRoot(claimId);
+      this.appendReasonRoot(claimId);
     };
 
     appendReasonRoot(mainId){
       let element = document.createElement("claim");
-      this.firebase.getDataById2(mainId)
+      this.firebase.getDataById(mainId)
         .then(data => {
           element.setAttribute("root", data);
         })

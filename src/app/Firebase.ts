@@ -10,11 +10,13 @@ export default class Firebase{
   listenerRefs: any[] = new Array<any>();
   db: any;
   rr: Root = new Root();
+  userReasonRoots: any;
 
   SignIn() {
       //this.firebaseInit(this.rr, true);
       var provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider).then((function (result) {
+      firebase.auth().signInWithPopup(provider)
+      .then((function (result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
           var token = result.credential.accessToken;
           // The signed-in user info.
@@ -22,7 +24,16 @@ export default class Firebase{
           this.userName = firebase.auth().currentUser ? firebase.auth().currentUser.email + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
           console.log(result);
           // ...
-      }).bind(this)).catch(function (error) {
+      }).bind(this))
+      .then(() => {
+        let currentUser = firebase.auth().currentUser;
+        let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+        this.userReasonRoots = ref.once('value')
+          .then(snapshot => {
+            return snapshot.val();
+          });
+        console.log(this.userReasonRoots);
+      }).catch(function (error) {
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -34,7 +45,7 @@ export default class Firebase{
       });
   }
 
-  firebaseInit(rr: Root, canWrite: Boolean) {
+  firebaseInit() {
     if (!firebase.apps.length) {
         firebase.initializeApp({
           apiKey: "AIzaSyCMwI2cAkenTaxBAkVjUUlw0hwVs7jj7Bk",
@@ -52,18 +63,42 @@ export default class Firebase{
     var that = this;
     // onAuthStateChanged listen when a user do login or logout
     // and onAuthStateChanged returns currentUser
+    // firebase.auth().onAuthStateChanged(function (currentUser) {
+    //     // Check if the user is loged
+    //   if (currentUser) {
+    //     //console.log(currentUser);
+    //     //Query user permissions
+    //     let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
+    //     that.listenerRefs.push(permissionRef);
+    //
+    //     //To do the can write below is on the wrong "this"
+    //     permissionRef.on('value', function (snapshot) {
+    //       canWrite = snapshot.val();
+    //     })
+    //     // that.getRootsFromUser();
+    //   } else {
+    //     // If user is not loged set write permissions false.
+    //     console.log("User not logged");
+    //     canWrite = false;
+    //   }
+    // });
+  }
+
+  onAuthStateChanged(rr: Root, canWrite: Boolean){
     firebase.auth().onAuthStateChanged(function (currentUser) {
         // Check if the user is loged
       if (currentUser) {
         //console.log(currentUser);
         //Query user permissions
-        let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
-        that.listenerRefs.push(permissionRef);
-
+        let permissionRef = firebase.database().ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
+        let listenerRefs: any[] = new Array<any>();
+        listenerRefs.push(permissionRef);
+        this.listenerRefs = listenerRefs;
         //To do the can write below is on the wrong "this"
         permissionRef.on('value', function (snapshot) {
           canWrite = snapshot.val();
         })
+<<<<<<< HEAD
         let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
         ref.once('value')
           .then(snapshot => {
@@ -73,6 +108,8 @@ export default class Firebase{
               that.appendReasonRoot(ReasonRoot);
             }
         });
+=======
+>>>>>>> 6d186bdc931defb8020c7650bb5c8dc47cd76d40
       } else {
         // If user is not loged set write permissions false.
         console.log("User not logged");
@@ -111,22 +148,9 @@ export default class Firebase{
     // Re send query if response is undefined
   }
 
-  getRootsFromUser(): any{
-    let currentUser = firebase.auth().currentUser;
-    let reasonRoots;
-    let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
-
-    ref.once('value', snapshot => {
-      reasonRoots = snapshot.val();
-      // this.reasonRoots = reasonRoots;
-    });
-
-    if(reasonRoots !== undefined){
-      return reasonRoots;
-    } else {
-      this.getRootsFromUser();
-    }
-
+  getRootsFromUser(): Promise<Array<Object>>{
+    console.log(this.userReasonRoots);
+    return this.userReasonRoots;
   };
 
   addData(mainClaim: any, parentClaim: any, childClaim: any): void{
@@ -191,6 +215,7 @@ export default class Firebase{
   createReasonRoot(): String {
     let database = firebase.database();
     let currentUserId = firebase.auth().currentUser.uid;
+    console.log(currentUserId);
     let newClaim = new Claim();
     let claimId = newClaim.claimId;
 

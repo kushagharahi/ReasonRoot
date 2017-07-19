@@ -2,6 +2,7 @@ declare var require: any;
 
 //Import JS
 import ReasonRoot from './app/ReasonRoot';
+import Firebase from './app/Firebase';
 
 //Import SCSS
 require ('../src/assets/styles/ReasonRoot.scss');
@@ -12,7 +13,9 @@ require ('../src/assets/styles/ReasonRoot.scss');
 let mainClaimsDict = {}
 
 window.onload = async function () {
-
+  let firebase = new Firebase();
+  firebase.firebaseInit();
+//  console.log(firebase.getRootsFromUser());
   const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
 
   btnCreateReasonRoot.addEventListener('click', e => {

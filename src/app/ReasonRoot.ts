@@ -47,7 +47,6 @@ export default class ReasonRoot {
         //console.log(this.rr);
         //this.firebase.firebaseInit(this.rr, this.canWrite);
         this.firebase = firebase;
-        console.log(this.firebase);
         this.firebase.onAuthStateChanged(this.rr, this.canWrite);
         this.changeWhichCopy("original");
 
@@ -64,7 +63,6 @@ export default class ReasonRoot {
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.display = new Display(this.render, this.settings);
-        console.log(this.scores);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
         this.setDisplayState(this.selectedScore);
         this.calculate();
@@ -265,7 +263,6 @@ export default class ReasonRoot {
 
 
     calculate(): void {
-      console.log(this.scores);
       this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
     };
 
@@ -273,7 +270,6 @@ export default class ReasonRoot {
     // to their own class file, and then they only should be called from other classes like this.
 
     createReasonRoot() {
-      console.log(this.firebase);
       let claimId = this.firebase.createReasonRoot();
       this.appendReasonRoot(claimId);
     };

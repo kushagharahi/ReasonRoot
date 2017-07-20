@@ -15,12 +15,9 @@ let mainClaimsDict = {}
 window.onload = async function () {
 
   const firebase = new Firebase();
-  console.log(firebase);
   firebase.firebaseInit();
-  console.log(firebase);
 
   function createReasonRoot() {
-    console.log(firebase);
     firebase.createReasonRoot();
     //this.appendReasonRoot(claimId);
   };

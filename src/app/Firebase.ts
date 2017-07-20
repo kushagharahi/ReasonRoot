@@ -94,8 +94,13 @@ export default class Firebase{
       if (currentUser) {
         //console.log(currentUser);
         //Query user permissions
-        let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId)
+        let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId);
+        // permissionRef.on('value')
+        //   .then(snapshot => {
+        //     console.log(snapshot);
+        //   });
         that.listenerRefs.push(permissionRef);
+        console.log(that.listenerRefs);
 
         //To do the can write below is on the wrong "this"
         permissionRef.on('value', function (snapshot) {

@@ -207,10 +207,9 @@ export default class Firebase{
           this.deleteData(mainClaim, parentId, childClaim);
         });
       }
-    } else {
-      this.updateChilds(mainClaim, parentClaim);
     }
-
+      this.updateChilds(mainClaim, parentClaim);
+    
 };
 
 updateChilds(mainClaim: any, parentClaim: any){

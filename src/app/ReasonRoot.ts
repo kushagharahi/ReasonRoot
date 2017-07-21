@@ -309,8 +309,9 @@ export default class ReasonRoot {
     };
 
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
+      let parentClaim: Claim = this.claims[parentScore.claimId];
       this.claim.remove(claim, this.claims, parentScore, event);
-      this.firebase.deleteData(this.rr, claim);
+      this.firebase.deleteData(this.rr, parentClaim, claim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));

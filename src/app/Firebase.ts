@@ -173,14 +173,6 @@ export default class Firebase{
     this.updateChilds(mainClaim, parentClaim);
   }
 
-  updateChilds(mainClaim: any, parentClaim: any){
-    let mainId = mainClaim.mainId;
-    let parentId = parentClaim.claimId;
-    let childIds = parentClaim.childIds;
-    let ref = firebase.database().ref('roots/' + mainId + '/claims/' + parentId + '/childIds');
-    ref.set(childIds);
-  }
-
   updateData(mainClaim: any, childClaim: any){
     let mainId = mainClaim.mainId;
     let childId = childClaim.claimId;
@@ -189,29 +181,48 @@ export default class Firebase{
     ref.update(childClaim);
   };
 
-  deleteData(mainClaim: any, childClaim: any){
+  deleteData(mainClaim: any, parentClaim: any, childClaim: any){
     let mainId = mainClaim.mainId;
+    console.log(parentClaim);
+    let parentId = parentClaim.claimId;
+    console.log(parentId);
     let childId = childClaim.claimId;
     let childIds = [];
     childIds = childClaim.childIds;
+
+    let route = 'roots/' + mainId + '/claims/' + childId;
+    console.log(route);
+    let ref = firebase.database().ref(route);
+    ref.remove();
 
     // Check if node has child
     if(childIds !== undefined){
       for( let childId of childIds){
         let childClaim = {};
-        let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
+        let route = 'roots/' + mainId + '/claims/' + childId;
+        console.log(route);
+        let ref = firebase.database().ref(route);
         ref.on('value', snapshot => {
           childClaim = snapshot.val();
-          this.deleteData(mainClaim, childClaim);
+          this.deleteData(mainClaim, parentId, childClaim);
         });
       }
+    } else {
+      this.updateChilds(mainClaim, parentClaim);
     }
 
-    let ref = firebase.database().ref('roots/' + mainId + '/claims/' + childId);
-    ref.remove();
+};
 
-    //this.updateChilds(mainClaim, childClaim);
-  };
+updateChilds(mainClaim: any, parentClaim: any){
+  let mainId = mainClaim.mainId;
+  let parentId = parentClaim.claimId;
+  let childIds = parentClaim.childIds;
+  let route = 'roots/' + mainId + '/claims/' + parentId + '/childIds';
+  console.log(route);
+  let ref = firebase.database().ref(route);
+  ref.set(childIds);
+}
+
 
   // getReasonRootFromDB(){
   //   console.log(this.reasonRoots);

@@ -209,7 +209,6 @@ export default class Firebase{
       }
     }
       this.updateChilds(mainClaim, parentClaim);
-    
 };
 
 updateChilds(mainClaim: any, parentClaim: any){

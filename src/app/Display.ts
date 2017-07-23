@@ -19,11 +19,11 @@ export default class Display{
   }
 
   update(node: any): void {
-    let root = this.root;
+    //let root = this.root;
 
     // if (!this.settings.noAutoSave)
     //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
-
+    console.log(this.render);
     this.render`
     <div class="${'rr' +
         (this.settings.hideScore ? ' hideScore' : '') +
@@ -50,7 +50,7 @@ export default class Display{
             <input type="checkbox" id="showCompetition" bind="showCompetition" value="showCompetition" onclick="${this.updateSettings.bind(this, this.settings, node)}">
             <label for="showCompetition">Show Competition</label>
 
-            <input value="${this.replaceAll(JSON.stringify(root), '\'', '&#39;')}"></input>
+            <input value="${this.replaceAll(JSON.stringify(this.root), '\'', '&#39;')}"></input>
 
             <div  onclick="${this.firebase.SignIn.bind(this)}">
                     [${this.userName} ]
@@ -61,7 +61,7 @@ export default class Display{
             ⚙
         </div>
     </div>`;
-
+    console.log(this.render);
   }
 
   replaceAll(target: string, search: string, replacement: string): string {

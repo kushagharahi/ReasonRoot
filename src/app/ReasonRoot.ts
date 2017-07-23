@@ -41,6 +41,8 @@ export default class ReasonRoot {
 
     constructor(firebase: Firebase, claimElement?: Element) {
       if(claimElement){
+        //this.render variable is a pointer to the Claim HTML tag.
+        console.log(claimElement);
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
@@ -272,6 +274,7 @@ export default class ReasonRoot {
     createReasonRoot() {
       let claimId = this.firebase.createReasonRoot();
       this.appendReasonRoot(claimId);
+      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     };
 
     appendReasonRoot(mainId){

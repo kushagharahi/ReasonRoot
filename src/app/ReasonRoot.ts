@@ -63,7 +63,10 @@ export default class ReasonRoot {
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
         this.display = new Display(this.render, this.settings);
-        this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
+
+        // Returns a Object loaded with the result of global variables: mainId, claims, scores
+        // TODO Why calculate an this.settleIt.calculate is called at the same time?
+        //this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
         this.setDisplayState(this.selectedScore);
         this.calculate();
     }
@@ -113,6 +116,7 @@ export default class ReasonRoot {
         this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     }
 
+    //This may be on Firebase
     attachDB() {
       let claimsRef = this.rrRef.child('claims');
       this.listenerRefs.push(claimsRef);
@@ -132,6 +136,7 @@ export default class ReasonRoot {
       }
     }
 
+    //This may be on Firebase
     claimsFromDB(data: any) {
         // Here claims are pulled from firebase.
         // value is the reason root object
@@ -144,6 +149,7 @@ export default class ReasonRoot {
         }
     }
 
+    //This may be on Firebase
     claimFromDB(data: any) {
         let value = data.val();
         if (value) {

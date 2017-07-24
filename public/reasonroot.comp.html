@@ -1,0 +1,22 @@
+<template id="temp">
+  <h1>Hi World</h1>
+</template>
+<script>
+  // Here the template is searched
+  const template = document.currentScript.ownerDocument.querySelector('#temp').content;
+  // Make a templete copy for every time that is used
+  const clone = document.importNode(template, true);
+
+  // prototype is created as a new HTMLElement
+  const prototype = Object.create(HTMLElement.prototype);
+  // Behavior of new web component is created on the new const
+  prototype.createdCallback = function() {
+    const shadow = this.createShadowRoot();
+    shadow.appendChild(clone);
+  };
+
+  // Here new HTML tag is registered and binded with the const prototype
+  document.registerElement('reason-root', {
+    prototype: prototype
+  });
+</script>

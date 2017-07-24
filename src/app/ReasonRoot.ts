@@ -42,11 +42,9 @@ export default class ReasonRoot {
     constructor(firebase: Firebase, claimElement?: Element) {
       if(claimElement){
         //this.render variable is a pointer to the Claim HTML tag.
-        console.log(claimElement);
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        //console.log(this.rr);
         //this.firebase.firebaseInit(this.rr, this.canWrite);
         this.firebase = firebase;
         this.firebase.onAuthStateChanged(this.rr, this.canWrite);
@@ -161,6 +159,7 @@ export default class ReasonRoot {
         this.mainScore = this.display.setDisplayStateLoop(this.mainScore, this.claims, this.scores, this.selectedScore);
     }
 
+// This render a unique Claim, this should be part of Claim component,both main claim and child climes use it.
     renderNode(score: Score, parent?: Score): void {
       var claim: Claim = this.claims[score.claimId];
       var claims = this.claims;
@@ -265,7 +264,7 @@ export default class ReasonRoot {
 
 
     calculate(): void {
-      this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
+      console.log(this.settleIt.calculate(this.rr.mainId, this.claims, this.scores));
     };
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
@@ -274,7 +273,6 @@ export default class ReasonRoot {
     createReasonRoot() {
       let claimId = this.firebase.createReasonRoot();
       this.appendReasonRoot(claimId);
-      this.display.update(this.renderNode(this.scores[this.rr.mainId]));
     };
 
     appendReasonRoot(mainId){

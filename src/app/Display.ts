@@ -23,7 +23,6 @@ export default class Display{
 
     // if (!this.settings.noAutoSave)
     //     localStorage.setItem(this.savePrefix + this.root.mainId, JSON.stringify(this.scores));
-    console.log(this.render);
     this.render`
     <div class="${'rr' +
         (this.settings.hideScore ? ' hideScore' : '') +
@@ -61,7 +60,6 @@ export default class Display{
             ⚙
         </div>
     </div>`;
-    console.log(this.render);
   }
 
   replaceAll(target: string, search: string, replacement: string): string {
@@ -76,8 +74,9 @@ export default class Display{
       }
   }
 
+  //Set state of claims every time selected score change
   setDisplayStateLoop(score: Score, claims: Dict<Claim>, scores: Dict<Score>, selectedScore: Score): Score {
-      // Compare the param score whit
+      // Compare the param score whit selected Score if they are the same set score state to "selected".
 
       if (score == selectedScore)
           score.displayState = "selected";
@@ -106,7 +105,7 @@ export default class Display{
       return score;
   }
 
-  //Check for animating numbers
+  //Check for animating numbers of the Reason Root's main claim, this should be on Reason Root component
   animateNumbers(scores: any): boolean{
     var found = false;
     for (var scoreId in scores) {
@@ -124,16 +123,14 @@ export default class Display{
     // if (found) setTimeout(() => this.update(), 100);
     }
 
+    // Settings is part of the Reason Root's main claim, this should be on Reason Root component
     updateSettings(settings: any, event: any, node: any): void {
-        console.log("updateSettings");
-        console.log(settings);
         settings[event.srcElement.getAttribute("bind")] = event.srcElement.checked;
         this.update(node);
         if (event) event.stopPropagation();
     }
 
     toggleSettings(event: Event, node: any): void {
-      console.log("toggleSettings");
         this.settingsVisible = !this.settingsVisible;
         this.update(node);
     }

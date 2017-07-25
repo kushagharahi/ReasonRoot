@@ -18,6 +18,8 @@ export default class Display{
     this.settings = settings;
   }
 
+
+  // This displays the settngs menu of the main claim, ant
   update(node: any): void {
     //let root = this.root;
 

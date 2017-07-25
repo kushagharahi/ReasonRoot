@@ -13,7 +13,6 @@ import SettleIt from'./SettleIt';
 import Score from './Score';
 import Claim from './Claim';
 import Firebase from './Firebase';
-import Display from './Display';
 
 export default class ReasonRoot {
     userName: string = 'Sign In';
@@ -37,7 +36,6 @@ export default class ReasonRoot {
     firebase: Firebase;
     score: Score = new Score();
     claim: Claim = new Claim();
-    display: Display;
 
     constructor(firebase: Firebase, claimElement?: Element) {
       if(claimElement){
@@ -61,9 +59,6 @@ export default class ReasonRoot {
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-
-        // TODO
-        this.display = new Display(this.render, this.settings);
 
         // Returns a Object loaded with the result of global variables: mainId, claims, scores
         // TODO Why calculate an this.settleIt.calculate is called at the same time?

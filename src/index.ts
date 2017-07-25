@@ -10,7 +10,8 @@ require ('../src/assets/styles/ReasonRoot.scss');
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file
 
-let mainClaimsDict = {}
+let mainClaimsDict = {};
+//var prev_handler2 = window.onload;
 
 window.onload = async function () {
 
@@ -31,12 +32,28 @@ window.onload = async function () {
   });
 
 function uptade(){
-  let claimElements = document.getElementsByTagName('claim');
+  //if (prev_handler2) prev_handler2();
+  var claimElements = document.getElementsByTagName('claim');
+  let settings = {
+      hideScore: true,
+      hidePoints: true,
+      hideClaimMenu: true,
+      noAutoSave: true,
+      showSiblings: true,
+      hideChildIndicator: true
+  }
 
   for (let claimElement of claimElements) {
     let rr = new ReasonRoot(firebase,claimElement);
     mainClaimsDict[rr.mainId] = rr;
   }
+  mainClaimsDict['ql2heRoABQ0y'].settings = settings;
+  mainClaimsDict['ql2heRoABQ0y'].selectedScore = mainClaimsDict['ql2heRoABQ0y'].mainScore;
+  mainClaimsDict['ql2heRoABQ0y'].setDisplayState();
+  mainClaimsDict['ql2heRoABQ0y'].update();
+  mainClaimsDict['ql2fPeGzkKQS'].settings = settings;
+  mainClaimsDict['ql2fPeGzkKQS'].claims[mainClaimsDict['ql2fPeGzkKQS'].rr.mainId].isProMain = false;
+  mainClaimsDict['ql2fPeGzkKQS'].update();
 }
 
 uptade();

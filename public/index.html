@@ -24,6 +24,11 @@
 </head>
 
 <body>
+  <div>
+    <input id="txtContent" type="text" placeholder="Content">
+    <input id="txtCitation" type="text" placeholder="Citation">
+    <button id="btnCreateReasonRoot">Create ReasonRoot</button>
+  </div>
 
   <!--This code block was passed to rrDisplay.js.-->
 
@@ -31,7 +36,7 @@
     let mainClaimsDict = {}
     window.onload = async function () {
       var claimElements = document.getElementsByTagName('claim');
-      for (let claimElement of claimElements) {
+      for (let claimElement of oElements) {
         let rr = new RRDisplay(claimElement);
         mainClaimsDict[rr.mainId] = rr;
       }

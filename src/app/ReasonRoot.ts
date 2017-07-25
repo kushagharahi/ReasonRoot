@@ -5,15 +5,14 @@ declare const require: any;
 type WhichCopy = "original" | "local" | "suggestion";
 
 const hyperHTML = require('hyperhtml');
-const firebase = require('firebase');
+//const firebase = require('firebase');
 
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';
 import Score from './Score';
 import Claim from './Claim';
-import Auth from './Auth';
-import Setting from './Setting';
+import Firebase from './Firebase';
 import Display from './Display';
 
 export default class ReasonRoot {
@@ -21,7 +20,7 @@ export default class ReasonRoot {
     rrRef: any;//The current firebase reference to the ReasonRoot object
     scores: Dict<Score>;
     claims: Dict<Claim>;
-    settleIt: SettleIt;
+    settleIt: SettleIt;node
     mainScore: Score;
     render: any;
     settings: any = {};
@@ -35,20 +34,22 @@ export default class ReasonRoot {
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
     mainId: any;
-    auth: Auth = new Auth();
+    firebase: Firebase = new Firebase();
     score: Score = new Score();
     claim: Claim = new Claim();
     display: Display;
 
-    constructor(claimElement: Element) {
+    constructor(claimElement?: Element) {
+      if(claimElement){
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.auth.firebaseInit(this.rr, this.canWrite);
+        this.firebase.firebaseInit(this.rr, this.canWrite);
         this.changeWhichCopy("original");
         //this.attachDB();
         //this.initRr();
         //this.update();
+      }
     }
 
     initRr() {
@@ -57,7 +58,7 @@ export default class ReasonRoot {
         this.scores = this.createDict(this.claims);
         this.mainScore = this.scores[this.rr.mainId];
         this.mainScore.isMain = true;
-        this.display = new Display(this.render);
+        this.display = new Display(this.render, this.settings);
         this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
         this.setDisplayState(this.selectedScore);
         this.calculate();
@@ -77,22 +78,23 @@ export default class ReasonRoot {
         if (whichCopy === "local") {
             //pull local data if it exists and set it to save
 
+            // TODO localStorage is null
             let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
+            console.log(rr);
             if (rr) {
                 this.rr = JSON.parse(rr);
             }
-        }
-        else {
+        } else {
           // This is the problem
-            this.auth.firebaseInit(this.rr, this.canWrite);
+            this.firebase.firebaseInit(this.rr, this.canWrite);
             if (whichCopy === "original") {
-                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
             else if (whichCopy === "suggestion") {
                 //to do Find the ID of my suggestion
-                this.rrRef = this.auth.db.ref('roots/' + this.rr.mainId);
+                this.rrRef = this.firebase.db.ref('roots/' + this.rr.mainId);
             }
-            this.attachDB();
+            //this.attachDB();
         }
 
         this.initRr();
@@ -100,23 +102,22 @@ export default class ReasonRoot {
     }
 
     attachDB() {
-        let claimsRef = this.rrRef.child('claims');
-        this.listenerRefs.push(claimsRef);
-        claimsRef.once('value', this.claimsFromDB.bind(this));
-        claimsRef.on('child_changed', this.claimFromDB.bind(this));
+      let claimsRef = this.rrRef.child('claims');
+      this.listenerRefs.push(claimsRef);
+      claimsRef.once('value', this.claimsFromDB.bind(this));
+      claimsRef.on('child_changed', this.claimFromDB.bind(this));
 
-        //Check for write permissions
-        if (firebase.auth().currentUser) {
-            let permissionRef = this.db.ref('permissions/user/' + firebase.auth().currentUser.uid + "/" + this.rr.mainId)
-            this.listenerRefs.push(permissionRef);
-
-            //To do the can write below is on the wrong "this"
-            permissionRef.on('value', function (snapshot) {
-                this.canWrite = snapshot.val();
-            })
-        } else {
-            this.canWrite = false;
-        }
+      //Check for write permissions
+      if (this.firebase.getCurrentUser()) {
+          let permissionRef = this.firebase.db.ref('permissions/user/' + this.firebase.getCurrentUser().uid + "/" + this.rr.mainId);
+          this.listenerRefs.push(permissionRef);
+          //To do the can write below is on the wrong "this"
+          permissionRef.on('value', function (snapshot) {
+              this.canWrite = snapshot.val();
+          })
+      } else {
+          this.canWrite = false;
+      }
     }
 
     claimsFromDB(data: any) {
@@ -204,8 +205,8 @@ export default class ReasonRoot {
 
                       <div class="claimMenuHider">
                           <div class="claimMenuSection">
-                              <div class="addClaim pro" onclick="${this.addClaim.bind(this, score, true)}">add</div>
-                              <div class="addClaim con" onclick="${this.addClaim.bind(this, score, false)}">add</div>
+                              <div class="addClaim pro" onclick="${this.addClaim.bind(this, true)}">add</div>
+                              <div class="addClaim con" onclick="${this.addClaim.bind(this, false)}">add</div>
                               <div class="editClaimButton" onclick="${this.editClaim.bind(this, score)}">edit</div>
                           </div>
                       </div>
@@ -240,43 +241,79 @@ export default class ReasonRoot {
           this.setDisplayState();
           this.display.update(this.renderNode(this.scores[this.rr.mainId]));
       }
-    }
+    };
 
     noBubbleClick(event: Event): void {
       if (event) event.stopPropagation();
-    }
+    };
 
 
     calculate(): void {
       this.settleIt.calculate(this.rr.mainId, this.claims, this.scores)
-
-    }
+    };
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
     // to their own class file, and then they only should be called from other classes like this.
 
-    addClaim(parentScore: Score, isProMain: boolean, event?: Event) {
-      this.claim.add(parentScore, isProMain, this.scores, this.claims);
+    createReasonRoot(content, citation) {
+      let database = this.firebase.getDatabase();
+      let mainId = this.claim.newId();
+      let currentUserId = this.firebase.getCurrentUser().uid;
+
+      let permission = {};
+      permission[mainId] = true;
+      database.ref('permissions/user/' + currentUserId).update(permission);
+
+      let mainClaim = new Claim(mainId, true);
+      mainClaim.citation = citation;
+      mainClaim.content = content;
+
+      let claim = {};
+      claim[mainId] = Object.assign({}, mainClaim);
+
+      database.ref('roots/' + mainId).set({
+        claims: claim,
+        mainId: mainId
+      });
+
+      let data = this.firebase.getDataById(mainId);
+      var element = document.createElement("claim");
+      element.setAttribute("root", data);
+      document.body.appendChild(element);
+    };
+
+    isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+    }
+
+    addClaim(isProMain: boolean, event?: Event) {
+      let childClaim: Claim;
+      let parentClaim: Claim = this.claims[this.selectedScore.claimId];
+      childClaim = this.claim.add(this.selectedScore, isProMain, this.scores, this.claims);
+      this.firebase.addData(this.rr, parentClaim, childClaim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
       if (event) event.stopPropagation();
-    }
+    };
 
     updateClaim(claim: Claim, event: Event) {
       this.claim.update(claim, event);
+      this.firebase.updateData(this.rr, claim);
       //update the UI
       this.calculate();
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
 
-    }
+    };
+
     removeClaim(claim: Claim, parentScore: Score, event: Event): void {
       this.claim.remove(claim, this.claims, parentScore, event);
+      this.firebase.deleteData(this.rr, claim);
       this.calculate();
       this.setDisplayState(this.selectedScore);
       this.display.update(this.renderNode(this.scores[this.rr.mainId]));
-    }
+    };
 
     editClaim(score: Score, event?: Event): void {
       this.settings.isEditing = !this.settings.isEditing;

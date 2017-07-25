@@ -2,7 +2,6 @@ declare const require: any;
 const firebase = require('firebase');
 
 import Score from './Score';
-import Setting from './Setting';
 import Dict from './Dict';
 import Root from './Root';
 
@@ -12,14 +11,6 @@ type WhichCopy = "original" | "local" | "suggestion";
 ﻿export default class Claim {
     /** a base62 GUID string to identify each claim */
     claimId: string;
-    selectedScore: Score;
-    claims: Dict<Claim>;
-    scores: Dict<Score>;
-    settings: any = {};
-    whichCopy: WhichCopy;
-    setting: Setting = new Setting();
-    canWrite: boolean;
-    root: Root = new Root();
 
     /** The text of the claim with the claim. May include markdown in the future. */
     content: string = "New Claim";
@@ -31,7 +22,7 @@ type WhichCopy = "original" | "local" | "suggestion";
     isProMain: boolean = true;
 
     /** Does this claim support it's parent claim in this graph (true) or disput it (false) */
-    isProParent: boolean;
+    isProParent: boolean = true;;
 
     /** Does this claim affect the confidence or the importance of it's parent */
     affects: Affects = "AverageTheConfidence";
@@ -40,19 +31,40 @@ type WhichCopy = "original" | "local" | "suggestion";
     childIds: string[] = [];
 
     /** the maximum confidence allowed on this statement*/
-    maxConf: number;
+    maxConf: number = null;
 
     /** */
-    disabled: boolean;
+    disabled: boolean = false;
 
     citationUrl: string = "";
     citation: string = "";
 
+    selectedScore: Score;
+    settings: any;
+    whichCopy: WhichCopy;
+    canWrite: boolean;
+    root: Root;
+
     constructor(id?: string, isProMain?: boolean) {
-        this.claimId = id || newId();
-        if (isProMain !== undefined) this.isProMain = isProMain
+        this.claimId = id || this.newId();
+        if (isProMain !== undefined) this.isProMain = isProMain;
     }
 
+
+    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>): Claim {
+      let newClaim: Claim = new Claim();
+      let newScore: Score = new Score(newClaim)
+      this.settings = {};
+      newClaim.isProMain = isProMain;
+      scores[newClaim.claimId] = newScore;
+      claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
+      claims[newClaim.claimId] = newClaim;
+      newScore.displayState = "notSelected";
+
+      this.selectedScore = newScore;
+      this.settings.isEditing = true;
+      return newClaim
+    }
 
     remove(claim: Claim, claims: Dict<Claim>, parentScore: Score, event: Event): void {
         var index = claims[parentScore.claimId].childIds.indexOf(claim.claimId);
@@ -66,20 +78,8 @@ type WhichCopy = "original" | "local" | "suggestion";
         if (event) event.stopPropagation();
     }
 
-    add(parentScore: Score, isProMain: boolean, scores: Dict<Score>, claims: Dict<Claim>) {
-      let newClaim: Claim = new Claim();
-      newClaim.isProMain = isProMain;
-      let newScore: Score = new Score(newClaim)
-      scores[newClaim.claimId] = newScore;
-      claims[parentScore.claimId].childIds.unshift(newClaim.claimId);
-      claims[newClaim.claimId] = newClaim;
-      newScore.displayState = "notSelected";
-
-      this.selectedScore = newScore;
-      this.settings.isEditing = true;
-    }
-
     update(claim: Claim, event: Event) {
+      this.root = new Root();
         let inputs: any = event.srcElement.parentElement.querySelectorAll('input');
         for (let input of inputs) {
             var bindName = input.getAttribute("bind")
@@ -100,25 +100,24 @@ type WhichCopy = "original" | "local" | "suggestion";
             }
     }
 
+    newId(): string {
+      //take the current date and convert to bas 62
+      let decimal = new Date().getTime();
+      let s = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      let result = "";
+      while (decimal >= 1) {
+          result = s[(decimal - (62 * Math.floor(decimal / 62)))] + result;
+          decimal = Math.floor(decimal / 62);
+      }
+
+      //Add 5 extra random characters in case multiple ids are creates at the same time
+      result += Array(5).join().split(',').map(function () {
+          return s[(Math.floor(Math.random() * s.length))];
+      }).join('');
+
+      return result
+    }
 
 }
 
 type Affects = "AverageTheConfidence" | "MaximumOfConfidence" | "Importance";
-
-function newId(): string {
-    //take the current date and convert to bas 62
-    let decimal = new Date().getTime();
-    let s = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    let result = "";
-    while (decimal >= 1) {
-        result = s[(decimal - (62 * Math.floor(decimal / 62)))] + result;
-        decimal = Math.floor(decimal / 62);
-    }
-
-    //Add 5 extra random characters in case multiple ids are creates at the same time
-    result += Array(5).join().split(',').map(function () {
-        return s[(Math.floor(Math.random() * s.length))];
-    }).join('');
-
-    return result
-}

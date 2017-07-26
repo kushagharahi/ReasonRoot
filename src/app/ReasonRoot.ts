@@ -44,11 +44,11 @@ export default class ReasonRoot {
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
         this.firebase = firebase;
-        this.firebase.onAuthStateChanged(this.rr, this.canWrite);
+        //this.firebase.onAuthStateChanged(this.rr, this.canWrite);
         this.changeWhichCopy("original");
 
         //this.attachDB();
-        this.initRr();
+        //this.initRr();
         //this.update();
       }
     }
@@ -99,12 +99,11 @@ export default class ReasonRoot {
             }
             this.attachDB();
         }
-
         this.initRr();
         this.update();
     }
 
-    //This may be on Firebase
+    //This may be on Firebase and it sync reason root remote data with local one
     attachDB() {
       let claimsRef = this.rrRef.child('claims');
       this.listenerRefs.push(claimsRef);
@@ -166,27 +165,29 @@ export default class ReasonRoot {
         // Compare the param score whit selected Score if they are the same set score state to "selected".
         if (score == this.selectedScore)
             score.displayState = "selected";
+        let childIds = this.claims[score.claimId].childIds;
+        if(childIds !== undefined){
+          for (let childId of childIds) {
+              let childScore = this.scores[childId];
+              //process the children first/
+              this.setDisplayStateLoop(childScore);
 
-        for (let childId of this.claims[score.claimId].childIds) {
-            let childScore = this.scores[childId];
-            //process the children first/
-            this.setDisplayStateLoop(childScore);
+              if (childScore == this.selectedScore) {
+                  score.displayState = "parent";
+                  //Set Siblings
+                  for (let siblingId of this.claims[score.claimId].childIds) {
+                      let siblingScore = this.scores[siblingId];
+                      if (siblingScore.displayState != "selected")
+                          siblingScore.displayState = "sibling";
+                  }
+              }
 
-            if (childScore == this.selectedScore) {
-                score.displayState = "parent";
-                //Set Siblings
-                for (let siblingId of this.claims[score.claimId].childIds) {
-                    let siblingScore = this.scores[siblingId];
-                    if (siblingScore.displayState != "selected")
-                        siblingScore.displayState = "sibling";
-                }
-            }
+              if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
+                  score.displayState = "ancestor";
 
-            if (childScore.displayState == "ancestor" || childScore.displayState == "parent")
-                score.displayState = "ancestor";
-
-            if (score == this.selectedScore)
-                childScore.displayState = "child";
+              if (score == this.selectedScore)
+                  childScore.displayState = "child";
+          }
         }
     }
 

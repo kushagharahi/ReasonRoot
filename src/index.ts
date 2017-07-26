@@ -5,8 +5,7 @@ import ReasonRoot from './app/ReasonRoot';
 import Firebase from './app/Firebase';
 
 //Import SCSS
-require ('../src/assets/styles/ReasonRoot.scss');
-
+require('../src/assets/styles/ReasonRoot.scss');
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file
 
@@ -20,20 +19,23 @@ window.onload = async function () {
 
   function createReasonRoot() {
     firebase.createReasonRoot();
-    //this.appendReasonRoot(claimId);
+    uptade();
+    //this.appendReasonRoot(claimId);4
   };
+
+  firebase.onAuthStateChanged();
 
   const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
 
   btnCreateReasonRoot.addEventListener('click', e => {
     let rr = new ReasonRoot(firebase);
     createReasonRoot();
-    uptade();
   });
 
 function uptade(){
   if (prev_handler2) prev_handler2;
   var claimElements = document.getElementsByTagName('claim');
+  console.log(claimElements);
   let settings = {
       hideScore: true,
       hidePoints: true,

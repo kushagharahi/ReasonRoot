@@ -69,19 +69,18 @@ export default class Firebase{
     //       .then(snapshot => {
     //         let ReasonRoots = snapshot.val();
     //         for(let ReasonRoot in ReasonRoots){
-    //           console.log(ReasonRoot);
     //           that.appendReasonRoot(ReasonRoot);
     //         }
     //     });
     //   } else {
     //     // If user is not loged set write permissions false.
-    //     console.log("User not logged");
     //     canWrite = false;
     //   }
     // });
   }
 
-  onAuthStateChanged(rr: Root, canWrite: Boolean){
+  //old params rr: Root, canWrite: Boolean
+  onAuthStateChanged(){
     this.db = firebase.database();
     // // There have to change firebase rules
     // var fbRef = firebase.database().ref().child('test');
@@ -92,34 +91,30 @@ export default class Firebase{
     firebase.auth().onAuthStateChanged(function (currentUser) {
         // Check if the user is loged
       if (currentUser) {
-        //console.log(currentUser);
         //Query user permissions
-        let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId);
-        // permissionRef.on('value')
-        //   .then(snapshot => {
-        //     console.log(snapshot);
-        //   });
-        that.listenerRefs.push(permissionRef);
-        //console.log(that.listenerRefs);
+        // let permissionRef = that.db.ref('permissions/user/' + currentUser.uid + "/" + rr.mainId);
+        // that.listenerRefs.push(permissionRef);
+        //
+        // //To do the can write below is on the wrong "this"
+        // permissionRef.on('value', function (snapshot) {
+        //   canWrite = snapshot.val();
+        // })
 
-        //To do the can write below is on the wrong "this"
-        permissionRef.on('value', function (snapshot) {
-          canWrite = snapshot.val();
-        })
         let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
         ref.once('value')
           .then(snapshot => {
-            let ReasonRoots = snapshot.val();
-            for(let ReasonRoot in ReasonRoots){
-              //console.log(ReasonRoot);
-              that.appendReasonRoot(ReasonRoot);
+            let reasonRoots = snapshot.val();
+            for(let reasonRoot in reasonRoots){
+              that.appendReasonRoot(reasonRoot);
             }
         });
-      } else {
-        // If user is not loged set write permissions false.
-        console.log("User not logged");
-        canWrite = false;
+
       }
+      // else {
+      //   // If user is not loged set write permissions false.
+      //   console.log("User not logged");
+      //   canWrite = false;
+      // }
     });
   }
 
@@ -135,29 +130,11 @@ export default class Firebase{
     let ref = firebase.database().ref('roots/' + id);
     return ref.once('value')
       .then(snapshot => {
-        //console.log(snapshot.val());
         return JSON.stringify(snapshot.val());
       });
     // Re send query if response is undefined
   }
 
-  getRootsFromUser(): any{
-    let currentUser = firebase.auth().currentUser;
-    let reasonRoots;
-    let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
-
-    ref.once('value', snapshot => {
-      reasonRoots = snapshot.val();
-      // this.reasonRoots = reasonRoots;
-    });
-
-    if(reasonRoots !== undefined){
-      return reasonRoots;
-    } else {
-      this.getRootsFromUser();
-    }
-
-  };
 
   addData(mainClaim: any, parentClaim: any, childClaim: any): void{
     let mainId = mainClaim.mainId;
@@ -183,15 +160,12 @@ export default class Firebase{
 
   deleteData(mainClaim: any, parentClaim: any, childClaim: any){
     let mainId = mainClaim.mainId;
-    //console.log(parentClaim);
     let parentId = parentClaim.claimId;
-    //console.log(parentId);
     let childId = childClaim.claimId;
     let childIds = [];
     childIds = childClaim.childIds;
 
     let route = 'roots/' + mainId + '/claims/' + childId;
-    //console.log(route);
     let ref = firebase.database().ref(route);
     ref.remove();
 
@@ -200,7 +174,6 @@ export default class Firebase{
       for( let childId of childIds){
         let childClaim = {};
         let route = 'roots/' + mainId + '/claims/' + childId;
-        //console.log(route);
         let ref = firebase.database().ref(route);
         ref.on('value', snapshot => {
           childClaim = snapshot.val();
@@ -216,16 +189,9 @@ updateChilds(mainClaim: any, parentClaim: any){
   let parentId = parentClaim.claimId;
   let childIds = parentClaim.childIds;
   let route = 'roots/' + mainId + '/claims/' + parentId + '/childIds';
-  //console.log(route);
   let ref = firebase.database().ref(route);
   ref.set(childIds);
 }
-
-
-  // getReasonRootFromDB(){
-  //   console.log(this.reasonRoots);
-  //   return this.reasonRoots;
-  // };
 
   createReasonRoot(): void {
     let database = firebase.database();

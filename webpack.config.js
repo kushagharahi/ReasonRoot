@@ -1,4 +1,5 @@
 const path = require('path');
+require('typescript-require');
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 

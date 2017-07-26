@@ -11,7 +11,7 @@ require ('../src/assets/styles/ReasonRoot.scss');
 //that was on index.html now are appended through this .js file
 
 let mainClaimsDict = {};
-//var prev_handler2 = window.onload;
+var prev_handler2 = window.onload;
 
 window.onload = async function () {
 
@@ -32,7 +32,7 @@ window.onload = async function () {
   });
 
 function uptade(){
-  //if (prev_handler2) prev_handler2();
+  if (prev_handler2) prev_handler2;
   var claimElements = document.getElementsByTagName('claim');
   let settings = {
       hideScore: true,
@@ -44,8 +44,9 @@ function uptade(){
   }
 
   for (let claimElement of claimElements) {
+    claimElement.innerHTML = '';
     let rr = new ReasonRoot(firebase,claimElement);
-    mainClaimsDict[rr.mainId] = rr;
+    mainClaimsDict[rr.rr.mainId] = rr;
   }
   mainClaimsDict['ql2heRoABQ0y'].settings = settings;
   mainClaimsDict['ql2heRoABQ0y'].selectedScore = mainClaimsDict['ql2heRoABQ0y'].mainScore;

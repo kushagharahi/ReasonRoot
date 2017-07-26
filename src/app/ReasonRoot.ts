@@ -372,7 +372,7 @@ export default class ReasonRoot {
 
 
     calculate(): void {
-      console.log(this.settleIt.calculate(this.rr.mainId, this.claims, this.scores));
+      this.settleIt.calculate(this.rr.mainId, this.claims, this.scores);
     };
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved

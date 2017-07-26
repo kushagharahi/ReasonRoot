@@ -100,7 +100,7 @@ export default class Firebase{
         //     console.log(snapshot);
         //   });
         that.listenerRefs.push(permissionRef);
-        console.log(that.listenerRefs);
+        //console.log(that.listenerRefs);
 
         //To do the can write below is on the wrong "this"
         permissionRef.on('value', function (snapshot) {
@@ -111,7 +111,7 @@ export default class Firebase{
           .then(snapshot => {
             let ReasonRoots = snapshot.val();
             for(let ReasonRoot in ReasonRoots){
-              console.log(ReasonRoot);
+              //console.log(ReasonRoot);
               that.appendReasonRoot(ReasonRoot);
             }
         });
@@ -183,15 +183,15 @@ export default class Firebase{
 
   deleteData(mainClaim: any, parentClaim: any, childClaim: any){
     let mainId = mainClaim.mainId;
-    console.log(parentClaim);
+    //console.log(parentClaim);
     let parentId = parentClaim.claimId;
-    console.log(parentId);
+    //console.log(parentId);
     let childId = childClaim.claimId;
     let childIds = [];
     childIds = childClaim.childIds;
 
     let route = 'roots/' + mainId + '/claims/' + childId;
-    console.log(route);
+    //console.log(route);
     let ref = firebase.database().ref(route);
     ref.remove();
 
@@ -200,7 +200,7 @@ export default class Firebase{
       for( let childId of childIds){
         let childClaim = {};
         let route = 'roots/' + mainId + '/claims/' + childId;
-        console.log(route);
+        //console.log(route);
         let ref = firebase.database().ref(route);
         ref.on('value', snapshot => {
           childClaim = snapshot.val();
@@ -216,7 +216,7 @@ updateChilds(mainClaim: any, parentClaim: any){
   let parentId = parentClaim.claimId;
   let childIds = parentClaim.childIds;
   let route = 'roots/' + mainId + '/claims/' + parentId + '/childIds';
-  console.log(route);
+  //console.log(route);
   let ref = firebase.database().ref(route);
   ref.set(childIds);
 }
@@ -244,7 +244,6 @@ updateChilds(mainClaim: any, parentClaim: any){
       claims: claim,
       mainId: claimId
     });
-    console.log("createReasonRoot");
     this.appendReasonRoot(claimId);
   };
 

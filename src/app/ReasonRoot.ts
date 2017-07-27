@@ -1,12 +1,6 @@
-    //On the
-
-declare const require: any;
-
 type WhichCopy = "original" | "local" | "suggestion";
 
-const hyperHTML = require('hyperhtml');
-//const firebase = require('firebase');
-
+import hyperHTML = require('hyperhtml');
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';

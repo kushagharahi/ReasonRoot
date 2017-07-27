@@ -1,6 +1,4 @@
-declare const require: any;
-
-const firebase = require('firebase');
+import firebase = require('firebase');
 
 import Root from './Root';
 import Claim from './Claim';
@@ -23,13 +21,13 @@ export default class Firebase{
           console.log(result);
           // ...
       }).bind(this)).catch(function (error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
+          // // Handle Errors here.
+          // var errorCode = error.code;
+          // var errorMessage = error.message;
+          // // The email of the user's account used.
+          // var email = error.email;
+          // // The firebase.auth.AuthCredential type that was used.
+          // var credential = error.credential;
           console.log(error);
       });
   }
@@ -126,7 +124,7 @@ export default class Firebase{
     return firebase.database();
   }
 
-  getDataById(id: string): Promise<string>{
+  getDataById(id: string): any{
     let ref = firebase.database().ref('roots/' + id);
     return ref.once('value')
       .then(snapshot => {

@@ -1,0 +1,55 @@
+<template id="temp">
+  <h1>Hi World</h1>
+  <style>
+    h1{
+      font-size: 12pt;
+      font-family: sans-serif;
+      color: green;
+    }
+  </style>
+</template>
+<script src="HyperHTML.js"></script>
+<script>
+
+let claimElements = document.getElementsByTagName('reason-root');
+  // Here the template is searched
+  const template = document.currentScript.ownerDocument.querySelector('#temp').content;
+  // Make a templete copy for every time that the html tag is used
+  const clone = document.importNode(template, true);
+
+  // prototype is created as a new HTMLElement
+  const prototype = Object.create(HTMLElement.prototype);
+
+  // Behavior of new web component is created on the new const
+  prototype.createdCallback = function() {
+    const shadow = this.createShadowRoot();
+
+    render`
+    <div>
+    <h1>Hello, world!</h1>
+    <h2>It is ${new Date().toLocaleTimeString()}.</h2>
+    </div>
+    `;
+
+    shadow.appendChild(render);
+
+    render = hyperHTML.bind(shadow);
+  };
+
+  // Here new HTML tag is registered and binded with the const prototype
+  document.registerElement('reason-root', {
+    prototype: prototype
+  });
+
+  // function tick(render) {
+  //   render`
+  //   <div>
+  //   <h1>Hello, world!</h1>
+  //   <h2>It is ${new Date().toLocaleTimeString()}.</h2>
+  //   </div>
+  //   `;
+  // }
+  // setInterval(tick, 1000,
+  //   hyperHTML.bind(document.body)
+  // );
+</script>

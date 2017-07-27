@@ -2,38 +2,61 @@ declare var require: any;
 
 //Import JS
 import ReasonRoot from './app/ReasonRoot';
+import Firebase from './app/Firebase';
 
 //Import SCSS
-require ('../src/assets/styles/ReasonRoot.scss');
-
+require('../src/assets/styles/ReasonRoot.scss');
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file
 
-let mainClaimsDict = {}
+let mainClaimsDict = {};
+var prev_handler2 = window.onload;
 
 window.onload = async function () {
 
-  const txtContent = <HTMLInputElement>document.getElementById('txtContent');
-  const txtCitation = <HTMLInputElement>document.getElementById('txtCitation');
+  const firebase = new Firebase();
+  firebase.firebaseInit();
+
+  function createReasonRoot() {
+    firebase.createReasonRoot();
+    uptade();
+    //this.appendReasonRoot(claimId);4
+  };
+
+  firebase.onAuthStateChanged();
+
   const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
 
   btnCreateReasonRoot.addEventListener('click', e => {
-    let rr = new ReasonRoot();
-    const content = txtContent.value;
-    const citation = txtCitation.value;
-    rr.createReasonRoot(content, citation);
-    uptade();
+    let rr = new ReasonRoot(firebase);
+    createReasonRoot();
   });
 
 function uptade(){
-  console.log("update");
-  let claimElements = document.getElementsByTagName('claim');
+  if (prev_handler2) prev_handler2;
+  var claimElements = document.getElementsByTagName('claim');
+  console.log(claimElements);
+  let settings = {
+      hideScore: true,
+      hidePoints: true,
+      hideClaimMenu: true,
+      noAutoSave: true,
+      showSiblings: true,
+      hideChildIndicator: true
+  }
 
   for (let claimElement of claimElements) {
-    console.log(claimElement);
-    let rr = new ReasonRoot(claimElement);
-    mainClaimsDict[rr.mainId] = rr;
+    claimElement.innerHTML = '';
+    let rr = new ReasonRoot(firebase,claimElement);
+    mainClaimsDict[rr.rr.mainId] = rr;
   }
+  mainClaimsDict['ql2heRoABQ0y'].settings = settings;
+  mainClaimsDict['ql2heRoABQ0y'].selectedScore = mainClaimsDict['ql2heRoABQ0y'].mainScore;
+  mainClaimsDict['ql2heRoABQ0y'].setDisplayState();
+  mainClaimsDict['ql2heRoABQ0y'].update();
+  mainClaimsDict['ql2fPeGzkKQS'].settings = settings;
+  mainClaimsDict['ql2fPeGzkKQS'].claims[mainClaimsDict['ql2fPeGzkKQS'].rr.mainId].isProMain = false;
+  mainClaimsDict['ql2fPeGzkKQS'].update();
 }
 
 uptade();

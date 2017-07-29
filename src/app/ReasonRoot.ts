@@ -1,12 +1,13 @@
 type WhichCopy = "original" | "local" | "suggestion";
 
-import hyperHTML = require('hyperhtml');
+import * as hyperHTML from './hyperhtml';
 import Root from './Root';
 import Dict from './Dict';
 import SettleIt from'./SettleIt';
 import Score from './Score';
 import Claim from './Claim';
 import Firebase from './Firebase';
+import Number from './number-helper';
 
 export default class ReasonRoot {
     userName: string = 'Sign In';
@@ -30,6 +31,7 @@ export default class ReasonRoot {
     firebase: Firebase;
     score: Score = new Score();
     claim: Claim = new Claim();
+    number: Number = new Number();
 
     constructor(firebase: Firebase, claimElement?: Element) {
       if(claimElement){
@@ -40,7 +42,7 @@ export default class ReasonRoot {
         this.firebase = firebase;
         //this.firebase.onAuthStateChanged(this.rr, this.canWrite);
         this.changeWhichCopy("original");
-
+        console.log(this.number.formatAsCurrency(20));;
         //this.attachDB();
         //this.initRr();
         //this.update();

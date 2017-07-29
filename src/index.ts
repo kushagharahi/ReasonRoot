@@ -5,7 +5,7 @@ import ReasonRoot from './app/ReasonRoot';
 import Firebase from './app/Firebase';
 
 //Import SCSS
-require('../src/assets/styles/ReasonRoot.scss');
+const css = require('../src/assets/styles/ReasonRoot.scss');
 //The code block that inflates the claims nodes
 //that was on index.html now are appended through this .js file
 

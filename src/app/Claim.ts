@@ -1,6 +1,3 @@
-declare const require: any;
-const firebase = require('firebase');
-
 import Score from './Score';
 import Dict from './Dict';
 import Root from './Root';
@@ -92,12 +89,12 @@ type WhichCopy = "original" | "local" | "suggestion";
         }
 
         //to do Update the storage
-        if (this.whichCopy == "original")
-            if (this.canWrite)
-                firebase.database().ref('roots/' + this.root.mainId + '/claims/' + claim.claimId).set(claim);
-            else {
-                //Change over to a copy and set it up
-            }
+        // if (this.whichCopy == "original")
+        //     if (this.canWrite)
+        //         firebase.database().ref('roots/' + this.root.mainId + '/claims/' + claim.claimId).set(claim);
+        //     else {
+        //         //Change over to a copy and set it up
+        //     }
     }
 
     newId(): string {

@@ -1,4 +1,4 @@
-import firebase = require('firebase');
+import * as firebase from  'firebase';
 
 import Root from './Root';
 import Claim from './Claim';

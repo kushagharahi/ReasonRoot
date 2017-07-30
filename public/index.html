@@ -5,49 +5,90 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!--This scripts and links importation was substituted by the entry propriety on the webpack.config.js file.>
-  <!link rel="stylesheet" type="text/css" href="ReasonRoot.css" media="screen"/>
-  <script src="js/src/rrDisplay.js"></script>
-  <script src="js/src/Claim.js"></script>
-  <script src="js/src/score.js"></script>
-  <script src="js/src/Root.js"></script>
-  <script src="HyperHTML.js"></script>
-  <script src="js/src/SettleIt.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
-  <script src="https://cdn.firebase.com/libs/firebaseui/2.0.0/firebaseui.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.0.0/firebaseui.css" /-->
+  <!-- This links loads css generated from wepback -->
   <link rel="stylesheet" href="style.css">
+  <!-- This links loads js generated from wepback -->
   <script src="bundle.js"></script>
 
+  <!-- <link rel="import" href="reasonroot.comp.html"> -->
 
 </head>
 
 <body>
   <div>
-    <input id="txtContent" type="text" placeholder="Content">
-    <input id="txtCitation" type="text" placeholder="Citation">
     <button id="btnCreateReasonRoot">Create ReasonRoot</button>
   </div>
 
-  <!--This code block was passed to rrDisplay.js.-->
-
-  <!--script>
-    let mainClaimsDict = {}
-    window.onload = async function () {
-      var claimElements = document.getElementsByTagName('claim');
-      for (let claimElement of oElements) {
-        let rr = new RRDisplay(claimElement);
-        mainClaimsDict[rr.mainId] = rr;
-      }
-    };
-  </script-->
-
-  <claim root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
-  </claim>
+  <claim id="ql2fPeGzkKQS" class="bigRR" stmtid="ql2fPeGzkKQS" root="{&quot;mainId&quot;:&quot;ql2fPeGzkKQS&quot;,&quot;claims&quot;:{&quot;ql2fPeGzkKQS&quot;:{&quot;claimId&quot;:&quot;ql2fPeGzkKQS&quot;,&quot;content&quot;:&quot;Democracy is suffering from a lack of shared facts.&quot;,&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;childIds&quot;:[],&quot;isProMain&quot;:true,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false}}}"></claim>
   <hr>
-  <claim root='{"claims":{"qkcrjXBKCCx0":{"id":"qkcrjXBKCCx0","content":"Is Obamacare in a &#39;death spiral&#39;? As conservative radio host Hugh Hewitt claimed on Meet the Press on March 26 2017.","citation":"","citationUrl":"","childIds":["qkd2zGldspBF","qkd27tm4tXfo","qkcK15soLfJj","qkbh7EIsnRzL","qkbdeolCiBkq","qkb8xb22aAPW"],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"},"qkb8xb22aAPW":{"id":"qkb8xb22aAPW","content":"Decreased enrollment by 4% indicates a death spiral.","isProMain":true,"childIds":["qkbgHek4eH2z"],"citation":"CMS.gov: Health Insurance Marketplaces 2017 Open Enrollment Period Final Enrollment Report: November 1, 2016 – January 31, 2017","citationUrl":"https://www.cms.gov/Newsroom/MediaReleaseDatabase/Fact-sheets/2017-Fact-Sheet-items/2017-03-15.html","isProParent":true,"affects":"AverageTheConfidence"},"qkbdeolCiBkq":{"id":"qkbdeolCiBkq","content":"Premiums increases indicate a \"death spiral\".","isProMain":true,"childIds":["qkbg8obG7C7w"],"citation":"2017 Premium Changes and Insurer Participation in the Affordable Care Act’s Health Insurance Marketplaces","citationUrl":"http://kff.org/health-reform/issue-brief/2017-premium-changes-and-insurer-participation-in-the-affordable-care-acts-health-insurance-marketplaces/","isProParent":true,"affects":"AverageTheConfidence"},"qkbg8obG7C7w":{"id":"qkbg8obG7C7w","content":"As we have reported, premiums are increasing. But that isn’t affecting the cost for most consumers, due to built-in subsidies under the Affordable Care Act. Among the people who have signed up so far for 2017, 81 percent will receive a subsidy.","isProMain":false,"childIds":[],"citation":"","citationUrl":"","isProParent":false,"affects":"AverageTheConfidence"},"qkbgHek4eH2z":{"id":"qkbgHek4eH2z","content":"Experts noted that marketplace sign-ups were running in line with their 2016 pace as of the middle of January, which experts said might suggest the decline in sign-ups was somehow related to the Trump administration, not an impending death spiral.","isProMain":false,"childIds":[],"citation":"","citationUrl":"","isProParent":false,"affects":"AverageTheConfidence"},"qkbh7EIsnRzL":{"id":"qkbh7EIsnRzL","content":"the share of people signing up for health care in the low-risk demographic (ages 18-34) remains about the same in 2017 as it was in 2016, at 26 percent of enrollees.","isProMain":false,"childIds":[],"citation":"CMS.gov: Health Insurance Marketplaces 2017 Open Enrollment Period Final Enrollment Report: November 1, 2016 – January 31, 2017","citationUrl":"https://www.cms.gov/Newsroom/MediaReleaseDatabase/Fact-sheets/2017-Fact-Sheet-items/2017-03-15.html","isProParent":false,"affects":"AverageTheConfidence"},"qkcK15soLfJj":{"id":"qkcK15soLfJj","content":"Aetna chief executive says Obamacare is in a ‘death spiral’","isProMain":true,"childIds":[],"citation":"The Washington Post \"Aetna chief executive says Obamacare is in a ‘death spiral’\" By Carolyn Y. Johnson February 15, 2017","citationUrl":"https://www.washingtonpost.com/news/wonk/wp/2017/02/15/aetna-ceo-says-obamacare-is-in-a-death-spiral/?utm_term=.546c3870285c","isProParent":true,"affects":"AverageTheConfidence"},"qkd27tm4tXfo":{"id":"qkd27tm4tXfo","content":"Matthew Fiedler, a fellow with the Center for Health Policy at the Brookings Institution, similarly concluded in a recent analysis that the Affordable Care Act is not in a death spiral.","isProMain":false,"childIds":[],"citation":"Brookings: New data on sign-ups through the ACA’s marketplaces should lay “death spiral” claims to rest Matthew FiedlerWednesday, February 8, 2017","citationUrl":"https://www.brookings.edu/blog/up-front/2017/02/08/new-data-on-sign-ups-through-the-acas-marketplaces-should-lay-death-spiral-claims-to-rest/","isProParent":false,"affects":"AverageTheConfidence"},"qkd2zGldspBF":{"id":"qkd2zGldspBF","content":"\"In CBO and JCT’s assessment, however, the nongroup market would probably be stable in most areas under either current law or the legislation.\"","isProMain":false,"childIds":["qkddd8A7Tk9P"],"citation":"Congressional Budget Office: American Health Care Act March 13, 2017 Cost Estimate","citationUrl":"https://www.cbo.gov/publication/52486","isProParent":false,"affects":"AverageTheConfidence","maxConf":"","disabled":false},"qkddd8A7Tk9P":{"id":"qkddd8A7Tk9P","content":"\"Probably be Stable\" is a weak statement and should not get a full 100%.","isProMain":false,"childIds":[],"citation":"","citationUrl":"","isProParent":true,"affects":"AverageTheConfidence","maxConf":"90","disabled":false}},"scores":{},"settings":{},"mainId":"qkcrjXBKCCx0"}'>
-  </claim>
+  <claim id="ql2heRoABQ0y" class="bigRR" root="{&quot;mainId&quot;:&quot;ql2heRoABQ0y&quot;,&quot;claims&quot;:{&quot;ql2heRoABQ0y&quot;:{&quot;claimId&quot;:&quot;ql2heRoABQ0y&quot;,&quot;content&quot;:&quot;SettleIt.org builds unity by increasing the quality and quantity of shared facts by providing a structure to measure claims.&quot;,&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;childIds&quot;:[&quot;ql2iUCPH4yxv&quot;,&quot;ql2iSdC9FmD2&quot;,&quot;ql2iOGPHeWdW&quot;,&quot;ql2iLQgplfuZ&quot;,&quot;ql2iJKN1lpxH&quot;],&quot;isProMain&quot;:true,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;ql2iJKN1lpxH&quot;:{&quot;content&quot;:&quot;EFFICIENT : the work of verifying claims can be distributed among many people.&quot;,&quot;isProMain&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;childIds&quot;:[],&quot;citationUrl&quot;:&quot;&quot;,&quot;citation&quot;:&quot;&quot;,&quot;claimId&quot;:&quot;ql2iJKN1lpxH&quot;,&quot;isProParent&quot;:true,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;ql2iLQgplfuZ&quot;:{&quot;content&quot;:&quot;QUANTIFIABLE : the confidence score is not a subjective judgement call but is calculated by the supporting claims and evidence&quot;,&quot;isProMain&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;childIds&quot;:[],&quot;citationUrl&quot;:&quot;&quot;,&quot;citation&quot;:&quot;&quot;,&quot;claimId&quot;:&quot;ql2iLQgplfuZ&quot;,&quot;isProParent&quot;:true,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;ql2iOGPHeWdW&quot;:{&quot;content&quot;:&quot;OBJECTIVE : to adjust the score you must enter a reason. There is no voting or popularity in the system.&quot;,&quot;isProMain&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;childIds&quot;:[],&quot;citationUrl&quot;:&quot;&quot;,&quot;citation&quot;:&quot;&quot;,&quot;claimId&quot;:&quot;ql2iOGPHeWdW&quot;,&quot;isProParent&quot;:true,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;ql2iSdC9FmD2&quot;:{&quot;content&quot;:&quot;TRANSPARENT : you can easily see how a claim’s confidence score is calculated.&quot;,&quot;isProMain&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;childIds&quot;:[],&quot;citationUrl&quot;:&quot;&quot;,&quot;citation&quot;:&quot;&quot;,&quot;claimId&quot;:&quot;ql2iSdC9FmD2&quot;,&quot;isProParent&quot;:true,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;ql2iUCPH4yxv&quot;:{&quot;content&quot;:&quot;OPEN : anyone can contribute to a claim&quot;,&quot;isProMain&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;childIds&quot;:[],&quot;citationUrl&quot;:&quot;&quot;,&quot;citation&quot;:&quot;&quot;,&quot;claimId&quot;:&quot;ql2iUCPH4yxv&quot;,&quot;isProParent&quot;:true,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false}}}"></claim><br>
+
+  <claim id="qkcrjXBKCCx0" root="{&quot;claims&quot;:{&quot;qkcrjXBKCCx0&quot;:{&quot;id&quot;:&quot;qkcrjXBKCCx0&quot;,&quot;content&quot;:&quot;Is Obamacare in a 'death spiral'? As conservative radio host Hugh Hewitt claimed on Meet the Press on March 26 2017.&quot;,&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;childIds&quot;:[&quot;qkd2zGldspBF&quot;,&quot;qkd27tm4tXfo&quot;,&quot;qkcK15soLfJj&quot;,&quot;qkbh7EIsnRzL&quot;,&quot;qkbdeolCiBkq&quot;,&quot;qkb8xb22aAPW&quot;],&quot;isProMain&quot;:true,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkb8xb22aAPW&quot;:{&quot;id&quot;:&quot;qkb8xb22aAPW&quot;,&quot;content&quot;:&quot;Decreased enrollment by 4% indicates a death spiral.&quot;,&quot;isProMain&quot;:true,&quot;childIds&quot;:[&quot;qkbgHek4eH2z&quot;],&quot;citation&quot;:&quot;CMS.gov: Health Insurance Marketplaces 2017 Open Enrollment Period Final Enrollment Report: November 1, 2016 – January 31, 2017&quot;,&quot;citationUrl&quot;:&quot;https://www.cms.gov/Newsroom/MediaReleaseDatabase/Fact-sheets/2017-Fact-Sheet-items/2017-03-15.html&quot;,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkbdeolCiBkq&quot;:{&quot;id&quot;:&quot;qkbdeolCiBkq&quot;,&quot;content&quot;:&quot;Premiums increases indicate a \&quot;death spiral\&quot;.&quot;,&quot;isProMain&quot;:true,&quot;childIds&quot;:[&quot;qkbg8obG7C7w&quot;],&quot;citation&quot;:&quot;2017 Premium Changes and Insurer Participation in the Affordable Care Act’s Health Insurance Marketplaces&quot;,&quot;citationUrl&quot;:&quot;http://kff.org/health-reform/issue-brief/2017-premium-changes-and-insurer-participation-in-the-affordable-care-acts-health-insurance-marketplaces/&quot;,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkbg8obG7C7w&quot;:{&quot;id&quot;:&quot;qkbg8obG7C7w&quot;,&quot;content&quot;:&quot;As we have reported, premiums are increasing. But that isn’t affecting the cost for most consumers, due to built-in subsidies under the Affordable Care Act. Among the people who have signed up so far for 2017, 81 percent will receive a subsidy.&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkbgHek4eH2z&quot;:{&quot;id&quot;:&quot;qkbgHek4eH2z&quot;,&quot;content&quot;:&quot;Experts noted that marketplace sign-ups were running in line with their 2016 pace as of the middle of January, which experts said might suggest the decline in sign-ups was somehow related to the Trump administration, not an impending death spiral.&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkbh7EIsnRzL&quot;:{&quot;id&quot;:&quot;qkbh7EIsnRzL&quot;,&quot;content&quot;:&quot;the share of people signing up for health care in the low-risk demographic (ages 18-34) remains about the same in 2017 as it was in 2016, at 26 percent of enrollees.&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;CMS.gov: Health Insurance Marketplaces 2017 Open Enrollment Period Final Enrollment Report: November 1, 2016 – January 31, 2017&quot;,&quot;citationUrl&quot;:&quot;https://www.cms.gov/Newsroom/MediaReleaseDatabase/Fact-sheets/2017-Fact-Sheet-items/2017-03-15.html&quot;,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkcK15soLfJj&quot;:{&quot;id&quot;:&quot;qkcK15soLfJj&quot;,&quot;content&quot;:&quot;Aetna chief executive says Obamacare is in a ‘death spiral’&quot;,&quot;isProMain&quot;:true,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;The Washington Post \&quot;Aetna chief executive says Obamacare is in a ‘death spiral’\&quot; By Carolyn Y. Johnson February 15, 2017&quot;,&quot;citationUrl&quot;:&quot;https://www.washingtonpost.com/news/wonk/wp/2017/02/15/aetna-ceo-says-obamacare-is-in-a-death-spiral/?utm_term=.546c3870285c&quot;,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkd27tm4tXfo&quot;:{&quot;id&quot;:&quot;qkd27tm4tXfo&quot;,&quot;content&quot;:&quot;Matthew Fiedler, a fellow with the Center for Health Policy at the Brookings Institution, similarly concluded in a recent analysis that the Affordable Care Act is not in a death spiral.&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;Brookings: New data on sign-ups through the ACA’s marketplaces should lay “death spiral” claims to rest Matthew FiedlerWednesday, February 8, 2017&quot;,&quot;citationUrl&quot;:&quot;https://www.brookings.edu/blog/up-front/2017/02/08/new-data-on-sign-ups-through-the-acas-marketplaces-should-lay-death-spiral-claims-to-rest/&quot;,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;},&quot;qkd2zGldspBF&quot;:{&quot;id&quot;:&quot;qkd2zGldspBF&quot;,&quot;content&quot;:&quot;\&quot;In CBO and JCT’s assessment, however, the nongroup market would probably be stable in most areas under either current law or the legislation.\&quot;&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[&quot;qkddd8A7Tk9P&quot;],&quot;citation&quot;:&quot;Congressional Budget Office: American Health Care Act March 13, 2017 Cost Estimate&quot;,&quot;citationUrl&quot;:&quot;https://www.cbo.gov/publication/52486&quot;,&quot;isProParent&quot;:false,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;maxConf&quot;:&quot;&quot;,&quot;disabled&quot;:false},&quot;qkddd8A7Tk9P&quot;:{&quot;id&quot;:&quot;qkddd8A7Tk9P&quot;,&quot;content&quot;:&quot;\&quot;Probably be Stable\&quot; is a weak statement and should not get a full 100%.&quot;,&quot;isProMain&quot;:false,&quot;childIds&quot;:[],&quot;citation&quot;:&quot;&quot;,&quot;citationUrl&quot;:&quot;&quot;,&quot;isProParent&quot;:true,&quot;affects&quot;:&quot;AverageTheConfidence&quot;,&quot;maxConf&quot;:&quot;90&quot;,&quot;disabled&quot;:false}},&quot;scores&quot;:{},&quot;settings&quot;:{},&quot;mainId&quot;:&quot;qkcrjXBKCCx0&quot;}"></claim>
+
+<script type="text/javascript">
+//Import JS
+import ReasonRoot from './app/ReasonRoot';
+import Firebase from './app/Firebase';
+
+//Import SCSS
+require('../src/assets/styles/ReasonRoot.scss');
+//The code block that inflates the claims nodes
+//that was on index.html now are appended through this .js file
+
+let mainClaimsDict = {};
+var prev_handler2 = window.onload;
+
+window.onload = async function () {
+
+  const firebase = new Firebase();
+  firebase.firebaseInit();
+
+  function createReasonRoot() {
+    firebase.createReasonRoot();
+    uptade();
+    //this.appendReasonRoot(claimId);4
+  };
+
+  firebase.onAuthStateChanged();
+
+  const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
+
+  btnCreateReasonRoot.addEventListener('click', e => {
+    let rr = new ReasonRoot(firebase);
+    createReasonRoot();
+  });
+
+function uptade(){
+  if (prev_handler2) prev_handler2;
+  var claimElements = document.getElementsByTagName('claim');
+  console.log(claimElements);
+  let settings = {
+      hideScore: true,
+      hidePoints: true,
+      hideClaimMenu: true,
+      noAutoSave: true,
+      showSiblings: true,
+      hideChildIndicator: true
+  }
+
+  for (let claimElement of claimElements) {
+    claimElement.innerHTML = '';
+    let rr = new ReasonRoot(firebase,claimElement);
+    mainClaimsDict[rr.rr.mainId] = rr;
+  }
+  mainClaimsDict['ql2heRoABQ0y'].settings = settings;
+  mainClaimsDict['ql2heRoABQ0y'].selectedScore = mainClaimsDict['ql2heRoABQ0y'].mainScore;
+  mainClaimsDict['ql2heRoABQ0y'].setDisplayState();
+  mainClaimsDict['ql2heRoABQ0y'].update();
+  mainClaimsDict['ql2fPeGzkKQS'].settings = settings;
+  mainClaimsDict['ql2fPeGzkKQS'].claims[mainClaimsDict['ql2fPeGzkKQS'].rr.mainId].isProMain = false;
+  mainClaimsDict['ql2fPeGzkKQS'].update();
+}
+
+uptade();
+
+};
+</script>
 
 </body>
 

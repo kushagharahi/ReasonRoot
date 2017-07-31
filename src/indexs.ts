@@ -1,7 +1,7 @@
 declare var require: any;
 
 //Import JS
-import ReasonRoot from './app/ReasonRoot';
+// import ReasonRoot from './app/ReasonRoot';
 // import Firebase from './app/Firebase';
 
 //Import SCSS

@@ -1,12 +1,16 @@
+declare var require: any;
+
+//Import SCSS
+require('../src/assets/styles/ReasonRoot.scss');
 type WhichCopy = "original" | "local" | "suggestion";
 
 import hyperHTML = require('hyperhtml');
-import Root from './Root';
-import Dict from './Dict';
-import SettleIt from'./SettleIt';
-import Score from './Score';
-import Claim from './Claim';
-import Firebase from './Firebase';
+import Root from './app/Root';
+import Dict from './app/Dict';
+import SettleIt from'./app/SettleIt';
+import Score from './app/Score';
+import Claim from './app/Claim';
+import Firebase from './app/Firebase';
 
 export default class ReasonRoot {
     userName: string = 'Sign In';

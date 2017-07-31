@@ -37,9 +37,8 @@
 
   <script>
   let mainClaimsDict = {}
+  let ReasonRoot = bundle.default;
   window.onload = async function () {
-    let ReasonRoot = bundle.default;
-
     var claimElements = document.getElementsByTagName('claim');
     for (let claimElement of claimElements) {
       let rr = new ReasonRoot(claimElement);

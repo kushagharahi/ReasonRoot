@@ -27,18 +27,18 @@ export default class ReasonRoot {
     listenerRefs: any[] = new Array<any>();
     canWrite: boolean;
     mainId: any;
-    firebase: Firebase;
+    firebase: Firebase = new Firebase();
     score: Score = new Score();
     claim: Claim = new Claim();
 
-    constructor(firebase: Firebase, claimElement?: Element) {
+    constructor(claimElement?: Element) {
       if(claimElement){
         //this.render is a pointer to the Claim HTML tag.
         this.render = hyperHTML.bind(claimElement);
         this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.firebase = firebase;
-        //this.firebase.onAuthStateChanged(this.rr, this.canWrite);
+        this.firebase.firebaseInit();
+        this.firebase.onAuthStateChanged();
         this.changeWhichCopy("original");
 
         //this.attachDB();

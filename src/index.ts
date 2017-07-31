@@ -14,23 +14,23 @@ var prev_handler2 = window.onload;
 
 window.onload = async function () {
 
-  const firebase = new Firebase();
-  firebase.firebaseInit();
+  // const firebase = new Firebase();
+  // firebase.firebaseInit();
 
-  function createReasonRoot() {
-    firebase.createReasonRoot();
-    uptade();
-    //this.appendReasonRoot(claimId);4
-  };
-
-  firebase.onAuthStateChanged();
+  // function createReasonRoot() {
+  //   firebase.createReasonRoot();
+  //   uptade();
+  //   //this.appendReasonRoot(claimId);4
+  // };
+  //
+  // firebase.onAuthStateChanged();
 
   const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
 
-  btnCreateReasonRoot.addEventListener('click', e => {
-    let rr = new ReasonRoot(firebase);
-    createReasonRoot();
-  });
+  // btnCreateReasonRoot.addEventListener('click', e => {
+  //   let rr = new ReasonRoot();
+  //   createReasonRoot();
+  // });
 
 function uptade(){
   if (prev_handler2) prev_handler2;
@@ -47,7 +47,7 @@ function uptade(){
 
   for (let claimElement of claimElements) {
     claimElement.innerHTML = '';
-    let rr = new ReasonRoot(firebase,claimElement);
+    let rr = new ReasonRoot(claimElement);
     mainClaimsDict[rr.rr.mainId] = rr;
   }
   mainClaimsDict['ql2heRoABQ0y'].settings = settings;

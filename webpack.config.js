@@ -3,10 +3,11 @@ const path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: './dist/index.js',
+  entry: './dist/app/ReasonRoot.js',
   output: {
     path: path.resolve(__dirname, "/public/"),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    library: 'bundle'
   },
   //Allow us to place index.html in a different position that root.
   devServer: {

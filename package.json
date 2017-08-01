@@ -7,17 +7,28 @@
     "test": "tests"
   },
   "dependencies": {
-    "firebase": "^4.1.1",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "firebase": "^4.1.2",
+    "firebaseui": "^2.1.1",
+    "hyperhtml": "^0.11.11",
     "jasmine": "^2.6.0",
     "typescript": "^2.3.2",
     "webpack-dev-server": "^2.4.5"
   },
   "devDependencies": {
+    "css-loader": "^0.28.4",
+    "loader-utils": "^1.1.0",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.2",
     "ts-loader": "^2.1.0",
+    "typescript-require": "^0.2.9-1",
     "webpack": "^2.6.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run transpile && node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "transpile": "node ./node_modules/typescript/bin/tsc -p ./tsconfig.json"
   },
   "repository": {
     "type": "git",

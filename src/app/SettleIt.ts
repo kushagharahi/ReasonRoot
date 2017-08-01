@@ -18,18 +18,23 @@ export default class SettleIt {
         if (mainId !== undefined) this.mainId = mainId;
         if (scores !== undefined) this.scores = scores;
         if (shouldSort !== undefined) this.shouldSort = shouldSort;
+        // this.getScore searches score on scores array using the given claimId if doesn't exists returns a new Score.
         let score = this.getScore(mainId);
-        if (!score) {
-          score = new Score();
-          score.claimId = mainId;
-          scores[mainId] = score;
-        }
+        // TODO check it this function repeats this.getScore
+        // if (!score) {
+        //   score = new Score();
+        //   score.claimId = mainId;
+        //   scores[mainId] = score;
+        // }
+
+        //Search a claim by given claimId then set value to main Claim
         let claim = this.claims[mainId];
         this.step1ValidateClaims(score);
         this.step2AscendClaims(score);
         this.step3DescendClaims(score);
         this.step4AscendClaims(score);
 
+        // Returns a Object loaded with the result of global variables
         return {
             mainId: this.mainId,
             claims: this.claims,
@@ -38,7 +43,9 @@ export default class SettleIt {
     }
 
     public getScore(claimId){
+      // Search score on scores array using claimId
         let score = this.scores[claimId];
+        // If this score doesn't be found a new Score is instanced using the given claimId
         if (!score) {
             score = new Score();
             score.claimId = claimId;

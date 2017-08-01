@@ -6,7 +6,8 @@ module.exports = {
   entry: './dist/index.js',
   output: {
     path: path.resolve(__dirname, "/public/"),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    library: 'bundle'
   },
   //Allow us to place index.html in a different position that root.
   devServer: {

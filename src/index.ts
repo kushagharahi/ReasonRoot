@@ -1,7 +1,7 @@
 declare var require: any;
 
 //Import SCSS
-require('../src/assets/styles/ReasonRoot.scss');
+//require('../src/assets/styles/ReasonRoot.scss');
 type WhichCopy = "original" | "local" | "suggestion";
 
 import hyperHTML = require('hyperhtml');

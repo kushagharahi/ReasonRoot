@@ -1,7 +1,5 @@
 const path = require('path');
 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 module.exports = {
   entry: './dist/index.js',
   output: {

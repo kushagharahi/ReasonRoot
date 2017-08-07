@@ -23,11 +23,8 @@ module.exports = {
       { test: /\.tsx?$/, loader: 'ts-loader', exclude: path.resolve(__dirname, '/node_modules'),
       include: path.resolve(__dirname, '/src/app')
     },
-      { test: /\.scss$/, loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: [ 'css-loader', 'sass-loader' ] }) }
+      { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader', exclude: path.resolve(__dirname, '/node_modules')}
     ]
   },
-  plugins: [
-      new ExtractTextPlugin("style.css")
-  ],
   devtool: 'inline-source-map'
 }

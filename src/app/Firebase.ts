@@ -208,7 +208,7 @@ updateChilds(mainClaim: any, parentClaim: any){
       claims: claim,
       mainId: claimId
     });
-    this.appendReasonRoot(claimId);
+    //this.appendReasonRoot(claimId);
   };
 
   appendReasonRoot(claimId){

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- This links loads css generated from wepback -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- This links loads js generated from wepback -->
+    <script src="bundle.js"></script>
+    <!-- <script src="ReasonRoot.js"></script> -->
+    <!-- <link rel="import" href="reasonroot.comp.html"> -->
+
+  </head>
+  <body>
+
+    <div>
+      <button id="btnCreateReasonRoot">Create ReasonRoot</button>
+    </div>
+
+    <claim id="demo" root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
+    </claim>
+
+    <hr>
+
+    <script>
+    let mainClaimsDict = {}
+    console.log(bundle);
+    let ReasonRoot = bundle.default;
+    var prev_handler2 = window.onload;
+
+    window.onload = async function () {
+      if (prev_handler2) prev_handler2();
+      var claimElements = document.getElementsByTagName('claim');
+      let settings = {
+          hideScore: true,
+          hidePoints: true,
+          hideClaimMenu: true,
+          noAutoSave: true,
+          showSiblings: true,
+          hideChildIndicator: true
+      }
+      for (let claimElement of claimElements) {
+        claimElement.innerHTML = '';
+        let rr = new ReasonRoot(claimElement);
+        mainClaimsDict[rr.rr.mainId] = rr;
+        console.log(rr);
+      }
+    };
+
+    const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
+
+    btnCreateReasonRoot.addEventListener('click', e => {
+      let rr = new ReasonRoot();
+      //rr.createReasonRoot();
+      console.log(rr);
+    });
+
+    </script>
+
+  </body>
+</html>

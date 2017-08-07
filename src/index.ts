@@ -36,18 +36,20 @@ export default class ReasonRoot {
     claim: Claim = new Claim();
 
     constructor(claimElement?: Element) {
+      this.settleIt = new SettleIt();
+      this.firebase.firebaseInit();
+      this.firebase.onAuthStateChanged();
       if(claimElement){
         //this.render is a pointer to the Claim HTML tag.
         this.render = hyperHTML.bind(claimElement);
-        this.settleIt = new SettleIt();
         this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.firebase.firebaseInit();
-        this.firebase.onAuthStateChanged();
         this.changeWhichCopy("original");
-
         //this.attachDB();
         //this.initRr();
         //this.update();
+      } else {
+        //this.changeWhichCopy("local");
+        this.canWrite = true;
       }
     }
 
@@ -384,14 +386,13 @@ export default class ReasonRoot {
 
     appendReasonRoot(mainId){
       let element = document.createElement("claim");
-      this.firebase.getDataById(mainId)
-        .then(data => {
-          element.setAttribute("root", data);
-        })
-       .then(() => {
-         document.body.appendChild(element);
-       }
-     );
+      element.setAttribute("id", mainId);
+      document.body.appendChild(element);
+      //
+      // this.firebase.getDataById(mainId)
+      //   .then(data => {
+      //     element.setAttribute("root", data);
+      //   });
     };
 
 

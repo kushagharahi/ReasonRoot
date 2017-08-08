@@ -191,10 +191,9 @@ updateChilds(mainClaim: any, parentClaim: any){
   ref.set(childIds);
 }
 
-  createReasonRoot(): void {
+  createReasonRoot(newClaim): void {
     let database = firebase.database();
     let currentUserId = firebase.auth().currentUser.uid;
-    let newClaim = new Claim();
     let claimId = newClaim.claimId;
 
     let permission = {};

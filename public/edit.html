@@ -32,14 +32,6 @@
     window.onload = async function () {
       if (prev_handler2) prev_handler2();
       var claimElements = document.getElementsByTagName('claim');
-      let settings = {
-          hideScore: true,
-          hidePoints: true,
-          hideClaimMenu: true,
-          noAutoSave: true,
-          showSiblings: true,
-          hideChildIndicator: true
-      }
       for (let claimElement of claimElements) {
         claimElement.innerHTML = '';
         let rr = new ReasonRoot(claimElement);
@@ -52,8 +44,9 @@
 
     btnCreateReasonRoot.addEventListener('click', e => {
       let rr = new ReasonRoot();
-      //rr.createReasonRoot();
-      console.log(rr);
+      //element.setAttribute("id", mainId);
+      // rr.createReasonRoot();
+      //console.log(rr);
     });
 
     </script>

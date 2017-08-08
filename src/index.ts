@@ -40,6 +40,9 @@ export default class ReasonRoot {
       this.firebase.firebaseInit();
       this.firebase.onAuthStateChanged();
       if(claimElement){
+        let root = claimElement.getAttribute('root');
+        console.log(root);
+
         //this.render is a pointer to the Claim HTML tag.
         this.render = hyperHTML.bind(claimElement);
         this.rr = JSON.parse(claimElement.getAttribute('root'));
@@ -48,8 +51,32 @@ export default class ReasonRoot {
         //this.initRr();
         //this.update();
       } else {
-        //this.changeWhichCopy("local");
-        this.canWrite = true;
+        let claimElement = document.createElement("claim");
+        let NewClaim: Claim = new Claim();
+        //console.log(JSON.stringify(claim));
+        let claim = {};
+
+        claim[NewClaim.claimId] = Object.assign({}, NewClaim);
+        // console.log(JSON.stringify(claim));
+        let root = {};
+        // {claims:{}, "scores":{},"settings":{},"mainId":""}
+        root['claims'] = Object.assign({}, claim);
+        root['scores'] = {};
+        root['settings'] = {};
+        root['mainId'] = NewClaim.claimId;
+
+        console.log(root);
+        claimElement.setAttribute("id", NewClaim.claimId);
+        claimElement.setAttribute("claims", JSON.stringify(root));
+        document.body.appendChild(claimElement);
+
+        this.render = hyperHTML.bind(claimElement);
+        this.rr = JSON.parse(JSON.stringify(root));
+
+        console.log(this.rr);
+
+          this.canWrite = true;
+        this.changeWhichCopy("local");
       }
     }
 
@@ -82,10 +109,10 @@ export default class ReasonRoot {
             //pull local data if it exists and set it to save
 
             // TODO localStorage is null
-            let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
-            if (rr) {
-                this.rr = JSON.parse(rr);
-            }
+            // let rr = localStorage.getItem(this.savePrefix + this.rr.mainId);
+            // if (rr) {
+            //     this.rr = JSON.parse(rr);
+            // }
         } else {
           // Original and suggestion both mean remote
           // This is the problem
@@ -380,8 +407,11 @@ export default class ReasonRoot {
     // to their own class file, and then they only should be called from other classes like this.
 
     createReasonRoot() {
-      let claimId = this.firebase.createReasonRoot();
+      let newClaim = new Claim();
+      let claimId = newClaim.claimId;
+      this.firebase.createReasonRoot(newClaim);
       this.appendReasonRoot(claimId);
+      console.log(claimId);
     };
 
     appendReasonRoot(mainId){

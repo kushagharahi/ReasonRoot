@@ -1,4 +1,4 @@
-declare var require: any;
+declare const require: any;
 
 //Import SCSS
 require('../src/assets/styles/ReasonRoot.scss');
@@ -280,11 +280,11 @@ export default class ReasonRoot {
 
     // This render a unique Claim, this should be part of Claim component,both main claim and child climes use it.
     renderNode(score: Score, parent?: Score): void {
-      var claim: Claim = this.claims[score.claimId];
-      var wire = hyperHTML.wire(score);
+      let claim: Claim = this.claims[score.claimId];
+      const wire = hyperHTML.wire(score);
       this.animateNumbers();
 
-      var result = wire`
+      const result = wire`
               <li id="${claim.claimId}" class="${
           score.displayState +
           (score.isMain ? ' mainClaim' : '') +
@@ -355,7 +355,7 @@ export default class ReasonRoot {
           wire.default = claim.content;
           let inputs = result.querySelector('.claimPad').querySelectorAll('input');
           for (let input of inputs) {
-              var bindName = input.getAttribute("bind")
+              let bindName = input.getAttribute("bind")
               if (bindName) {
                   if (input.type == "checkbox")
                       input.checked = claim[bindName];
@@ -370,12 +370,12 @@ export default class ReasonRoot {
 
     //Check for animating numbers of the Reason Root's main claim, this should be on Reason Root component
     animateNumbers() {
-        var found = false;
-        for (var scoreId in this.scores) {
-            var s = this.scores[scoreId];
+        let found = false;
+        for (let scoreId in this.scores) {
+            let s = this.scores[scoreId];
             if (s.weightedPercentage != s.animatedWeightedPercentage) {
                 found = true;
-                var difference = s.weightedPercentage - s.animatedWeightedPercentage
+                let difference = s.weightedPercentage - s.animatedWeightedPercentage
                 if (Math.abs(difference) < .01)
                     s.animatedWeightedPercentage = s.weightedPercentage
                 else
@@ -404,26 +404,6 @@ export default class ReasonRoot {
 
     // The logic of this functionalities: addClaim, updateClaim, and removeClaim were moved
     // to their own class file, and then they only should be called from other classes like this.
-
-    createReasonRoot() {
-      let newClaim = new Claim();
-      let claimId = newClaim.claimId;
-      this.firebase.createReasonRoot(newClaim);
-      this.appendReasonRoot(claimId);
-      console.log(claimId);
-    };
-
-    appendReasonRoot(mainId){
-      let element = document.createElement("claim");
-      element.setAttribute("id", mainId);
-      document.body.appendChild(element);
-      //
-      // this.firebase.getDataById(mainId)
-      //   .then(data => {
-      //     element.setAttribute("root", data);
-      //   });
-    };
-
 
     addClaim(isProMain: boolean, event?: Event) {
       let childClaim: Claim;

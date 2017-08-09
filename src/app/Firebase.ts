@@ -106,7 +106,8 @@ export default class Firebase{
           .then(snapshot => {
             let reasonRoots = snapshot.val();
             for(let reasonRoot in reasonRoots){
-              that.appendReasonRoot(reasonRoot);
+              console.log(reasonRoot);
+              // that.appendReasonRoot(reasonRoot);
             }
         });
 

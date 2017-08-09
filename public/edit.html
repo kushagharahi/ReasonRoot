@@ -27,11 +27,11 @@
     let mainClaimsDict = {}
     console.log(bundle);
     let ReasonRoot = bundle.default;
-    var prev_handler2 = window.onload;
+    const prev_handler2 = window.onload;
 
     window.onload = async function () {
       if (prev_handler2) prev_handler2();
-      var claimElements = document.getElementsByTagName('claim');
+      const claimElements = document.getElementsByTagName('claim');
       for (let claimElement of claimElements) {
         claimElement.innerHTML = '';
         let rr = new ReasonRoot(claimElement);
@@ -44,9 +44,6 @@
 
     btnCreateReasonRoot.addEventListener('click', e => {
       let rr = new ReasonRoot();
-      //element.setAttribute("id", mainId);
-      // rr.createReasonRoot();
-      //console.log(rr);
     });
 
     </script>

@@ -61,7 +61,7 @@ export default class ReasonRoot {
         root['mainId'] = newClaim.claimId;
 
         claimElement.setAttribute("id", newClaim.claimId);
-        claimElement.setAttribute("claims", JSON.stringify(root));
+        claimElement.setAttribute("root", JSON.stringify(root));
         document.body.appendChild(claimElement);
 
         this.render = hyperHTML.bind(claimElement);
@@ -259,7 +259,27 @@ export default class ReasonRoot {
     signIn = () => {
       this.firebase.signIn().then((user) => {
         this.userName = user.email + ' - ' + user.uid;
-        this.firebase.getReasonRootsByUserId(user.uid);
+        this.firebase.getReasonRootsByUserId(user.uid)
+          .then(snapshot => {
+            let reasonRoots = snapshot.val();
+            for(let reasonRoot in reasonRoots){
+              this.firebase.getDataById(reasonRoot)
+                .then(snapshot => {
+                  let root = snapshot.val();
+                  console.log(root);
+                  // console.log(JSON.stringify(snapshot.val()));
+                  const claimElement = document.createElement("claim");
+                  claimElement.setAttribute("id", root.mainId);
+                  claimElement.setAttribute("root", JSON.stringify(root));
+                  document.body.appendChild(claimElement);
+
+                  let reasonRoot = new ReasonRoot(claimElement);
+
+                });
+              // console.log(reasonRoot);
+              // that.appendReasonRoot(reasonRoot);
+            }
+          });
       });
     }
 

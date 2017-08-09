@@ -124,14 +124,8 @@ export default class Firebase{
 
   getReasonRootsByUserId(uid: string){
     let ref = firebase.database().ref('permissions/user/' + uid);
-    ref.once('value')
-      .then(snapshot => {
-        let reasonRoots = snapshot.val();
-        for(let reasonRoot in reasonRoots){
-          console.log(reasonRoot);
-          // that.appendReasonRoot(reasonRoot);
-        }
-    });
+    return ref.once('value')
+
   }
 
   getCurrentUser(): any {
@@ -145,9 +139,7 @@ export default class Firebase{
   getDataById(id: string): any{
     let ref = firebase.database().ref('roots/' + id);
     return ref.once('value')
-      .then(snapshot => {
-        return JSON.stringify(snapshot.val());
-      });
+
     // Re send query if response is undefined
   }
 

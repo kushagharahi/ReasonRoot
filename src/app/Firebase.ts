@@ -9,7 +9,7 @@ export default class Firebase{
   db: any;
   rr: Root = new Root();
 
-  SignIn() {
+  signIn() {
       //this.firebaseInit(this.rr, true);
       const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -18,9 +18,11 @@ export default class Firebase{
           const token = result.credential.accessToken;
           // The signed-in user info.
           const user = result.user;
+          const data = {};
+          data['email'] = firebase.auth().currentUser.email;
+          data['uid'] = firebase.auth().currentUser.uid;
           return firebase.auth().currentUser ?
-            firebase.auth().currentUser.email
-            + ' - ' + firebase.auth().currentUser.uid : 'Sign In'
+            data : 'Sign In'
           // console.log(result);
           // ...
       }).catch(function (error) {
@@ -101,15 +103,15 @@ export default class Firebase{
         //   canWrite = snapshot.val();
         // })
 
-        let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
-        ref.once('value')
-          .then(snapshot => {
-            let reasonRoots = snapshot.val();
-            for(let reasonRoot in reasonRoots){
-              console.log(reasonRoot);
-              // that.appendReasonRoot(reasonRoot);
-            }
-        });
+        // let ref = firebase.database().ref('permissions/user/' + currentUser.uid);
+        // ref.once('value')
+        //   .then(snapshot => {
+        //     let reasonRoots = snapshot.val();
+        //     for(let reasonRoot in reasonRoots){
+        //       console.log(reasonRoot);
+        //       // that.appendReasonRoot(reasonRoot);
+        //     }
+        // });
 
       }
       // else {
@@ -117,6 +119,18 @@ export default class Firebase{
       //   console.log("User not logged");
       //   canWrite = false;
       // }
+    });
+  }
+
+  getReasonRootsByUserId(uid: string){
+    let ref = firebase.database().ref('permissions/user/' + uid);
+    ref.once('value')
+      .then(snapshot => {
+        let reasonRoots = snapshot.val();
+        for(let reasonRoot in reasonRoots){
+          console.log(reasonRoot);
+          // that.appendReasonRoot(reasonRoot);
+        }
     });
   }
 

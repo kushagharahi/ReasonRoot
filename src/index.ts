@@ -257,8 +257,9 @@ export default class ReasonRoot {
     }
 
     signIn = () => {
-      this.firebase.SignIn().then((userName: string) => {
-        this.userName = userName;
+      this.firebase.signIn().then((user) => {
+        this.userName = user.email + ' - ' + user.uid;
+        this.firebase.getReasonRootsByUserId(user.uid);
       });
     }
 

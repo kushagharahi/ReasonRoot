@@ -40,9 +40,6 @@ export default class ReasonRoot {
       this.firebase.firebaseInit();
       this.firebase.onAuthStateChanged();
       if(claimElement){
-        let root = claimElement.getAttribute('root');
-        console.log(root);
-
         //this.render is a pointer to the Claim HTML tag.
         this.render = hyperHTML.bind(claimElement);
         this.rr = JSON.parse(claimElement.getAttribute('root'));
@@ -52,32 +49,28 @@ export default class ReasonRoot {
         //this.update();
       } else {
         let claimElement = document.createElement("claim");
-        let NewClaim: Claim = new Claim();
-        //console.log(JSON.stringify(claim));
+        let newClaim: Claim = new Claim();
+        this.firebase.createReasonRoot(newClaim);
         let claim = {};
-
-        claim[NewClaim.claimId] = Object.assign({}, NewClaim);
-        // console.log(JSON.stringify(claim));
         let root = {};
-        // {claims:{}, "scores":{},"settings":{},"mainId":""}
+
+        claim[newClaim.claimId] = Object.assign({}, newClaim);
         root['claims'] = Object.assign({}, claim);
         root['scores'] = {};
         root['settings'] = {};
-        root['mainId'] = NewClaim.claimId;
+        root['mainId'] = newClaim.claimId;
 
-        console.log(root);
-        claimElement.setAttribute("id", NewClaim.claimId);
+        claimElement.setAttribute("id", newClaim.claimId);
         claimElement.setAttribute("claims", JSON.stringify(root));
         document.body.appendChild(claimElement);
 
         this.render = hyperHTML.bind(claimElement);
         this.rr = JSON.parse(JSON.stringify(root));
 
-        console.log(this.rr);
-
-          this.canWrite = true;
+        this.canWrite = true;
         this.changeWhichCopy("local");
       }
+      // this.render = hyperHTML.bind(claimElement);
     }
 
     initRr() {
@@ -252,7 +245,7 @@ export default class ReasonRoot {
 
               <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
 
-              <div  onclick="${this.firebase.SignIn.bind(this)}">
+              <div  onclick="${this.signIn}">
                       [${this.userName} ]
               </div>
          </div>
@@ -261,6 +254,12 @@ export default class ReasonRoot {
               ⚙
           </div>
       </div>`;
+    }
+
+    signIn = () => {
+      this.firebase.SignIn().then((userName: string) => {
+        this.userName = userName;
+      });
     }
 
     // Settings is part of the Reason Root's main claim, this should be on Reason Root component

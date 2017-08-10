@@ -18,10 +18,10 @@
       <button id="btnCreateReasonRoot">Create ReasonRoot</button>
     </div>
 
-    <claim id="demo" root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
-    </claim>
+    <!-- <claim id="demo" root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
+    </claim> -->
 
-    <hr>
+    <!-- <hr> -->
 
     <script>
     let mainClaimsDict = {}
@@ -33,6 +33,8 @@
       const id = findGetParameter('id');
       if (id) {
         let rr = new ReasonRoot(id);
+      } else {
+        let rr = new ReasonRoot("demo");
       }
       if (prev_handler2) prev_handler2();
       const claimElements = document.getElementsByTagName('claim');

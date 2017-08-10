@@ -76,10 +76,10 @@ export default class ReasonRoot {
         root['settings'] = {};
         root['mainId'] = newClaim.claimId;
 
-        claimElement.setAttribute("id", newClaim.claimId);
-        claimElement.setAttribute("root", JSON.stringify(root));
-        document.body.appendChild(claimElement);
-
+        // claimElement.setAttribute("id", newClaim.claimId);
+        // claimElement.setAttribute("root", JSON.stringify(root));
+        // document.body.appendChild(claimElement);
+        //
         this.render = hyperHTML.bind(claimElement);
         this.rr = JSON.parse(JSON.stringify(root));
 

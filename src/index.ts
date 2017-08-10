@@ -35,15 +35,31 @@ export default class ReasonRoot {
     score: Score = new Score();
     claim: Claim = new Claim();
 
-    constructor(claimElement?: Element) {
+    constructor(claimElement?: Element | string) {
       this.settleIt = new SettleIt();
       this.firebase.firebaseInit();
       this.firebase.onAuthStateChanged();
       if(claimElement){
+        if(typeof claimElement === "string"){
+          this.firebase.getDataById(claimElement)
+            .then(snapshot => {
+              let root = snapshot.val();
+              console.log(root);
+              // console.log(JSON.stringify(snapshot.val()));
+              const claimElement = document.createElement("claim");
+              claimElement.setAttribute("id", root.mainId);
+              claimElement.setAttribute("root", JSON.stringify(root));
+              document.body.appendChild(claimElement);
+
+              let reasonRoot = new ReasonRoot(claimElement);
+
+            });
+        } else {
+          this.render = hyperHTML.bind(claimElement);
+          this.rr = JSON.parse(claimElement.getAttribute('root'));
+          this.changeWhichCopy("original");
+        }
         //this.render is a pointer to the Claim HTML tag.
-        this.render = hyperHTML.bind(claimElement);
-        this.rr = JSON.parse(claimElement.getAttribute('root'));
-        this.changeWhichCopy("original");
         //this.attachDB();
         //this.initRr();
         //this.update();
@@ -135,9 +151,9 @@ export default class ReasonRoot {
           let permissionRef = this.firebase.db.ref('permissions/user/' + this.firebase.getCurrentUser().uid + "/" + this.rr.mainId);
           this.listenerRefs.push(permissionRef);
           //To do the can write below is on the wrong "this"
-          permissionRef.on('value', function (snapshot) {
-              this.canWrite = snapshot.val();
-          })
+          // permissionRef.on('value', function (snapshot) {
+          //     this.canWrite = snapshot.val();
+          // })
       } else {
           this.canWrite = false;
       }

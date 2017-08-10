@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <div>
+    <!-- <div>
       <button id="btnCreateReasonRoot">Create ReasonRoot</button>
-    </div>
+    </div> -->
 
     <!-- <claim id="demo" root='{"claims":{"demo":{"id":"demo","content":"Blank Example Statement.","citation":"","citationUrl":"","childIds":[],"isProMain":true,"isProParent":true,"affects":"AverageTheConfidence"}},"scores":{},"settings":{},"mainId":"demo"}'>
     </claim> -->
@@ -46,12 +46,12 @@
       }
     };
 
-    const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
-
-    btnCreateReasonRoot.addEventListener('click', e => {
-      let rr = new ReasonRoot();
-      window.location.href = './edit.html?id=' + rr.rr.mainId;
-    });
+    // const btnCreateReasonRoot = document.getElementById('btnCreateReasonRoot');
+    //
+    // btnCreateReasonRoot.addEventListener('click', e => {
+    //   let rr = new ReasonRoot();
+    //   window.location.href = './edit.html?id=' + rr.rr.mainId;
+    // });
 
     function findGetParameter(parameterName) {
     var result = null,

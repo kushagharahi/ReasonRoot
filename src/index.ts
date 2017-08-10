@@ -183,6 +183,11 @@ export default class ReasonRoot {
         }
     }
 
+    createReasonRoot = () => {
+      let rr = new ReasonRoot();
+      window.location.href = './edit.html?id=' + rr.rr.mainId;
+    }
+
     setDisplayState(): void {
         this.clearDisplayState();
         this.setDisplayStateLoop(this.mainScore);
@@ -261,8 +266,11 @@ export default class ReasonRoot {
 
               <input value="${this.replaceAll(JSON.stringify(this.rr), '\'', '&#39;')}"></input>
 
-              <div  onclick="${this.signIn}">
-                      [${this.userName} ]
+              <div onclick="${this.signIn}">
+                      [ ${this.userName} ]
+              </div>
+              <div onclick="${this.createReasonRoot}">
+                      [ New Reason Root ]
               </div>
          </div>
           <div>${this.renderNode(this.scores[this.rr.mainId])}</div>

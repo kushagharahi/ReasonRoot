@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './dist/index.js',
   output: {
     path: path.resolve(__dirname, "/public/"),
     filename: 'bundle.js',
@@ -16,9 +16,11 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js'] // note if using webpack 1 you'd also need a '' in the array as well
   },
   module: {
-    rules: [ // loaders will work with webpack 1 or 2; but will be renamed "rules" in future
+    loaders: [ // loaders will work with webpack 1 or 2; but will be renamed "rules" in future
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-      { test: /\.ts?$/, loader: 'ts-loader', exclude: path.resolve(__dirname, '/node_modules')},
+      { test: /\.tsx?$/, loader: 'ts-loader', exclude: path.resolve(__dirname, '/node_modules'),
+      include: path.resolve(__dirname, '/src/app')
+    },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader', exclude: path.resolve(__dirname, '/node_modules')}
     ]
   },
